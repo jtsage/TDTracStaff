@@ -9,14 +9,14 @@
 <?= $this->Html->link(
 	$this->Pretty->iconAdd(__("Title")) . "Add Worker Title",
 	['action' => 'add'],
-	['escape' => false, 'class' => 'btn btn-outline-success w-100 mb-4 btn-sm']
+	['escape' => false, 'class' => 'btn btn-outline-success w-100 mb-4 btn-lg']
 ) ?>
 
 <div class="roles index large-9 medium-8 columns content">
 	<table class="table table-striped table-bordered" cellpadding="0" cellspacing="0">
 		<thead>
 			<tr>
-				<th scope="col"><?= $this->Paginator->sort('id', "ID #") ?></th>
+				<th scope="col"><?= $this->Paginator->sort('sort_order', "Sort") ?></th>
 				<th scope="col"><?= $this->Paginator->sort('title') ?></th>
 				<th scope="col"><?= $this->Paginator->sort('detail', "Description") ?></th>
 				<th scope="col" class="actions text-center"><?= __('Actions') ?></th>
@@ -25,10 +25,10 @@
 		<tbody>
 			<?php foreach ($roles as $role): ?>
 			<tr>
-				<td><?= h($role->id) ?></td>
+				<td><?= h($role->sort_order) ?></td>
 				<td><?= h($role->title) ?></td>
 				<td><?= h($role->detail) ?></td>
-				<td class="actions text-center"><div class="btn-group">
+				<td class="actions text-center"><div class="w-100 btn-group btn-group-sm-vertical">
 					<?= $this->Html->link(
 						$this->Pretty->iconView("") . "View Workers",
 						['action' => 'view', $role->id],

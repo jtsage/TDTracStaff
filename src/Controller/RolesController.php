@@ -19,7 +19,9 @@ class RolesController extends AppController
 	 */
 	public function index()
 	{
-		$roles = $this->Roles->find("all");
+		$roles = $this->Roles->find("all")
+			->order(['sort_order' => 'ASC']);
+			
 		$this->set('crumby', [
 			["/", __("Dashboard")],
 			["/roles/", __("Worker Titles")],

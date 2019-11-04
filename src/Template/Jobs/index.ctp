@@ -5,47 +5,89 @@
  */
 ?>
 
-<h3>Job List</h3>
-<p>Full list of jobs. Regular users see open, active jobs (upcoming).  Administrators see the full history of jobs.</p>
+<h2>Job List</h2>
+<p>Full list of jobs. Regular users see open, active jobs (upcoming).  Administrators see the full history of jobs. Active jobs allow changes to needed or assigned staff. Inactive, Open jobs allow changes to payroll only.  Closed jobs provide historical data only. </p>
 
-<div class="jobs index large-9 medium-8 columns content">
-	<table class="table table-bordered table-striped" cellpadding="0" cellspacing="0">
-		<thead>
-			<tr>
-				<th scope="col"><?= $this->Paginator->sort('name') ?></th>
-				<th scope="col"><?= $this->Paginator->sort('detail', "Description") ?></th>
-				<th scope="col"><?= $this->Paginator->sort('category') ?></th>
-				<th scope="col"><?= $this->Paginator->sort('location') ?></th>
-				<th scope="col"><?= $this->Paginator->sort('date_start', "Start Date") ?></th>
-				<th scope="col">Active / Open</th>
-				<th scope="col" class="text-center actions"><?= __('Actions') ?></th>
-			</tr>
-		</thead>
-		<tbody>
-			<?php foreach ($jobs as $job): ?>
-			<tr>
-				<td><?= h($job->name) ?></td>
-				<td><?= h($job->detail) ?></td>
-				<td><?= h($job->category) ?></td>
-				<?php
-					$locHref = "https://www.google.com/maps/search/?api=1&query=";
-					$locHref .= urlencode($job->location);
-				?>
-				<td><a target="_blank" href="<?= $locHref ?>"><?= trim(substr($job->location, 0, 40)) ?>...</a></td>
-				
-				<td><?= $job->date_start->format("m/d/Y") ?></td>
-				
-				<td><?= $this->Bool->prefYes($job->is_active) ?> / <?= $this->Bool->prefYes($job->is_open) ?></td>
-				
-				<td class="actions">
-					<?= $this->Html->link(__('View'), ['action' => 'view', $job->id]) ?>
-					<?= $this->Html->link(__('Edit'), ['action' => 'edit', $job->id]) ?>
-					<?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $job->id], ['confirm' => __('Are you sure you want to delete # {0}?', $job->id)]) ?>
-				</td>
-			</tr>
-			<?php endforeach; ?>
-		</tbody>
-	</table>
+<?= $this->Html->link(
+	$this->Pretty->iconAdd("") . 'Add New Job',
+	['action' => 'add'],
+	['escape' => false, 'class' => 'btn btn-outline-success w-100 mb-3 btn-lg']
+) ?>
+
+<div class="mb-2 mt-4" style="border-bottom: 1px dashed #ccc;"><h4>Sort Order</h4></div>
+<ul class="breadcrumb">
+	<li class="breadcrumb-item"><?= $this->Paginator->sort('name') ?></li>
+	<li class="breadcrumb-item"><?= $this->Paginator->sort('category') ?></li>
+	<li class="breadcrumb-item"><?= $this->Paginator->sort('location') ?></li>
+	<li class="breadcrumb-item"><?= $this->Paginator->sort('date_start', "Start Date") ?></li>
+	<li class="breadcrumb-item"><?= $this->Paginator->sort('due_payroll_submitted', "Payroll Due") ?></li>
+	<li class="breadcrumb-item"><?= $this->Paginator->sort('due_payroll_paid', "Check Date") ?></li>
+</ul>
+
+<div class="mb-2 mt-4" style="border-bottom: 1px dashed #ccc;"><h4>Job Details</h4></div>
+
+<?php foreach ($jobs as $job): ?>
+	<?php
+		$locHref = "https://www.google.com/maps/search/?api=1&query=";
+		$locHref .= urlencode($job->location);
+	?>
+	<div class="border mb-2 p-3">
+		<h5><?= $job->name ?></h5>
+		<div class="row">
+		<div class="col-md-9">
+		<ul>
+			<li><em><?= h($job->category) ?></em></li>
+			<li><?= h($job->detail) ?></li>
+			<li><a target="_blank" class="text-info" href="<?= $locHref ?>"><?= $job->location ?></a></li>
+			<li>This job starts on <?= $job->date_start->format("m/d/Y") ?>, and ends on <?= $job->date_end->format("m/d/Y") ?></li>
+			<li>Payroll for this show must be submitted on or before <?= $job->due_payroll_submitted->format("m/d/Y") ?>, and will be included on paychecks cut on <?= $job->due_payroll_paid->format("m/d/Y") ?></li>
+			<li>This job is <?= $job->is_open ? "OPEN" : "CLOSED" ?> and <?= $job->is_active ? "ACTIVE" : "IN-ACTIVE" ?></li>
+			<li><strong>Staff Required: </strong>
+			<?php
+				$needed = [];
+				foreach ( $job->roles as $role ) {
+					$needed[] = $role->title . " <em>(" . $role->_joinData->number_needed . ")</em>";
+				}
+				echo join($needed, ", ");
+			?>
+			</li>
+			<li><strong>Staff Assigned: </strong></li>
+		</ul>
+		</div><div class="col-md-3">
+		<div class="btn-group-vertical w-100">
+		<?= $this->Html->link(
+			$this->Pretty->iconView($job->id) . 'View',
+			['action' => 'view', $job->id],
+			['escape' => false, 'class' => 'btn btn-outline-dark']
+		) ?>
+		<?php if ($WhoAmI) : ?>
+		<?= $this->Html->link(
+			$this->Pretty->iconSNeed($job->id) . 'Staff Needed',
+			['action' => 'staffNeed', $job->id],
+			['escape' => false, 'class' => 'btn btn-outline-info']
+		) ?>
+		<?= $this->Html->link(
+			$this->Pretty->iconSAssign($job->id) . 'Staff Asssigned',
+			['action' => 'staffAssign', $job->id],
+			['escape' => false, 'class' => 'btn btn-outline-info']
+		) ?>
+		<?= $this->Html->link(
+			$this->Pretty->iconEdit($job->id) . 'Edit',
+			['action' => 'edit', $job->id],
+			['escape' => false, 'class' => 'btn btn-outline-success']
+		) ?>
+		<?= $this->Form->postLink(
+			$this->Pretty->iconDelete($job->id) . 'Remove',
+			['action' => 'delete', $job->id],
+			['escape' => false, 'class' => 'btn btn-outline-primary', 'confirm' => 'Are you sure you want to delete job (ALL!!)?']
+		) ?>
+		<?php endif; ?>
+		</div></div></div>
+	</div>
+<?php endforeach; ?>
+
+
+
 	<div class="paginator">
 		<ul class="pagination">
 			<?= $this->Paginator->first('<< ' . __('first')) ?>

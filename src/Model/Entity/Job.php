@@ -46,6 +46,8 @@ class Job extends Entity
         'is_open' => true,
         'created_at' => true,
         'updated_at' => true,
+        'due_payroll_submitted' => true,
+        'due_payroll_paid' => true,
         'payrolls' => true,
         'roles' => true,
         'users' => true

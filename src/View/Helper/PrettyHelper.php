@@ -40,6 +40,14 @@ class PrettyHelper extends Helper
 	public function makeIcon($name, $icon, $text) {
 		return "<span class='sr-only'>{$text}: {$name}</span><i class='fa fa-lg fa-fw fa-{$icon}' data-toggle='tooltip' data-placement='top' title='' data-original-title='{$text}: {$name}'></i></span>";
 	}
+	public function iconSNeed($name)
+	{
+		return PrettyHelper::makeIcon($name, 'user-plus', __('Needed'));
+	}
+	public function iconSAssign($name)
+	{
+		return PrettyHelper::makeIcon($name, 'users', __('Assigned'));
+	}
 	public function iconEdit($name)
 	{
 		return PrettyHelper::makeIcon($name, 'pencil-square-o', __('Edit'));

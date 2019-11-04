@@ -34,6 +34,7 @@ class Role extends Entity
         'updated_at' => true,
         'users_jobs' => true,
         'jobs' => true,
-        'users' => true
+        'users' => true,
+        'sort_order' => true
     ];
 }

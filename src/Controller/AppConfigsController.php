@@ -12,95 +12,110 @@ use App\Controller\AppController;
  */
 class AppConfigsController extends AppController
 {
-    /**
-     * Index method
-     *
-     * @return \Cake\Http\Response|null
-     */
-    public function index()
-    {
-        $appConfigs = $this->paginate($this->AppConfigs);
+	/*
+	 ooooo                   .o8                        
+	 `888'                  "888                        
+	  888  ooo. .oo.    .oooo888   .ooooo.  oooo    ooo 
+	  888  `888P"Y88b  d88' `888  d88' `88b  `88b..8P'  
+	  888   888   888  888   888  888ooo888    Y888'    
+	  888   888   888  888   888  888    .o  .o8"'88b   
+	 o888o o888o o888o `Y8bod88P" `Y8bod8P' o88'   888o 
+	*/
+	public function index()
+	{
 
-        $this->set(compact('appConfigs'));
-    }
+		if ( ! $this->Auth->user('is_admin')) {
+			$this->Flash->error(__('You may not configure this application'));
+			return $this->redirect(["controller" => "jobs", "action" => "index"]);
+		}
+		$appConfigs = $this->paginate($this->AppConfigs);
 
-    /**
-     * View method
-     *
-     * @param string|null $id App Config id.
-     * @return \Cake\Http\Response|null
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function view($id = null)
-    {
-        $appConfig = $this->AppConfigs->get($id, [
-            'contain' => []
-        ]);
+		$this->set(compact('appConfigs'));
+	}
 
-        $this->set('appConfig', $appConfig);
-    }
 
-    /**
-     * Add method
-     *
-     * @return \Cake\Http\Response|null Redirects on successful add, renders view otherwise.
-     */
-    public function add()
-    {
-        $appConfig = $this->AppConfigs->newEntity();
-        if ($this->request->is('post')) {
-            $appConfig = $this->AppConfigs->patchEntity($appConfig, $this->request->getData());
-            if ($this->AppConfigs->save($appConfig)) {
-                $this->Flash->success(__('The app config has been saved.'));
 
-                return $this->redirect(['action' => 'index']);
-            }
-            $this->Flash->error(__('The app config could not be saved. Please, try again.'));
-        }
-        $this->set(compact('appConfig'));
-    }
+	/*
+	              o8o                             
+	              `"'                             
+	 oooo    ooo oooo   .ooooo.  oooo oooo    ooo 
+	  `88.  .8'  `888  d88' `88b  `88. `88.  .8'  
+	   `88..8'    888  888ooo888   `88..]88..8'   
+	    `888'     888  888    .o    `888'`888'    
+	     `8'     o888o `Y8bod8P'     `8'  `8'     
+	*/
+	public function view($id = null)
+	{
+		if ( ! $this->Auth->user('is_admin')) {
+			$this->Flash->error(__('You may not configure this application'));
+			return $this->redirect(["controller" => "jobs", "action" => "index"]);
+		}
+		$appConfig = $this->AppConfigs->get($id, [
+			'contain' => []
+		]);
 
-    /**
-     * Edit method
-     *
-     * @param string|null $id App Config id.
-     * @return \Cake\Http\Response|null Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function edit($id = null)
-    {
-        $appConfig = $this->AppConfigs->get($id, [
-            'contain' => []
-        ]);
-        if ($this->request->is(['patch', 'post', 'put'])) {
-            $appConfig = $this->AppConfigs->patchEntity($appConfig, $this->request->getData());
-            if ($this->AppConfigs->save($appConfig)) {
-                $this->Flash->success(__('The app config has been saved.'));
+		$this->set('appConfig', $appConfig);
+	}
 
-                return $this->redirect(['action' => 'index']);
-            }
-            $this->Flash->error(__('The app config could not be saved. Please, try again.'));
-        }
-        $this->set(compact('appConfig'));
-    }
 
-    /**
-     * Delete method
-     *
-     * @param string|null $id App Config id.
-     * @return \Cake\Http\Response|null Redirects to index.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function delete($id = null)
-    {
-        $this->request->allowMethod(['post', 'delete']);
-        $appConfig = $this->AppConfigs->get($id);
-        if ($this->AppConfigs->delete($appConfig)) {
-            $this->Flash->success(__('The app config has been deleted.'));
-        } else {
-            $this->Flash->error(__('The app config could not be deleted. Please, try again.'));
-        }
 
-        return $this->redirect(['action' => 'index']);
-    }
+	/*
+	                 .o8        .o8  
+	                "888       "888  
+	  .oooo.    .oooo888   .oooo888  
+	 `P  )88b  d88' `888  d88' `888  
+	  .oP"888  888   888  888   888  
+	 d8(  888  888   888  888   888  
+	 `Y888""8o `Y8bod88P" `Y8bod88P" 
+	*/
+	public function add()
+	{
+		if ( ! $this->Auth->user('is_admin')) {
+			$this->Flash->error(__('You may not configure this application'));
+			return $this->redirect(["controller" => "jobs", "action" => "index"]);
+		}
+		$appConfig = $this->AppConfigs->newEntity();
+		if ($this->request->is('post')) {
+			$appConfig = $this->AppConfigs->patchEntity($appConfig, $this->request->getData());
+			if ($this->AppConfigs->save($appConfig)) {
+				$this->Flash->success(__('The app config has been saved.'));
+
+				return $this->redirect(['action' => 'index']);
+			}
+			$this->Flash->error(__('The app config could not be saved. Please, try again.'));
+		}
+		$this->set(compact('appConfig'));
+	}
+
+
+
+	/*
+	                 .o8   o8o      .   
+	                "888   `"'    .o8   
+	  .ooooo.   .oooo888  oooo  .o888oo 
+	 d88' `88b d88' `888  `888    888   
+	 888ooo888 888   888   888    888   
+	 888    .o 888   888   888    888 . 
+	 `Y8bod8P' `Y8bod88P" o888o   "888" 
+	*/
+	public function edit($id = null)
+	{
+		if ( ! $this->Auth->user('is_admin')) {
+			$this->Flash->error(__('You may not configure this application'));
+			return $this->redirect(["controller" => "jobs", "action" => "index"]);
+		}
+		$appConfig = $this->AppConfigs->get($id, [
+			'contain' => []
+		]);
+		if ($this->request->is(['patch', 'post', 'put'])) {
+			$appConfig = $this->AppConfigs->patchEntity($appConfig, $this->request->getData());
+			if ($this->AppConfigs->save($appConfig)) {
+				$this->Flash->success(__('The app config has been saved.'));
+
+				return $this->redirect(['action' => 'index']);
+			}
+			$this->Flash->error(__('The app config could not be saved. Please, try again.'));
+		}
+		$this->set(compact('appConfig'));
+	}
 }

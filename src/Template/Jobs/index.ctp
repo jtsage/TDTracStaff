@@ -5,14 +5,19 @@
  */
 ?>
 
-<h2>Job List</h2>
-<p>Full list of jobs. Regular users see open, active jobs (upcoming).  Administrators see the full history of jobs. Active jobs allow changes to needed or assigned staff. Inactive, Open jobs allow changes to payroll only.  Closed jobs provide historical data only. </p>
+<h2>Job List<?= !empty($subtitle) ? " - " . $subtitle : "" ?></h2>
 
+<?php if (empty($subtitle)) : ?>
+<p>Full list of jobs. Regular users see open, active jobs (upcoming).  Administrators see the full history of jobs. Active jobs allow changes to needed or assigned staff. Inactive, Open jobs allow changes to payroll only.  Closed jobs provide historical data only. </p>
+<?php endif; ?>
+
+<?php if ( $WhoAmI ) : ?>
 <?= $this->Html->link(
 	$this->Pretty->iconAdd("") . 'Add New Job',
 	['action' => 'add'],
 	['escape' => false, 'class' => 'btn btn-outline-success w-100 mb-3 btn-lg']
 ) ?>
+<?php endif; ?>
 
 <div class="mb-2 mt-4" style="border-bottom: 1px dashed #ccc;"><h4>Sort Order</h4></div>
 <ul class="breadcrumb">

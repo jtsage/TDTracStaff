@@ -31,11 +31,15 @@ class UsersTable extends Table
 		$this->setDisplayField('print_name');
 		$this->setPrimaryKey('id');
 
-		$this->hasMany('Bios', [
-			'foreignKey' => 'user_id'
+		$this->belongsToMany('Roles', [
+			'foreignKey' => 'user_id',
+			'targetForeignKey' => 'role_id',
+			'joinTable' => 'users_roles'
 		]);
-		$this->hasMany('Photos', [
-			'foreignKey' => 'user_id'
+		$this->belongsToMany('Jobs', [
+			'foreignKey' => 'user_id',
+			'targetForeignKey' => 'job_id',
+			'joinTable' => 'users_jobs'
 		]);
 
 		$this->addBehavior('Timestamp', [

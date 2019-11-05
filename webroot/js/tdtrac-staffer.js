@@ -13,7 +13,20 @@ $(document).ready(function() {
 		});
 	});
 	
-	$('[role="alert"].error').addClass('alert alert-warning'); 
+	$('[role="alert"].error').addClass('alert alert-warning');
+
+	function do_rep() {
+		var cur_pass = $('#password').val(),
+			cur_user = $('#username').val(),
+			cur_text = $('#welcomeEmail').val();
+
+		cur_text = cur_text.replace(/Username:.+\n/m, "Username: " + cur_user + "\n");
+		cur_text = cur_text.replace(/Password:.+\n/m, "Password: " + cur_pass + "\n");
+		$('#welcomeEmail').val(cur_text);
+	}
+	
+	$('#password').on('change', do_rep);
+	$('#username').on('change', do_rep);
 });
 
 function linker(obby, nextDatebox) {
@@ -113,3 +126,4 @@ function linkerGuessDate(obby, nextDatebox) {
 	// Open "next" datebox
 	$('#' + nextDatebox).datebox('open');
 }
+

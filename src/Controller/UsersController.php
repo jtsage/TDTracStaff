@@ -15,15 +15,31 @@ use Cake\I18n\Time;
 class UsersController extends AppController
 {
 
+	/*
+	                             .o.                       .   oooo        
+	                            .888.                    .o8   `888        
+	 ooo. .oo.    .ooooo.      .8"888.     oooo  oooo  .o888oo  888 .oo.   
+	 `888P"Y88b  d88' `88b    .8' `888.    `888  `888    888    888P"Y88b  
+	  888   888  888   888   .88ooo8888.    888   888    888    888   888  
+	  888   888  888   888  .8'     `888.   888   888    888 .  888   888  
+	 o888o o888o `Y8bod8P' o88o     o8888o  `V88V"V8P'   "888" o888o o888o 
+	*/
 	public function beforeFilter(\Cake\Event\Event $event)
 	{
-		$this->Auth->allow(['logout', 'forgotPassword', 'resetPassword', 'verify', 'register']);
+		$this->Auth->allow(['logout', 'forgotPassword', 'resetPassword', 'verify']);
 	}
-	/**
-	 * Index method
-	 *
-	 * @return void
-	 */
+
+
+
+	/*
+	 ooooo                   .o8                        
+	 `888'                  "888                        
+	  888  ooo. .oo.    .oooo888   .ooooo.  oooo    ooo 
+	  888  `888P"Y88b  d88' `888  d88' `88b  `88b..8P'  
+	  888   888   888  888   888  888ooo888    Y888'    
+	  888   888   888  888   888  888    .o  .o8"'88b   
+	 o888o o888o o888o `Y8bod88P" `Y8bod8P' o88'   888o 
+	*/
 	public function index()
 	{
 		if ( ! $this->Auth->user('is_admin')) {
@@ -50,6 +66,17 @@ class UsersController extends AppController
 
 
 
+	/*
+	 oooo                        o8o              
+	 `888                        `"'              
+	  888   .ooooo.   .oooooooo oooo  ooo. .oo.   
+	  888  d88' `88b 888' `88b  `888  `888P"Y88b  
+	  888  888   888 888   888   888   888   888  
+	  888  888   888 `88bod8P'   888   888   888  
+	 o888o `Y8bod8P' `8oooooo.  o888o o888o o888o 
+	                 d"     YD                    
+	                 "Y88888P'                    
+	*/
 	public function login()
 	{
 		if ($this->request->is('post')) {
@@ -87,19 +114,36 @@ class UsersController extends AppController
 		}
 	}
 
+
+
+	/*
+	 oooo                                                 .   
+	 `888                                               .o8   
+	  888   .ooooo.   .oooooooo  .ooooo.  oooo  oooo  .o888oo 
+	  888  d88' `88b 888' `88b  d88' `88b `888  `888    888   
+	  888  888   888 888   888  888   888  888   888    888   
+	  888  888   888 `88bod8P'  888   888  888   888    888 . 
+	 o888o `Y8bod8P' `8oooooo.  `Y8bod8P'  `V88V"V8P'   "888" 
+	                 d"     YD                                
+	                 "Y88888P'                                
+	*/
 	public function logout()
 	{
 		$this->Flash->success(__('You are now logged out.'));
 		return $this->redirect($this->Auth->logout());
 	}
 
-	/**
-	 * View method
-	 *
-	 * @param string|null $id User id.
-	 * @return void
-	 * @throws \Cake\Network\Exception\NotFoundException When record not found.
-	 */
+
+
+	/*
+	              o8o                             
+	              `"'                             
+	 oooo    ooo oooo   .ooooo.  oooo oooo    ooo 
+	  `88.  .8'  `888  d88' `88b  `88. `88.  .8'  
+	   `88..8'    888  888ooo888   `88..]88..8'   
+	    `888'     888  888    .o    `888'`888'    
+	     `8'     o888o `Y8bod8P'     `8'  `8'     
+	*/
 	public function view($id = null)
 	{
 		if ( !$this->Auth->user('is_admin') && $id <> $this->Auth->user('id') ) {
@@ -107,7 +151,7 @@ class UsersController extends AppController
 			return $this->redirect(['action' => 'view', $this->Auth->user('id')]);
 		}
 		$user = $this->Users->get($id, [
-			'contain' => ['Bios']
+			'contain' => ['Roles']
 		]);
 
 		if ( $this->Auth->user('is_admin')) {
@@ -128,17 +172,27 @@ class UsersController extends AppController
 		$this->set('tz', Configure::read('ServerTimeZoneFix'));
 	}
 
-	/**
-	 * Add method
-	 *
-	 * @return void Redirects on successful add, renders view otherwise.
-	 */
+
+
+	/*
+	                 .o8        .o8  
+	                "888       "888  
+	  .oooo.    .oooo888   .oooo888  
+	 `P  )88b  d88' `888  d88' `888  
+	  .oP"888  888   888  888   888  
+	 d8(  888  888   888  888   888  
+	 `Y888""8o `Y8bod88P" `Y8bod88P" 
+	*/
 	public function add()
 	{
 		if ( ! $this->Auth->user('is_admin')) {
 			$this->Flash->error(__('You may not add users'));
 			return $this->redirect(['action' => 'view', $this->Auth->user('id')]);
 		}
+		$this->loadModel("AppConfigs");
+
+		$welcomeEmail = $this->AppConfigs->find("all")->where(["key_name" => "welcome-email"]);
+		$this->set("welMail", $welcomeEmail->first());
 
 		$user = $this->Users->newEntity();
 		if ($this->request->is('post')) {
@@ -176,13 +230,17 @@ class UsersController extends AppController
 		$this->set('_serialize', ['user']);
 	}
 
-	/**
-	 * Edit method
-	 *
-	 * @param string|null $id User id.
-	 * @return void Redirects on successful edit, renders view otherwise.
-	 * @throws \Cake\Network\Exception\NotFoundException When record not found.
-	 */
+
+
+	/*
+	                 .o8   o8o      .   
+	                "888   `"'    .o8   
+	  .ooooo.   .oooo888  oooo  .o888oo 
+	 d88' `88b d88' `888  `888    888   
+	 888ooo888 888   888   888    888   
+	 888    .o 888   888   888    888 . 
+	 `Y8bod8P' `Y8bod88P" o888o   "888" 
+	*/
 	public function edit($id = null)
 	{
 		if ( ! $this->Auth->user('is_admin') ) {
@@ -213,6 +271,16 @@ class UsersController extends AppController
 		$this->set('_serialize', ['user']);
 	}
 
+
+	/*
+	                     .o88o.           oooooooooooo       .o8   o8o      .   
+	                     888 `"           `888'     `8      "888   `"'    .o8   
+	  .oooo.o  .oooo.   o888oo   .ooooo.   888          .oooo888  oooo  .o888oo 
+	 d88(  "8 `P  )88b   888    d88' `88b  888oooo8    d88' `888  `888    888   
+	 `"Y88b.   .oP"888   888    888ooo888  888    "    888   888   888    888   
+	 o.  )88b d8(  888   888    888    .o  888       o 888   888   888    888 . 
+	 8""888P' `Y888""8o o888o   `Y8bod8P' o888ooooood8 `Y8bod88P" o888o   "888" 
+	*/
 	public function safeedit($id = null)
 	{
 		if ( !$this->Auth->user('is_admin') && $id <> $this->Auth->user('id') ) {
@@ -242,6 +310,17 @@ class UsersController extends AppController
 		$this->set('_serialize', ['user']);
 	}
 
+	/*
+	           oooo                               ooooooooo.                               
+	           `888                               `888   `Y88.                             
+	  .ooooo.   888 .oo.   ooo. .oo.    .oooooooo  888   .d88'  .oooo.    .oooo.o  .oooo.o 
+	 d88' `"Y8  888P"Y88b  `888P"Y88b  888' `88b   888ooo88P'  `P  )88b  d88(  "8 d88(  "8 
+	 888        888   888   888   888  888   888   888          .oP"888  `"Y88b.  `"Y88b.  
+	 888   .o8  888   888   888   888  `88bod8P'   888         d8(  888  o.  )88b o.  )88b 
+	 `Y8bod8P' o888o o888o o888o o888o `8oooooo.  o888o        `Y888""8o 8""888P' 8""888P' 
+	                                   d"     YD                                           
+	                                   "Y88888P'                                           
+	*/
 	public function changepass($id = null)
 	{
 		if ( !$this->Auth->user('is_admin') && $id <> $this->Auth->user('id') ) {
@@ -278,13 +357,17 @@ class UsersController extends AppController
 		$this->set('_serialize', ['user']);
 	}
 
-	/**
-	 * Delete method
-	 *
-	 * @param string|null $id User id.
-	 * @return void Redirects to index.
-	 * @throws \Cake\Network\Exception\NotFoundException When record not found.
-	 */
+
+
+	/*
+	       .o8            oooo                .             
+	      "888            `888              .o8             
+	  .oooo888   .ooooo.   888   .ooooo.  .o888oo  .ooooo.  
+	 d88' `888  d88' `88b  888  d88' `88b   888   d88' `88b 
+	 888   888  888ooo888  888  888ooo888   888   888ooo888 
+	 888   888  888    .o  888  888    .o   888 . 888    .o 
+	 `Y8bod88P" `Y8bod8P' o888o `Y8bod8P'   "888" `Y8bod8P' 
+	*/
 	public function delete($id = null)
 	{
 		if ( ! $this->Auth->user('is_admin')) {
@@ -301,6 +384,17 @@ class UsersController extends AppController
 		return $this->redirect(['action' => 'index']);
 	}
 
+	/*
+	                                        ooooooooooooo           oooo                              
+	                                        8'   888   `8           `888                              
+	 oo.ooooo.   .oooo.    .oooo.o  .oooo.o      888       .ooooo.   888  oooo   .ooooo.  ooo. .oo.   
+	  888' `88b `P  )88b  d88(  "8 d88(  "8      888      d88' `88b  888 .8P'   d88' `88b `888P"Y88b  
+	  888   888  .oP"888  `"Y88b.  `"Y88b.       888      888   888  888888.    888ooo888  888   888  
+	  888   888 d8(  888  o.  )88b o.  )88b      888      888   888  888 `88b.  888    .o  888   888  
+	  888bod8P' `Y888""8o 8""888P' 8""888P'     o888o     `Y8bod8P' o888o o888o `Y8bod8P' o888o o888o 
+	  888                                                                                             
+	 o888o                                                                                            
+	*/
 	function __genPassToken($user) {
 		if (empty($user)) { return null; }
 		
@@ -317,6 +411,15 @@ class UsersController extends AppController
 		return $user;
 	}
 
+	/*
+	                                 .o88o. ooooooooooooo           oooo                              
+	                                 888 `" 8'   888   `8           `888                              
+	 oooo    ooo  .ooooo.  oooo d8b o888oo       888       .ooooo.   888  oooo   .ooooo.  ooo. .oo.   
+	  `88.  .8'  d88' `88b `888""8P  888         888      d88' `88b  888 .8P'   d88' `88b `888P"Y88b  
+	   `88..8'   888ooo888  888      888         888      888   888  888888.    888ooo888  888   888  
+	    `888'    888    .o  888      888         888      888   888  888 `88b.  888    .o  888   888  
+	     `8'     `Y8bod8P' d888b    o888o       o888o     `Y8bod8P' o888o o888o `Y8bod8P' o888o o888o 
+	*/
 	function __genVerifyToken($user) {
 		if (empty($user)) { return null; }
 		
@@ -330,6 +433,19 @@ class UsersController extends AppController
 		return $user;
 	}
 
+
+
+	/*
+	  .o88o.                                             .   
+	  888 `"                                           .o8   
+	 o888oo   .ooooo.  oooo d8b  .oooooooo  .ooooo.  .o888oo 
+	  888    d88' `88b `888""8P 888' `88b  d88' `88b   888   
+	  888    888   888  888     888   888  888   888   888   
+	  888    888   888  888     `88bod8P'  888   888   888 . 
+	 o888o   `Y8bod8P' d888b    `8oooooo.  `Y8bod8P'   "888" 
+	                            d"     YD                    
+	                            "Y88888P'                    
+	*/
 	function forgotPassword() {
 		if ( ! is_null($this->Auth->user('id'))) {
 			$this->Flash->error(__('You have not forgotten your password, you are logged in.'));
@@ -367,6 +483,18 @@ class UsersController extends AppController
 		}
 	}
 
+
+	/*
+	                                o8o               .                      
+	                                `"'             .o8                      
+	 oooo d8b  .ooooo.   .oooooooo oooo   .oooo.o .o888oo  .ooooo.  oooo d8b 
+	 `888""8P d88' `88b 888' `88b  `888  d88(  "8   888   d88' `88b `888""8P 
+	  888     888ooo888 888   888   888  `"Y88b.    888   888ooo888  888     
+	  888     888    .o `88bod8P'   888  o.  )88b   888 . 888    .o  888     
+	 d888b    `Y8bod8P' `8oooooo.  o888o 8""888P'   "888" `Y8bod8P' d888b    
+	                    d"     YD                                            
+	                    "Y88888P'                                            
+	*/
 	public function register()
 	{
 		if ( ! is_null($this->Auth->user('id'))) {
@@ -405,6 +533,17 @@ class UsersController extends AppController
 		$this->set('_serialize', ['user']);
 	}
 
+
+
+	/*
+	                                           .   ooooooooo.                               
+	                                         .o8   `888   `Y88.                             
+	 oooo d8b  .ooooo.   .oooo.o  .ooooo.  .o888oo  888   .d88'  .oooo.    .oooo.o  .oooo.o 
+	 `888""8P d88' `88b d88(  "8 d88' `88b   888    888ooo88P'  `P  )88b  d88(  "8 d88(  "8 
+	  888     888ooo888 `"Y88b.  888ooo888   888    888          .oP"888  `"Y88b.  `"Y88b.  
+	  888     888    .o o.  )88b 888    .o   888 .  888         d8(  888  o.  )88b o.  )88b 
+	 d888b    `Y8bod8P' 8""888P' `Y8bod8P'   "888" o888o        `Y888""8o 8""888P' 8""888P' 
+	*/
 	function resetPassword($hash) {
 		if ( ! is_null($this->Auth->user('id'))) {
 			$this->Flash->error(__('You have not forgotten your password, you are logged in.'));
@@ -438,6 +577,17 @@ class UsersController extends AppController
 		}
 	}
 
+	/*
+	                                 o8o   .o88o.             
+	                                 `"'   888 `"             
+	 oooo    ooo  .ooooo.  oooo d8b oooo  o888oo  oooo    ooo 
+	  `88.  .8'  d88' `88b `888""8P `888   888     `88.  .8'  
+	   `88..8'   888ooo888  888      888   888      `88..8'   
+	    `888'    888    .o  888      888   888       `888'    
+	     `8'     `Y8bod8P' d888b    o888o o888o       .8'     
+	                                              .o..P'      
+	                                              `Y8P'       
+	*/
 	function verify($hash) {
 		if ( ! is_null($this->Auth->user('id'))) {
 			$this->Flash->error(__('You have not forgotten your password, you are logged in.'));
@@ -463,6 +613,66 @@ class UsersController extends AppController
 					return $this->redirect('/');
 				}
 			}
+		}
+	}
+
+	/*
+						oooo                     
+						`888                     
+	oooo d8b  .ooooo.   888   .ooooo.   .oooo.o 
+	`888""8P d88' `88b  888  d88' `88b d88(  "8 
+	888     888   888  888  888ooo888 `"Y88b.  
+	888     888   888  888  888    .o o.  )88b 
+	d888b    `Y8bod8P' o888o `Y8bod8P' 8""888P' 
+	*/
+	function roles($id)
+	{
+		if ( !$this->Auth->user('is_admin') ) {
+			$this->Flash->error("Sorry, you do not have access to this module.");
+			$this->redirect(["action" => "index"]);
+		}
+		if ( !$this->request->is(['patch','post','put'])) {
+			$user = $this->Users->get($id);
+
+			$this->loadModel("Roles");
+			$this->loadModel("UsersRoles");
+
+			$inRoles = $this->UsersRoles->find("all")->where(["user_id" => $id]);
+			$userRoles = [];
+			foreach ( $inRoles as $thisRole ) {
+				$userRoles[] = $thisRole->role_id;
+			}
+
+			$roles = $this->Roles->find("all")->order(["sort_order" => "ASC"]);
+
+			$this->set('current', $userRoles);
+			$this->set('roles', $roles);
+			$this->set('user', $user);
+
+			$this->set('crumby', [
+				["/", __("Dashboard")],
+				["/users/", __("Users")],
+				["/users/view/" . $user->id, $user->first . " " . $user->last],
+				[null, __("Edit User Training")]
+			]);
+		} else {
+			$inserts = [];
+			foreach ( $this->request->getData("role") as $roleID ) {
+				$inserts[] = [
+					'user_id'        => $id,
+					'role_id'       => $roleID
+				];
+			}
+			$this->loadModel("UsersRoles");
+
+			$this->UsersRoles->deleteAll([
+				"user_id" => $id
+			]);
+
+			$ents = $this->UsersRoles->newEntities($inserts);
+			$rslt = $this->UsersRoles->saveMany($ents);
+			$this->Flash->success("Staff training updated");
+			$this->redirect(["action" => "view", $id]);
 		}
 	}
 

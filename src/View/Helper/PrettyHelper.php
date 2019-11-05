@@ -52,6 +52,14 @@ class PrettyHelper extends Helper
 	{
 		return PrettyHelper::makeIcon($name, 'pencil-square-o', __('Edit'));
 	}
+	public function iconTUp($name)
+	{
+		return PrettyHelper::makeIcon($name, 'thumbs-up', __('Yup'));
+	}
+	public function iconTDown($name)
+	{
+		return PrettyHelper::makeIcon($name, 'thumbs-down', __('No'));
+	}
 	public function iconSave($name)
 	{
 		return PrettyHelper::makeIcon($name, 'save', __('Edit'));
@@ -91,6 +99,10 @@ class PrettyHelper extends Helper
 	public function iconUnpaid($name)
 	{
 		return PrettyHelper::makeIcon($name, 'usd', __('View Unpaid'));
+	}
+	public function iconPower($name)
+	{
+		return PrettyHelper::makeIcon($name, 'power-off', __('Login'));
 	}
 	public function helpButton($icon, $color = 'default', $name, $desc) {
 		return '<a href="#" class="btn btn-' . $color . ' btn-sm"><i class="fa fa-fw fa-lg fa-' . $icon . '" aria-hidden="true"></i></a>' .
@@ -173,6 +185,22 @@ class PrettyHelper extends Helper
 		return $retty;
 	}
 
+	public function checkVal($name, $value=0, $check=false, $other=null, $size="normal", $dis=false) {
+		$outtie  = '<div class="form-group text-center">';
+		//$outtie .= '<input type="hidden" name="' . $name . '" value="' . $value . '">';
+		$outtie .= '<input type="checkbox" name="' . $name . '" ';
+		$outtie .= 'class="bootcheck" data-animate="false" data-size="' . $size . '" ';
+		$outtie .= "value='" . $value . "' ";
+		$outtie .= ($check) ? "checked " : "";
+		if ( is_array($other) ) {
+			foreach ( $other as $key => $value ) {
+				$outtie .= "data-" . $key . '="' . $value . '" ';
+			}
+		}
+		$outtie .= ($dis ? " disabled" : "") . '></div>';
+		return $outtie;
+	}
+	
 	public function check($name, $check=false, $other=null, $size="normal", $dis=false) {
 		$outtie  = '<div class="form-group">';
 		$outtie .= '<input type="hidden" name="' . $name . '" value="0">';

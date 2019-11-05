@@ -65,7 +65,7 @@ if ( $this->request->getParam('controller') == "Pages" ) {
 	<body>
 
 	<nav class="navbar navbar-expand-lg navbar-light bg-light">
-		<a href="/" class="navbar-brand">Theater<span style="color:#C3593C">Bio</span><span style="color:#c39b1f"><?= CINFO['shortname']?></span></a>
+		<a href="/" class="navbar-brand">TDTrac<span style="color:#C3593C">Staff</span><span style="color:#c39b1f"><?= CINFO['shortname']?></span></a>
 		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
 		</button>
@@ -76,6 +76,7 @@ if ( $this->request->getParam('controller') == "Pages" ) {
 				<li class="nav-item <?= ($this->request->getParam('controller') == "Payrolls" ? "active'":"") ?>"><a class="nav-link" href="/payrolls/"><?= __("Hours") ?></a></li>
 				<?= ($WhoAmI) ? "<li class='nav-item" . ($this->request->getParam('controller') == "Roles" ? " class='active'":"") . "'><a class=\"nav-link\" href=\"/roles/\">Worker Titles</a></li>" : "" ?>
 				<li class="nav-item <?= ($this->request->getParam('controller') == "Users" ? "class='active'":"") ?>"><a class="nav-link" href="/users/"><?= ($WhoAmI) ? __("Users") : __("My Account") ?></a></li>
+				<?= ($WhoAmI) ? "<li class='nav-item" . ($this->request->getParam('controller') == "AppConfigs" ? " class='active'":"") . "'><a class=\"nav-link\" href=\"/app-configs/\">Configuration</a></li>" : "" ?>
 				<li class="nav-item"><a class="nav-link" href="/users/logout/"><?= __("Logout") ?></a></li>
 			</ul>
 			<?php 

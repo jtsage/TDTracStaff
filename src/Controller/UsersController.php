@@ -203,13 +203,13 @@ class UsersController extends AppController
 			if ( $this->request->getData('welcomeEmailSend') ) {
 				$email = new Email('default');
 				$email->setTo(rtrim($user->username))
-					->setSubject('Welcome to TDTracX');
+					->setSubject('Welcome to TDTracStaff');
 				$email->send(preg_replace("/\n/", "<br />\n", $this->request->getData('welcomeEmail')));
 			}
 			if ( $this->request->getData('welcomeEmailSendCopy') ) {
 				$email = new Email('default');
 				$email->setTo(CINFO['adminmail'])
-					->setSubject('Welcome to TDTracX: ' . $this->request->getData('first') . " " .  $this->request->getData('last'));
+					->setSubject('Welcome to TDTracStaff: ' . $this->request->getData('first') . " " .  $this->request->getData('last'));
 				$email->send(preg_replace("/\n/", "<br />\n", $this->request->getData('welcomeEmail')));
 			}
 

@@ -94,10 +94,6 @@ class UsersTable extends Table
 			->notEmpty('last');
 
 		$validator
-			->requirePresence('print_name', 'create')
-			->notEmpty('print_name');
-
-		$validator
 			->add('is_active', 'valid', ['rule' => 'boolean']);
 
 		$validator

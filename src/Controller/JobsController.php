@@ -53,6 +53,19 @@ class JobsController extends AppController
 		$this->set(compact('jobs'));
 	}
 
+
+
+	/*
+	                                  oooo            .o8                
+	                                  `888           "888                
+	 ooo. .oo.  .oo.   oooo    ooo     888  .ooooo.   888oooo.   .oooo.o 
+	 `888P"Y88bP"Y88b   `88.  .8'      888 d88' `88b  d88' `88b d88(  "8 
+	  888   888   888    `88..8'       888 888   888  888   888 `"Y88b.  
+	  888   888   888     `888'        888 888   888  888   888 o.  )88b 
+	 o888o o888o o888o     .8'     .o. 88P `Y8bod8P'  `Y8bod8P' 8""888P' 
+	                   .o..P'      `Y888P                                
+	                   `Y8P'                                             
+	*/
 	public function myjobs()
 	{
 		$this->set('crumby', [
@@ -322,7 +335,7 @@ class JobsController extends AppController
 	}
 
 
-	
+
 	/*
 	                                              .o.                              o8o  oooo  
 	                                             .888.                             `"'  `888  

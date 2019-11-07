@@ -23,6 +23,8 @@
 			<p><?= h($user->username) ?></p>
 			<h4><span class="badge badge-primary"><?= __('Full Name') ?></span></h4>
 			<p><?= h($user->first) ?> <?= h($user->last) ?></p>
+			<h4><span class="badge badge-primary"><?= __('Phone Number') ?></span></h4>
+			<p><?= h($user->phone) ?></p>
 		</div>
 		<div class="col-md-4">
 			<h4><span class="badge badge-warning"><?= __('Last Login At') ?></span></h4>

@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\ORM\Query;
 
 /**
  * Jobs Controller
@@ -40,7 +41,9 @@ class JobsController extends AppController
 			->contain([
 				"Roles" => [
 					'sort' => ['Roles.sort_order' => 'ASC']
-				]
+				],
+				"UsersScheduled",
+				"UsersInterested"
 			])
 			->where($where)
 			->order([
@@ -71,7 +74,7 @@ class JobsController extends AppController
 		$this->set('crumby', [
 			["/", __("Dashboard")],
 			["/jobs/", __("Jobs")],
-			[null, __("All Jobs")]
+			[null, __("My Qualified Jobs")]
 		]);
 
 		$this->loadModel("UsersRoles");
@@ -91,7 +94,9 @@ class JobsController extends AppController
 			->contain([
 				"Roles" => [
 					'sort' => ['Roles.sort_order' => 'ASC']
-				]
+				],
+				"UsersScheduled",
+				"UsersInterested"
 			])
 			->where($where)
 			->order([
@@ -102,6 +107,63 @@ class JobsController extends AppController
 		$jobs = $this->paginate($jobFind);
 
 		$this->set("subtitle", "Qualified For");
+		$this->set(compact('jobs'));
+		$this->render("index");
+	}
+
+
+/*
+                                                  oooo                        .o8  
+                                                  `888                       "888  
+ ooo. .oo.  .oo.   oooo    ooo  .oooo.o  .ooooo.   888 .oo.    .ooooo.   .oooo888  
+ `888P"Y88bP"Y88b   `88.  .8'  d88(  "8 d88' `"Y8  888P"Y88b  d88' `88b d88' `888  
+  888   888   888    `88..8'   `"Y88b.  888        888   888  888ooo888 888   888  
+  888   888   888     `888'    o.  )88b 888   .o8  888   888  888    .o 888   888  
+ o888o o888o o888o     .8'     8""888P' `Y8bod8P' o888o o888o `Y8bod8P' `Y8bod88P" 
+                   .o..P'                                                          
+                   `Y8P'                                                           
+*/
+	public function mysched()
+	{
+		$this->set('crumby', [
+			["/", __("Dashboard")],
+			["/jobs/", __("Jobs")],
+			[null, __("My Scheduled Jobs")]
+		]);
+
+		$this->loadModel("UsersRoles");
+		$this->loadModel("UsersJobs");
+
+		$jobsAvail = $this->UsersJobs->find("all")
+			->select("job_id")
+			->where([
+				"user_id" => $this->Auth->user("id"),
+				"is_scheduled" => 1
+			 ]);
+
+		$where = [
+			"is_open"   => 1,
+			"is_active" => 1,
+			"id IN"     => $jobsAvail
+		];
+
+		$jobFind = $this->Jobs->find("all")
+			->contain([
+				"Roles" => [
+					'sort' => ['Roles.sort_order' => 'ASC']
+				],
+				"UsersScheduled",
+				"UsersInterested"
+			])
+			->where($where)
+			->order([
+				"date_start" => "DESC",
+				"name"       => "ASC"
+			]);
+
+		$jobs = $this->paginate($jobFind);
+
+		$this->set("subtitle", "Scheduled For");
 		$this->set(compact('jobs'));
 		$this->render("index");
 	}
@@ -117,17 +179,35 @@ class JobsController extends AppController
 	*/
 	public function view($id = null)
 	{
-		$job = $this->Jobs->get($id, [
-			'contain' => ['Roles', 'Users', 'Payrolls']
-		]);
+		$job = $this->Jobs->find("all")
+			->contain([
+				"Roles" => [
+					'sort' => ['Roles.sort_order' => 'ASC']
+				],
+				"UsersScheduled",
+				"UsersInterested"
+			])
+			->where([
+				"id" => $id
+			]);
+
+		$job1 = $job->first();
+		$this->loadModel("UsersJobs");
+
+		$yourStat = $this->UsersJobs->find("all")
+			->where([
+				"user_id" => $this->Auth->user("id"),
+				"job_id" => $job1->id
+			]);
 
 		$this->set('crumby', [
 			["/", __("Dashboard")],
 			["/jobs/", __("Jobs")],
-			[null, $job->name]
+			[null, $job1->name]
 		]);
 
-		$this->set('job', $job);
+		$this->set('yourStat', $yourStat->first());
+		$this->set('job', $job1);
 	}
 
 	
@@ -203,6 +283,10 @@ class JobsController extends AppController
 	*/
 	public function add()
 	{
+		if ( !$this->Auth->user('is_admin') ) {
+			$this->Flash->error("Sorry, you do not have access to this module.");
+			$this->redirect(["action" => "index"]);
+		}
 		$allCats = $this->Jobs->find()
 			->select(['category'])
 			->order(["category" => "ASC"]);
@@ -239,6 +323,10 @@ class JobsController extends AppController
 	*/
 	public function edit($id = null)
 	{
+		if ( !$this->Auth->user('is_admin') ) {
+			$this->Flash->error("Sorry, you do not have access to this module.");
+			$this->redirect(["action" => "index"]);
+		}
 		$allCats = $this->Jobs->find()
 			->select(['category'])
 			->order(["category" => "ASC"]);
@@ -276,6 +364,10 @@ class JobsController extends AppController
 	*/
 	public function delete($id = null)
 	{
+		if ( !$this->Auth->user('is_admin') ) {
+			$this->Flash->error("Sorry, you do not have access to this module.");
+			$this->redirect(["action" => "index"]);
+		}
 		$this->request->allowMethod(['post', 'delete']);
 		$job = $this->Jobs->get($id);
 		if ($this->Jobs->delete($job)) {
@@ -332,6 +424,146 @@ class JobsController extends AppController
 		$this->set("assigned", $assigned);
 		$this->set("trained", $canDo);
 		$this->set('job', $job);
+	}
+
+
+
+	/*
+	              .              .o88o.  .o88o.       .o.                          o8o                         
+	            .o8              888 `"  888 `"      .888.                         `"'                         
+	  .oooo.o .o888oo  .oooo.   o888oo  o888oo      .8"888.      .oooo.o  .oooo.o oooo   .oooooooo ooo. .oo.   
+	 d88(  "8   888   `P  )88b   888     888       .8' `888.    d88(  "8 d88(  "8 `888  888' `88b  `888P"Y88b  
+	 `"Y88b.    888    .oP"888   888     888      .88ooo8888.   `"Y88b.  `"Y88b.   888  888   888   888   888  
+	 o.  )88b   888 . d8(  888   888     888     .8'     `888.  o.  )88b o.  )88b  888  `88bod8P'   888   888  
+	 8""888P'   "888" `Y888""8o o888o   o888o   o88o     o8888o 8""888P' 8""888P' o888o `8oooooo.  o888o o888o 
+	                                                                                    d"     YD              
+	                                                                                    "Y88888P'              
+	*/
+	function staffAssign( $id = null )
+	{
+		if ( !$this->Auth->user('is_admin') ) {
+			$this->Flash->error("Sorry, you do not have access to this module.");
+			$this->redirect(["action" => "index"]);
+		}
+		
+		$job = $this->Jobs->get($id, [
+			'contain' => [ 
+				"Roles" => [
+					'sort' => ['Roles.sort_order' => 'ASC']
+				]
+			]
+		]);
+
+		$this->loadModel("UsersJobs");
+
+		$interested = $this->UsersJobs->find("all")
+			->contain(["Users"])
+			->order([
+				"Users.last"  => "ASC",
+				"Users.first" => "ASC"
+			])
+			->where([
+				"job_id"       => $id,
+				"is_available" => 1
+			]);
+
+		$this->set("job", $job);
+		$this->set("interest", $interested);
+
+		$this->set('crumby', [
+			["/", __("Dashboard")],
+			["/jobs/", __("Jobs")],
+			["/jobs/view/" . $job->id, $job->name],
+			[null, "Assigned Staff"]
+		]);
+	}
+
+
+
+	/*
+	                      o8o                  .   
+	                      `"'                .o8   
+	 oo.ooooo.  oooo d8b oooo  ooo. .oo.   .o888oo 
+	  888' `88b `888""8P `888  `888P"Y88b    888   
+	  888   888  888      888   888   888    888   
+	  888   888  888      888   888   888    888 . 
+	  888bod8P' d888b    o888o o888o o888o   "888" 
+	  888                                          
+	 o888o                                         
+	*/
+	function print( $id = null )
+	{
+		if ( !$this->Auth->user('is_admin') ) {
+			$this->Flash->error("Sorry, you do not have access to this module.");
+			$this->redirect(["action" => "index"]);
+		}
+		
+		$job = $this->Jobs->get($id, [
+			'contain' => [ 
+				"Roles" => [
+					'sort' => ['Roles.sort_order' => 'ASC']
+				]
+			]
+		]);
+
+		$this->loadModel("UsersJobs");
+
+		$interested = $this->UsersJobs->find("all")
+			->contain(["Users"])
+			->order([
+				"Users.last"  => "ASC",
+				"Users.first" => "ASC"
+			])
+			->where([
+				"job_id"       => $id,
+				"is_scheduled" => 1
+			]);
+
+		$this->set("job", $job);
+		$this->set("interest", $interested);
+
+		$this->set('crumby', [
+			["/", __("Dashboard")],
+			["/jobs/", __("Jobs")],
+			["/jobs/view/" . $job->id, $job->name],
+			[null, "Assigned Staff"]
+		]);
+	}
+
+
+
+	/*
+	                    oooo                        .o8   .oooooo..o               .   
+	                    `888                       "888  d8P'    `Y8             .o8   
+	  .oooo.o  .ooooo.   888 .oo.    .ooooo.   .oooo888  Y88bo.       .ooooo.  .o888oo 
+	 d88(  "8 d88' `"Y8  888P"Y88b  d88' `88b d88' `888   `"Y8888o.  d88' `88b   888   
+	 `"Y88b.  888        888   888  888ooo888 888   888       `"Y88b 888ooo888   888   
+	 o.  )88b 888   .o8  888   888  888    .o 888   888  oo     .d8P 888    .o   888 . 
+	 8""888P' `Y8bod8P' o888o o888o `Y8bod8P' `Y8bod88P" 8""88888P'  `Y8bod8P'   "888" 
+	*/
+	function schedSet ($intId = null, $value = null )
+	{
+		if ( is_null($intId) || is_null($value) ) {
+			$this->Flash->error(__('Invalid Action'));
+			$this->redirect(['action' => 'index']);
+		}
+		if ( !$this->Auth->user('is_admin') ) {
+			$this->Flash->error("Sorry, you do not have access to this module.");
+			$this->redirect(["action" => "index"]);
+		}
+
+		$this->loadModel("UsersJobs");
+
+		$jobRec = $this->UsersJobs->get($intId);
+
+		$jobRec->is_scheduled = $value;
+
+		if ($this->UsersJobs->save($jobRec)) {
+			$this->Flash->success(__('Schedule Updated.'));
+		} else {
+			$this->Flash->error(__('Something went wrong. Please, try again.'));
+		}
+		$this->redirect(['action' => 'staffAssign', $jobRec->job_id]);
 	}
 
 

@@ -7,6 +7,7 @@
 			echo $this->Form->input('password', ['label' => 'Password', 'data-minlength' => 6]);
 			echo $this->Form->input('first', ['label' => __("First Name")]);
 			echo $this->Form->input('last', ['label' => __("Last Name")]);
+			echo $this->Form->input('phone', ['label' => __("Phone Number"), "help" => "###-###-#### preferred"]);
 		?>
 		<?php
 			function doEet($matches) {

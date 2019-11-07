@@ -13,6 +13,7 @@
 	<tr><th>Description</th><td><?= $job->detail ?></td></tr>
 	<tr><th>Start Date</th><td><?= $job->date_start->format("m/d/Y") ?></td></tr>
 	<tr><th>End Date</th><td><?= $job->date_end->format("m/d/Y") ?></td></tr>
+	<tr><th>Time(s)</th><td><?= $job->time_string ?></td></tr>
 	<tr><th>Payroll Due Date</th><td><?= $job->due_payroll_submitted->format("m/d/Y") ?></td></tr>
 	<tr><th>Paycheck Date</th><td><?= $job->due_payroll_paid->format("m/d/Y") ?></td></tr>
 	<tr><th>Location</th><td><a target="_blank" class="text-info" href="<?= $locHref ?>"><?= $job->location ?></a></td></tr>
@@ -26,8 +27,8 @@
 <?php foreach ( $job->roles as $roleNeeded ) : ?>
 	<?php if ( in_array($roleNeeded->id, $trained) ) : ?>
 		<tr>
-			<td><?= $roleNeeded->title ?></td>
-			<td><?php
+			<td class="align-middle"><?= $roleNeeded->title ?></td>
+			<td class="align-middle"><?php
 				$newEntry = true;
 				$avail = false;
 				$sched = false;
@@ -50,23 +51,23 @@
 					<?= $this->Html->link(
 						$this->Pretty->iconTUp($job->id) . 'Interested',
 						['action' => 'new-avail', $job->id, $roleNeeded->id, 1],
-						['escape' => false, 'class' => 'btn btn-outline-success']
+						['escape' => false, 'class' => 'btn w-50 btn-outline-success']
 					) ?>
 					<?= $this->Html->link(
 						$this->Pretty->iconTDown($job->id) . 'Un-Available',
 						['action' => 'new-avail', $job->id, $roleNeeded->id, 0],
-						['escape' => false, 'class' => 'btn btn-outline-primary']
+						['escape' => false, 'class' => 'btn w-50 btn-outline-primary']
 					) ?>
 				<?php else : ?>
 					<?= $this->Html->link(
 						$this->Pretty->iconTUp($job->id) . 'Interested',
 						['action' => 'change-avail', $job->id, $roleNeeded->id, 1],
-						['escape' => false, 'class' => 'btn btn-outline-'.($sched?'dark disabled':"success")]
+						['escape' => false, 'class' => 'btn w-50 btn-outline-'.($sched?'dark disabled':"success")]
 					) ?>
 					<?= $this->Html->link(
 						$this->Pretty->iconTDown($job->id) . 'Un-Available',
 						['action' => 'change-avail', $job->id, $roleNeeded->id, 0],
-						['escape' => false, 'class' => 'btn btn-outline-'.($sched?'dark disabled':"primary")]
+						['escape' => false, 'class' => 'btn w-50 btn-outline-'.($sched?'dark disabled':"primary")]
 					) ?>
 				<?php endif; ?>
 			</div></td>

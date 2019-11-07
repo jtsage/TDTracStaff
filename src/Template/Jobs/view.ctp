@@ -4,176 +4,87 @@
  * @var \App\Model\Entity\Job $job
  */
 ?>
-<h3>Job List</h3>
-<p>Full list of jobs. Regular users see open, active jobs (upcoming).  Administrators see the full history of jobs.</p>
 
-<div class="jobs view large-9 medium-8 columns content">
-	<h3><?= h($job->name) ?></h3>
-	<table class="vertical-table">
-		<tr>
-			<th scope="row"><?= __('Id') ?></th>
-			<td><?= h($job->id) ?></td>
-		</tr>
-		<tr>
-			<th scope="row"><?= __('Name') ?></th>
-			<td><?= h($job->name) ?></td>
-		</tr>
-		<tr>
-			<th scope="row"><?= __('Detail') ?></th>
-			<td><?= h($job->detail) ?></td>
-		</tr>
-		<tr>
-			<th scope="row"><?= __('Location') ?></th>
-			<td><?= h($job->location) ?></td>
-		</tr>
-		<tr>
-			<th scope="row"><?= __('Category') ?></th>
-			<td><?= h($job->category) ?></td>
-		</tr>
-		<tr>
-			<th scope="row"><?= __('Time String') ?></th>
-			<td><?= h($job->time_string) ?></td>
-		</tr>
-		<tr>
-			<th scope="row"><?= __('Date Start') ?></th>
-			<td><?= h($job->date_start) ?></td>
-		</tr>
-		<tr>
-			<th scope="row"><?= __('Date End') ?></th>
-			<td><?= h($job->date_end) ?></td>
-		</tr>
-		<tr>
-			<th scope="row"><?= __('Created At') ?></th>
-			<td><?= h($job->created_at) ?></td>
-		</tr>
-		<tr>
-			<th scope="row"><?= __('Updated At') ?></th>
-			<td><?= h($job->updated_at) ?></td>
-		</tr>
-		<tr>
-			<th scope="row"><?= __('Is Active') ?></th>
-			<td><?= $job->is_active ? __('Yes') : __('No'); ?></td>
-		</tr>
-		<tr>
-			<th scope="row"><?= __('Is Open') ?></th>
-			<td><?= $job->is_open ? __('Yes') : __('No'); ?></td>
-		</tr>
-	</table>
-	<div class="related">
-		<h4><?= __('Related Roles') ?></h4>
-		<?php if (!empty($job->roles)): ?>
-		<table cellpadding="0" cellspacing="0">
-			<tr>
-				<th scope="col"><?= __('Id') ?></th>
-				<th scope="col"><?= __('Title') ?></th>
-				<th scope="col"><?= __('Detail') ?></th>
-				<th scope="col"><?= __('Created At') ?></th>
-				<th scope="col"><?= __('Updated At') ?></th>
-				<th scope="col" class="actions"><?= __('Actions') ?></th>
-			</tr>
-			<?php foreach ($job->roles as $roles): ?>
-			<tr>
-				<td><?= h($roles->id) ?></td>
-				<td><?= h($roles->title) ?></td>
-				<td><?= h($roles->detail) ?></td>
-				<td><?= h($roles->created_at) ?></td>
-				<td><?= h($roles->updated_at) ?></td>
-				<td class="actions">
-					<?= $this->Html->link(__('View'), ['controller' => 'Roles', 'action' => 'view', $roles->id]) ?>
-					<?= $this->Html->link(__('Edit'), ['controller' => 'Roles', 'action' => 'edit', $roles->id]) ?>
-					<?= $this->Form->postLink(__('Delete'), ['controller' => 'Roles', 'action' => 'delete', $roles->id], ['confirm' => __('Are you sure you want to delete # {0}?', $roles->id)]) ?>
-				</td>
-			</tr>
-			<?php endforeach; ?>
-		</table>
-		<?php endif; ?>
-	</div>
-	<div class="related">
-		<h4><?= __('Related Users') ?></h4>
-		<?php if (!empty($job->users)): ?>
-		<table cellpadding="0" cellspacing="0">
-			<tr>
-				<th scope="col"><?= __('Id') ?></th>
-				<th scope="col"><?= __('Username') ?></th>
-				<th scope="col"><?= __('Password') ?></th>
-				<th scope="col"><?= __('First') ?></th>
-				<th scope="col"><?= __('Last') ?></th>
-				<th scope="col"><?= __('Is Active') ?></th>
-				<th scope="col"><?= __('Is Password Expired') ?></th>
-				<th scope="col"><?= __('Is Admin') ?></th>
-				<th scope="col"><?= __('Is Verified') ?></th>
-				<th scope="col"><?= __('Last Login At') ?></th>
-				<th scope="col"><?= __('Created At') ?></th>
-				<th scope="col"><?= __('Updated At') ?></th>
-				<th scope="col"><?= __('Reset Hash') ?></th>
-				<th scope="col"><?= __('Reset Hash Time') ?></th>
-				<th scope="col"><?= __('Verify Hash') ?></th>
-				<th scope="col" class="actions"><?= __('Actions') ?></th>
-			</tr>
-			<?php foreach ($job->users as $users): ?>
-			<tr>
-				<td><?= h($users->id) ?></td>
-				<td><?= h($users->username) ?></td>
-				<td><?= h($users->password) ?></td>
-				<td><?= h($users->first) ?></td>
-				<td><?= h($users->last) ?></td>
-				<td><?= h($users->is_active) ?></td>
-				<td><?= h($users->is_password_expired) ?></td>
-				<td><?= h($users->is_admin) ?></td>
-				<td><?= h($users->is_verified) ?></td>
-				<td><?= h($users->last_login_at) ?></td>
-				<td><?= h($users->created_at) ?></td>
-				<td><?= h($users->updated_at) ?></td>
-				<td><?= h($users->reset_hash) ?></td>
-				<td><?= h($users->reset_hash_time) ?></td>
-				<td><?= h($users->verify_hash) ?></td>
-				<td class="actions">
-					<?= $this->Html->link(__('View'), ['controller' => 'Users', 'action' => 'view', $users->id]) ?>
-					<?= $this->Html->link(__('Edit'), ['controller' => 'Users', 'action' => 'edit', $users->id]) ?>
-					<?= $this->Form->postLink(__('Delete'), ['controller' => 'Users', 'action' => 'delete', $users->id], ['confirm' => __('Are you sure you want to delete # {0}?', $users->id)]) ?>
-				</td>
-			</tr>
-			<?php endforeach; ?>
-		</table>
-		<?php endif; ?>
-	</div>
-	<div class="related">
-		<h4><?= __('Related Payrolls') ?></h4>
-		<?php if (!empty($job->payrolls)): ?>
-		<table cellpadding="0" cellspacing="0">
-			<tr>
-				<th scope="col"><?= __('Id') ?></th>
-				<th scope="col"><?= __('Date Worked') ?></th>
-				<th scope="col"><?= __('Time Start') ?></th>
-				<th scope="col"><?= __('Time End') ?></th>
-				<th scope="col"><?= __('Hours Worked') ?></th>
-				<th scope="col"><?= __('Is Paid') ?></th>
-				<th scope="col"><?= __('User Id') ?></th>
-				<th scope="col"><?= __('Job Id') ?></th>
-				<th scope="col"><?= __('Created At') ?></th>
-				<th scope="col"><?= __('Updated At') ?></th>
-				<th scope="col" class="actions"><?= __('Actions') ?></th>
-			</tr>
-			<?php foreach ($job->payrolls as $payrolls): ?>
-			<tr>
-				<td><?= h($payrolls->id) ?></td>
-				<td><?= h($payrolls->date_worked) ?></td>
-				<td><?= h($payrolls->time_start) ?></td>
-				<td><?= h($payrolls->time_end) ?></td>
-				<td><?= h($payrolls->hours_worked) ?></td>
-				<td><?= h($payrolls->is_paid) ?></td>
-				<td><?= h($payrolls->user_id) ?></td>
-				<td><?= h($payrolls->job_id) ?></td>
-				<td><?= h($payrolls->created_at) ?></td>
-				<td><?= h($payrolls->updated_at) ?></td>
-				<td class="actions">
-					<?= $this->Html->link(__('View'), ['controller' => 'Payrolls', 'action' => 'view', $payrolls->id]) ?>
-					<?= $this->Html->link(__('Edit'), ['controller' => 'Payrolls', 'action' => 'edit', $payrolls->id]) ?>
-					<?= $this->Form->postLink(__('Delete'), ['controller' => 'Payrolls', 'action' => 'delete', $payrolls->id], ['confirm' => __('Are you sure you want to delete # {0}?', $payrolls->id)]) ?>
-				</td>
-			</tr>
-			<?php endforeach; ?>
-		</table>
-		<?php endif; ?>
-	</div>
+<h4><?= $job->name ?></h4>
+<?php
+	$locHref = "https://www.google.com/maps/search/?api=1&query=";
+	$locHref .= urlencode($job->location);
+?>
+<table class="table">
+	<tr><th>Category</th><td><?= $job->category ?></td></tr>
+	<tr><th>Description</th><td><?= $job->detail ?></td></tr>
+	<tr><th>Start Date</th><td><?= $job->date_start->format("m/d/Y") ?></td></tr>
+	<tr><th>End Date</th><td><?= $job->date_end->format("m/d/Y") ?></td></tr>
+	<tr><th>Time(s)</th><td><?= $job->time_string ?></td></tr>
+	<tr><th>Payroll Due Date</th><td><?= $job->due_payroll_submitted->format("m/d/Y") ?></td></tr>
+	<tr><th>Paycheck Date</th><td><?= $job->due_payroll_paid->format("m/d/Y") ?></td></tr>
+	<tr><th>Your Status</th><td><?= (empty($yourStat) ? "not specified" : ($yourStat->is_available ? "Interested, " : "Unavailable, ") . ($yourStat->is_scheduled ? "and Scheduled" : "and NOT scheduled")) ?></td></tr>
+	<?php if ( $WhoAmI ) : ?>
+		<?php 
+			$totNeed = 0;
+			$needed = [];
+			foreach ( $job->roles as $role ) {
+				$needed[] = $role->title . " <em>(" . $role->_joinData->number_needed . ")</em>";
+				$totNeed += $role->_joinData->number_needed;
+			}
+		?>
+		<tr><th>Staff Required - <?= $totNeed ?></th><td><?= join($needed, ", "); ?></td></tr>
+
+		<?php
+			$totAss = 0;
+			$assed  = [];
+			$assTot = [];
+			$names  = [];
+			foreach ( $job->users_sch as $user ) {
+				$totAss += 1;
+				if ( array_key_exists($user->id, $assTot) ) {
+					$assTot[$user->id] += 1;
+				} else {
+					$assTot[$user->id] = 1;
+					$names[$user->id] = $user->first . " " . $user->last;
+				}
+			}
+
+			foreach ( $assTot as $key => $value ) {
+				$assed[] = "<a class='text-info' href='/users/view/" . $key . "'>" . $names[$key] . (($value > 1 ) ? " <em>(".$value.")</em>":"") . "</a>";
+			}
+		?>
+		<tr><th>Staff Assigned - <?= $totAss ?> </th><td><?= join($assed, ", "); ?></td></tr>
+
+		<?php
+			$totAss = 0;
+			$assed  = [];
+			$assTot = [];
+			$names  = [];
+			foreach ( $job->users_int as $user ) {
+				$totAss += 1;
+				if ( array_key_exists($user->id, $assTot) ) {
+					$assTot[$user->id] += 1;
+				} else {
+					$assTot[$user->id] = 1;
+					$names[$user->id] = $user->first . " " . $user->last;
+				}
+			}
+
+			foreach ( $assTot as $key => $value ) {
+				$assed[] = (( $WhoAmI ) ? "<a class='text-info' href='/users/view/" . $key . "'>" : "" ) . $names[$key] . (($value > 1 ) ? " <em>(".$value.")</em>":"") . (( $WhoAmI ) ? "</a>" : "" );
+			}
+		?>
+		<tr><th>Staff Available - <?= $totAss ?> </th><td><?= join($assed, ", "); ?></td></tr>
+	<?php endif; ?>
+	<tr><th>Location</th><td><?= $job->location ?></td></tr>
+</table>
+
+<div class="mt-4 mb-2" style="border-bottom: 1px dashed #ccc;"><h4>Map</h4></div>
+<div class="embed-responsive embed-responsive-4by3">
+<div id="map-container" class="embed-responsive-item">
+<div id="map">
+<div class="mapouter"><div class="gmap_canvas"><iframe width="600" height="500" id="gmap_canvas" src="https://maps.google.com/maps?q=<?=urlencode($job->location)?>&t=&z=17&ie=UTF8&iwloc=&output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>Google Maps Generator by <a href="https://www.embedgooglemap.net">embedgooglemap.net</a></div></div>
 </div>
+</div> 
+</div>`
+
+
+
+
+		

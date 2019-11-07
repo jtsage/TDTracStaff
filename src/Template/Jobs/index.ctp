@@ -11,7 +11,7 @@
 <p>Full list of jobs. Regular users see open, active jobs (upcoming).  Administrators see the full history of jobs. Active jobs allow changes to needed or assigned staff. Inactive, Open jobs allow changes to payroll only.  Closed jobs provide historical data only. </p>
 <?php endif; ?>
 
-<?php if ( $WhoAmI ) : ?>
+<?php if ( $WhoAmI && empty($subtitle) ) : ?>
 <?= $this->Html->link(
 	$this->Pretty->iconAdd("") . 'Add New Job',
 	['action' => 'add'],
@@ -47,44 +47,96 @@
 			<li>This job starts on <?= $job->date_start->format("m/d/Y") ?>, and ends on <?= $job->date_end->format("m/d/Y") ?></li>
 			<li>Payroll for this show must be submitted on or before <?= $job->due_payroll_submitted->format("m/d/Y") ?>, and will be included on paychecks cut on <?= $job->due_payroll_paid->format("m/d/Y") ?></li>
 			<li>This job is <?= $job->is_open ? "OPEN" : "CLOSED" ?> and <?= $job->is_active ? "ACTIVE" : "IN-ACTIVE" ?></li>
-			<li><strong>Staff Required: </strong>
-			<?php
+			<?php 
+				$totNeed = 0;
 				$needed = [];
 				foreach ( $job->roles as $role ) {
 					$needed[] = $role->title . " <em>(" . $role->_joinData->number_needed . ")</em>";
+					$totNeed += $role->_joinData->number_needed;
 				}
-				echo join($needed, ", ");
 			?>
-			</li>
-			<li><strong>Staff Assigned: </strong></li>
+			<li><strong>Staff Required - <?= $totNeed ?>: </strong><?= join($needed, ", "); ?></li>
+			<?php
+				$totAss = 0;
+				$assed  = [];
+				$assTot = [];
+				$names  = [];
+				foreach ( $job->users_sch as $user ) {
+					$totAss += 1;
+					if ( array_key_exists($user->id, $assTot) ) {
+						$assTot[$user->id] += 1;
+					} else {
+						$assTot[$user->id] = 1;
+						$names[$user->id] = $user->first . " " . $user->last;
+					}
+				}
+
+				foreach ( $assTot as $key => $value ) {
+				 	$assed[] = (( $WhoAmI ) ? "<a class='text-info' href='/users/view/" . $key . "'>" : "" ) . $names[$key] . (($value > 1 ) ? " <em>(".$value.")</em>":"") . (( $WhoAmI ) ? "</a>" : "" );
+				}
+			?>
+			<li><strong>Staff Assigned - <?= $totAss ?>: </strong><?= join($assed, ", "); ?></li>
+			<?php if ( $WhoAmI ) : ?>
+			<?php
+				$totAss = 0;
+				$assed  = [];
+				$assTot = [];
+				$names  = [];
+				foreach ( $job->users_int as $user ) {
+					$totAss += 1;
+					if ( array_key_exists($user->id, $assTot) ) {
+						$assTot[$user->id] += 1;
+					} else {
+						$assTot[$user->id] = 1;
+						$names[$user->id] = $user->first . " " . $user->last;
+					}
+				}
+
+				foreach ( $assTot as $key => $value ) {
+				 	$assed[] = (( $WhoAmI ) ? "<a class='text-info' href='/users/view/" . $key . "'>" : "" ) . $names[$key] . (($value > 1 ) ? " <em>(".$value.")</em>":"") . (( $WhoAmI ) ? "</a>" : "" );
+				}
+			?>
+			<li><strong>Staff Available - <?= $totAss ?>: </strong><?= join($assed, ", "); ?></li>
+			<?php endif; ?>
+
 		</ul>
 		</div><div class="col-md-3">
 		<div class="btn-group-vertical w-100">
 		<?= $this->Html->link(
-			$this->Pretty->iconView($job->id) . 'View',
+			$this->Pretty->iconView($job->id) . 'View Detail',
 			['action' => 'view', $job->id],
-			['escape' => false, 'class' => 'btn btn-outline-dark']
+			['escape' => false, 'class' => 'btn btn-sm btn-outline-dark']
+		) ?>
+		<?= $this->Html->link(
+			$this->Pretty->iconTUp($job->id) . 'My Availability',
+			['action' => 'available', $job->id],
+			['escape' => false, 'class' => 'btn btn-sm btn-outline-warning']
 		) ?>
 		<?php if ($WhoAmI) : ?>
 		<?= $this->Html->link(
+			$this->Pretty->iconPrint($job->id) . 'Print Scheduled',
+			['action' => 'print', $job->id],
+			['escape' => false, 'class' => 'btn btn-sm btn-outline-dark']
+		) ?>
+		<?= $this->Html->link(
 			$this->Pretty->iconSNeed($job->id) . 'Staff Needed',
 			['action' => 'staffNeed', $job->id],
-			['escape' => false, 'class' => 'btn btn-outline-info']
+			['escape' => false, 'class' => 'btn btn-sm btn-outline-info']
 		) ?>
 		<?= $this->Html->link(
 			$this->Pretty->iconSAssign($job->id) . 'Staff Asssigned',
 			['action' => 'staffAssign', $job->id],
-			['escape' => false, 'class' => 'btn btn-outline-info']
+			['escape' => false, 'class' => 'btn btn-sm btn-outline-info']
 		) ?>
 		<?= $this->Html->link(
 			$this->Pretty->iconEdit($job->id) . 'Edit',
 			['action' => 'edit', $job->id],
-			['escape' => false, 'class' => 'btn btn-outline-success']
+			['escape' => false, 'class' => 'btn btn-sm btn-outline-success']
 		) ?>
 		<?= $this->Form->postLink(
 			$this->Pretty->iconDelete($job->id) . 'Remove',
 			['action' => 'delete', $job->id],
-			['escape' => false, 'class' => 'btn btn-outline-primary', 'confirm' => 'Are you sure you want to delete job (ALL!!)?']
+			['escape' => false, 'class' => 'btn btn-sm btn-outline-primary', 'confirm' => 'Are you sure you want to delete job (ALL!!)?']
 		) ?>
 		<?php endif; ?>
 		</div></div></div>

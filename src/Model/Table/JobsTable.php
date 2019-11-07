@@ -49,7 +49,26 @@ class JobsTable extends Table
 		$this->belongsToMany('Users', [
 			'foreignKey' => 'job_id',
 			'targetForeignKey' => 'user_id',
-			'joinTable' => 'users_jobs'
+			'joinTable' => 'users_jobs',
+		]);
+
+		$this->belongsToMany('UsersScheduled', [
+			'foreignKey' => 'job_id',
+			'targetForeignKey' => 'user_id',
+			'joinTable' => 'users_jobs',
+			'className' => 'Users',
+			'propertyName' => "users_sch",
+			'conditions' => ["UsersJobs.is_scheduled" => 1],
+			'sort' => ["last" => "ASC", "first" => "ASC"]
+		]);
+		$this->belongsToMany('UsersInterested', [
+			'foreignKey' => 'job_id',
+			'targetForeignKey' => 'user_id',
+			'joinTable' => 'users_jobs',
+			'className' => 'Users',
+			'propertyName' => "users_int",
+			'conditions' => ["UsersJobs.is_available" => 1],
+			'sort' => ["last" => "ASC", "first" => "ASC"]
 		]);
 		$this->addBehavior('Timestamp', [
 			'events' => [

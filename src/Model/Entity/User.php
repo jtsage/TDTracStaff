@@ -48,7 +48,8 @@ class User extends Entity
         'updated_at' => true,
         'reset_hash' => true,
         'reset_hash_time' => true,
-        'verify_hash' => true
+        'verify_hash' => true,
+        'phone' => true
     ];
 
     protected function _setPassword($password)

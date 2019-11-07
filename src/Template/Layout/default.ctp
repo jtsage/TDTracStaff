@@ -72,7 +72,15 @@ if ( $this->request->getParam('controller') == "Pages" ) {
 
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
 			<ul class="navbar-nav mr-auto">
-				<li class="nav-item <?= ($this->request->getParam('controller') == "Jobs" ? "active'":"") ?>"><a class="nav-link" href="/jobs/"><?= __("Jobs") ?></a></li>
+				<li class="nav-item <?= ($this->request->getParam('controller') == "Jobs" ? "active'":"") ?> dropdown">
+					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Jobs<span class="caret"></span></a>
+					<div class="dropdown-menu">
+						<a class="dropdown-item" href="/jobs/myjobs/">My Qualified Jobs</a>
+						<a class="dropdown-item" href="/jobs/mysched/">My Scheduled Jobs</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="/jobs/">All Jobs</a>
+					</div>
+				</li>
 				<li class="nav-item <?= ($this->request->getParam('controller') == "Payrolls" ? "active'":"") ?>"><a class="nav-link" href="/payrolls/"><?= __("Hours") ?></a></li>
 				<?= ($WhoAmI) ? "<li class='nav-item" . ($this->request->getParam('controller') == "Roles" ? " class='active'":"") . "'><a class=\"nav-link\" href=\"/roles/\">Worker Titles</a></li>" : "" ?>
 				<li class="nav-item <?= ($this->request->getParam('controller') == "Users" ? "class='active'":"") ?>"><a class="nav-link" href="/users/"><?= ($WhoAmI) ? __("Users") : __("My Account") ?></a></li>

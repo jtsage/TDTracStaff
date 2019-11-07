@@ -6,6 +6,7 @@
 			echo $this->Form->input('username', ['label' => __("E-Mail Address")]);
 			echo $this->Form->input('first', ['label' => __("First Name")]);
 			echo $this->Form->input('last', ['label' => __("Last Name")]);
+			echo $this->Form->input('phone', ['label' => __("Phone Number"), "help" => "###-###-#### preferred"]);
 		?>
 		
 		<label>Switches</label>

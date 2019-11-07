@@ -68,6 +68,10 @@ class PrettyHelper extends Helper
 	{
 		return PrettyHelper::makeIcon($name, 'check', __('Mark Paid'));
 	}
+	public function iconPrint($name)
+	{
+		return PrettyHelper::makeIcon($name, 'print', __('Print'));
+	}
 	public function iconLock($name)
 	{
 		return PrettyHelper::makeIcon($name, 'lock', __('Change Password'));

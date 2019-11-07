@@ -12,8 +12,9 @@
 		<?= $this->Html->tableHeaders([
 			$this->Paginator->sort('username', __("E-Mail")),
 			$this->Paginator->sort('last', __("Full Name")),
+			$this->Paginator->sort('phone', __("Phone")),
 			$this->Paginator->sort('is_active', __("Active")),
-			$this->Paginator->sort('is_admin', __("Administrator"), ['direction' => 'desc']),
+			$this->Paginator->sort('is_admin', __("Admin"), ['direction' => 'desc']),
 			$this->Paginator->sort('last_login_at', __("Last Login"), ['direction' => 'desc']),
 			[__('Actions') => ['class' => 'text-center']]
 		]); ?>
@@ -25,6 +26,7 @@
 			[
 				h($user->username),
 				h($user->first) . " " .  h($user->last),
+				h($user->phone),
 				$this->Bool->prefYes($user->is_active),
 				$this->Bool->prefNo($user->is_admin) ,
 				$user->last_login_at->i18nFormat(null, $tz),

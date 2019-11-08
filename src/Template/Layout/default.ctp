@@ -79,6 +79,7 @@ if ( $this->request->getParam('controller') == "Pages" ) {
 						<a class="dropdown-item" href="/jobs/mysched/">My Scheduled Jobs</a>
 						<div class="dropdown-divider"></div>
 						<a class="dropdown-item" href="/jobs/">All Jobs</a>
+						<a class="dropdown-item" href="/jobs/calendar/">Calendar</a>
 					</div>
 				</li>
 				<li class="nav-item <?= ($this->request->getParam('controller') == "Payrolls" ? "active'":"") ?>"><a class="nav-link" href="/payrolls/"><?= __("Hours") ?></a></li>

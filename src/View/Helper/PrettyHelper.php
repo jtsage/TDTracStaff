@@ -108,6 +108,14 @@ class PrettyHelper extends Helper
 	{
 		return PrettyHelper::makeIcon($name, 'power-off', __('Login'));
 	}
+	public function iconNext($name)
+	{
+		return PrettyHelper::makeIcon($name, 'forward', __('Next'));
+	}
+	public function iconPrev($name)
+	{
+		return PrettyHelper::makeIcon($name, 'backward', __('Previous'));
+	}
 	public function helpButton($icon, $color = 'default', $name, $desc) {
 		return '<a href="#" class="btn btn-' . $color . ' btn-sm"><i class="fa fa-fw fa-lg fa-' . $icon . '" aria-hidden="true"></i></a>' .
 		' <strong>' . $name . '</strong>: ' . $desc;

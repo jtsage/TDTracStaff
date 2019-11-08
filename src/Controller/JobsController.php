@@ -3,6 +3,9 @@ namespace App\Controller;
 
 use App\Controller\AppController;
 use Cake\ORM\Query;
+use Cake\I18n\Date;
+use Cake\Chronos\ChronosInterface;
+use Cake\Chronos\Chronos;
 
 /**
  * Jobs Controller
@@ -643,5 +646,124 @@ class JobsController extends AppController
 			$this->Flash->error(__('Something went wrong. Please, try again.'));
 		}
 		$this->redirect(['action' => 'available', $jobId]);
+	}
+
+
+
+	/*
+	                     oooo                              .o8                     
+	                     `888                             "888                     
+	  .ooooo.   .oooo.    888   .ooooo.  ooo. .oo.    .oooo888   .oooo.   oooo d8b 
+	 d88' `"Y8 `P  )88b   888  d88' `88b `888P"Y88b  d88' `888  `P  )88b  `888""8P 
+	 888        .oP"888   888  888ooo888  888   888  888   888   .oP"888   888     
+	 888   .o8 d8(  888   888  888    .o  888   888  888   888  d8(  888   888     
+	 `Y8bod8P' `Y888""8o o888o `Y8bod8P' o888o o888o `Y8bod88P" `Y888""8o d888b    
+	*/
+	public function calendar ( $year = null, $month = null )
+	{
+		if ( is_null($year) && is_null($month) ) {
+			$year = date("Y");
+			$month = date("m");
+		}
+
+		$dateView = [];
+
+		$dateView["nextLink"] = "/jobs/calendar/" . (( $month == 12 ) ? $year+1 : $year) . "/" . (( $month == 12 ) ? 1 : $month+1) . "/";
+		$dateView["prevLink"] = "/jobs/calendar/" . (( $month == 1 ) ? $year-1 : $year) . "/" . (( $month == 1 ) ? 12 : $month-1) . "/";
+
+		$calViewSrt  = new Date($year . "-" . $month . "-" . 1);
+		$calViewEnd  = new Date($year . "-" . $month . "-" . 1);
+		$calViewInfo = new Date($year . "-" . $month . "-" . 1);
+
+		$calViewSrt->setWeekEndsAt(6);
+		$calViewSrt->setWeekStartsAt(7);
+		$calViewSrt = $calViewSrt->startOfWeek();
+
+		$calViewEnd->setWeekEndsAt(6);
+		$calViewEnd->setWeekStartsAt(7);
+		$calViewEnd = $calViewEnd->addMonth(1)->subDays(1);
+		$calViewEnd = $calViewEnd->endOfWeek();
+
+		$weeksToShow = ($calViewSrt->diffInDays($calViewEnd) + 1) / 7;
+
+		$currentDate = $calViewSrt;
+
+		$calData = [];
+
+		$jobs = $this->Jobs->find("all")
+			->contain([
+				"UsersBoth" => function (Query $q) {
+					return $q->where(['UsersJobs.user_id' => $this->Auth->user("id")]);
+				}
+			])
+			->where([
+				"is_active" => 1,
+				"is_open" => 1,
+				"OR" => [
+					[
+						"date_start >" => $calViewSrt,
+						"date_start <" => $calViewEnd
+					], [
+						"date_end >" => $calViewSrt,
+						"date_end <" => $calViewEnd
+					] 
+				]
+			])
+			->order(["name" => "ASC"]);
+
+		$maxSize = 2;
+
+		for ( $cWeek = 1; $cWeek <= $weeksToShow; $cWeek++ ) {
+			$weekData = [];
+			for ( $cDay = 1; $cDay < 8; $cDay++ ) {
+				$eventsThisDay = [];
+				$OisInt = false;
+				$OisSch = false;
+				$thisSize = 0;
+
+				foreach ( $jobs as $job ) {
+					if ( $currentDate->between($job->date_start, $job->date_end) ) {
+						$isInt = false;
+						$isSch = false;
+						$thisSize++;
+
+						foreach ( $job->users_both as $stats ) {
+							if ( $stats->_joinData->is_available ) { $isInt = true; $OisInt = true; }
+							if ( $stats->_joinData->is_scheduled ) { $isSch = true; $OisSch = true; }
+						}
+
+						$eventsThisDay[] = [
+							"id"       => $job->id,
+							"name"     => $job->name,
+							"detail"   => $job->detail,
+							"category" => $job->category,
+							"location" => $job->location,
+							"status"   => ( ($isSch) ? 2 : ( ($isInt) ? 1 : 0 ) )
+						];
+					}
+				}
+				$weekData[] = [
+					'date'      => $currentDate->format("Y-m-d"),
+					'day'       => $currentDate->format("j"),
+					'events'    => $eventsThisDay,
+					'thisMonth' => ($currentDate->format("n") == $month),
+					'ovrStatus' => ( ($OisSch) ? 2 : ( ($OisInt) ? 1 : 0 ) )
+				];
+				$currentDate = $currentDate->addDay();
+				if ( $thisSize > $maxSize ) { $maxSize = $thisSize; }
+			}
+			$calData[] = $weekData;
+		}
+
+		$this->set('crumby', [
+			["/", __("Dashboard")],
+			["/jobs/", __("Jobs")],
+			["/jobs/calendar/", "Calendar"],
+			[null, $calViewInfo->format("F Y")]
+		]);
+		$this->set('maxSize', $maxSize);
+		$this->set('calViewInfo', $calViewInfo);
+		$this->set('calData', $calData);
+		$this->set('dateView', $dateView);
 	}
 }

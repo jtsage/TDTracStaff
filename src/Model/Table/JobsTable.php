@@ -70,6 +70,15 @@ class JobsTable extends Table
 			'conditions' => ["UsersJobs.is_available" => 1],
 			'sort' => ["last" => "ASC", "first" => "ASC"]
 		]);
+		$this->belongsToMany('UsersBoth', [
+			'foreignKey' => 'job_id',
+			'targetForeignKey' => 'user_id',
+			'joinTable' => 'users_jobs',
+			'className' => 'Users',
+			'propertyName' => "users_both",
+			'conditions' => ["OR" => [ "UsersJobs.is_scheduled" => 1, "UsersJobs.is_available" => 1]],
+			'sort' => ["last" => "ASC", "first" => "ASC"]
+		]);
 		$this->addBehavior('Timestamp', [
 			'events' => [
 				'Model.beforeSave' => [

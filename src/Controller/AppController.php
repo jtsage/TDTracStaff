@@ -27,38 +27,51 @@ use Cake\Controller\Controller;
 class AppController extends Controller
 {
 
-    /**
-     * Initialization hook method.
-     *
-     * Use this method to add common initialization code like loading components.
-     *
-     * @return void
-     */
-    public function initialize()
-    {
-        parent::initialize();
+	/**
+	 * Initialization hook method.
+	 *
+	 * Use this method to add common initialization code like loading components.
+	 *
+	 * @return void
+	 */
+	public $CONFIG_DATA = "";
+	public function initialize()
+	{
+		parent::initialize();
 
-        $this->loadComponent('RequestHandler', [
-            'enableBeforeRedirect' => false,
-        ]);
-        $this->loadComponent('Flash');
-        $this->loadComponent('Auth', [
-            'authenticate' => [
-                'Form' => [
-                    'fields' => ['username' => 'username', 'password' => 'password']
-                    //'finder' => 'auth'
-                ]
-            ],
-            'loginAction' => [
-                'controller' => 'Users',
-                'action' => 'login'
-            ]
-        ]);
+		$this->loadComponent('RequestHandler', [
+			'enableBeforeRedirect' => false,
+		]);
+		$this->loadComponent('Flash');
+		$this->loadComponent('Auth', [
+			'authenticate' => [
+				'Form' => [
+					'fields' => ['username' => 'username', 'password' => 'password']
+					//'finder' => 'auth'
+				]
+			],
+			'loginAction' => [
+				'controller' => 'Users',
+				'action' => 'login'
+			]
+		]);
 
-        // Allow the display action so our pages controller
-        // continues to work.
-        //$this->Auth->allow(['display']);
+		// Allow the display action so our pages controller
+		// continues to work.
+		//$this->Auth->allow(['display']);
 
-        $this->set('WhoAmI', $this->Auth->user('is_admin'));
-    }
+		$this->set('WhoAmI', $this->Auth->user('is_admin'));
+
+		// Load the config from the database.
+		$this->loadModel("AppConfigs");
+
+		$config = $this->AppConfigs->find('list', [
+			'keyField' => 'key_name',
+			'valueField' => 'value_long'
+		]);
+		$configArr = $config->toArray();
+
+		$this->set("CONFIG", $configArr);
+		$this->CONFIG_DATA = $configArr;
+	}
 }

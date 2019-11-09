@@ -19,6 +19,24 @@
 ) ?>
 <?php endif; ?>
 
+<div class="btn-group btn-group-sm-vertical w-100 mb-3">
+<?= $this->Html->link(
+	$this->Pretty->iconView("") . 'View All Jobs ',
+	['action' => 'index'],
+	['escape' => false, 'class' => 'w-100 btn btn-outline-dark']
+) ?>
+<?= $this->Html->link(
+	$this->Pretty->iconView("") . 'View Qualifying Jobs ',
+	['action' => 'myjobs'],
+	['escape' => false, 'class' => 'w-100 btn btn-outline-dark']
+) ?>
+<?= $this->Html->link(
+	$this->Pretty->iconView("") . 'View Scheduled Jobs',
+	['action' => 'mysched'],
+	['escape' => false, 'class' => 'w-100 btn btn-outline-dark']
+) ?>
+</div>
+
 <div class="mb-2 mt-4" style="border-bottom: 1px dashed #ccc;"><h4>Sort Order</h4></div>
 <ul class="breadcrumb">
 	<li class="breadcrumb-item"><?= $this->Paginator->sort('name') ?></li>
@@ -37,9 +55,9 @@
 		$locHref .= urlencode($job->location);
 	?>
 	<div class="border mb-2 p-3">
-		<h5><?= $job->name ?></h5>
 		<div class="row">
 		<div class="col-md-9">
+		<h5><?= $job->name ?></h5>
 		<ul>
 			<li><em><?= h($job->category) ?></em></li>
 			<li><?= h($job->detail) ?></li>
@@ -112,6 +130,11 @@
 			['action' => 'available', $job->id],
 			['escape' => false, 'class' => 'btn btn-sm btn-outline-warning']
 		) ?>
+		<?= $this->Html->link(
+			$this->Pretty->iconUnpaid($job->id) . 'My Hours',
+			['controller' => 'hours', 'action' => 'add-to-job', $job->id],
+			['escape' => false, 'class' => 'btn btn-sm btn-outline-warning']
+		) ?>
 		<?php if ($WhoAmI) : ?>
 		<?= $this->Html->link(
 			$this->Pretty->iconPrint($job->id) . 'Print Scheduled',
@@ -124,7 +147,7 @@
 			['escape' => false, 'class' => 'btn btn-sm btn-outline-info']
 		) ?>
 		<?= $this->Html->link(
-			$this->Pretty->iconSAssign($job->id) . 'Staff Asssigned',
+			$this->Pretty->iconSAssign($job->id) . 'Staff Assigned',
 			['action' => 'staffAssign', $job->id],
 			['escape' => false, 'class' => 'btn btn-sm btn-outline-info']
 		) ?>

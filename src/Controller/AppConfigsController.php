@@ -30,6 +30,10 @@ class AppConfigsController extends AppController
 		}
 		$appConfigs = $this->paginate($this->AppConfigs);
 
+		$this->set('crumby', [
+			["/", __("Dashboard")],
+			[null, __("Application Configuration")]
+		]);
 		$this->set(compact('appConfigs'));
 	}
 
@@ -53,7 +57,12 @@ class AppConfigsController extends AppController
 		$appConfig = $this->AppConfigs->get($id, [
 			'contain' => []
 		]);
-
+			
+		$this->set('crumby', [
+			["/", __("Dashboard")],
+			["/app-configs", __("Application Configuration")],
+			[null, $appConfig->key_name]
+		]);
 		$this->set('appConfig', $appConfig);
 	}
 
@@ -85,6 +94,11 @@ class AppConfigsController extends AppController
 			$this->Flash->error(__('The app config could not be saved. Please, try again.'));
 		}
 		$this->set(compact('appConfig'));
+		$this->set('crumby', [
+			["/", __("Dashboard")],
+			["/app-configs", __("Application Configuration")],
+			[null, "Add New - Be Careful!!"]
+		]);
 	}
 
 
@@ -117,5 +131,11 @@ class AppConfigsController extends AppController
 			$this->Flash->error(__('The app config could not be saved. Please, try again.'));
 		}
 		$this->set(compact('appConfig'));
+		$this->set('crumby', [
+			["/", __("Dashboard")],
+			["/app-configs", __("Application Configuration")],
+			["/app-configs/" . $appConfig->id, $appConfig->key_name],
+			[null, "Edit Value"]
+		]);
 	}
 }

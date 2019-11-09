@@ -10,7 +10,3 @@
 	<?= $this->Form->button($this->Pretty->iconSave("") . __('Set Password'), ["class" => "w-100 btn-lg btn-outline-success"]) ?>
 	<?= $this->Form->end() ?>
 </div>
-
-<?= $this->Pretty->helpMeStart(__('Set New Password')); ?>
-<p><?= __("This display allows you change your forgotten password."); ?></p>
-<?= $this->Pretty->helpMeEnd(); ?>

@@ -10,7 +10,3 @@
 	<?= $this->Form->button($this->Pretty->iconLock("") . __('Change Password'), ["class" => "w-100 btn-lg btn-outline-success"]) ?>
 	<?= $this->Form->end() ?>
 </div>
-
-<?= $this->Pretty->helpMeStart(__('Change Password')); ?>
-<p><?= __("This display allows you change your password. If you forget your password, you can reset it at the login screen via e-mail"); ?></p>
-<?= $this->Pretty->helpMeEnd(); ?>

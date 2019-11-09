@@ -99,7 +99,7 @@ class UsersController extends AppController
 				}
 
 				if ( ! $this->Auth->user('is_active')) {
-					$this->Flash->error(__("Your account is disabled, please contact your system adminitrator"));
+					$this->Flash->error(__("Your account is disabled, please contact your system administrator"));
 					return $this->redirect($this->Auth->logout());
 				}
 
@@ -189,11 +189,7 @@ class UsersController extends AppController
 			$this->Flash->error(__('You may not add users'));
 			return $this->redirect(['action' => 'view', $this->Auth->user('id')]);
 		}
-		$this->loadModel("AppConfigs");
-
-		$welcomeEmail = $this->AppConfigs->find("all")->where(["key_name" => "welcome-email"]);
-		$this->set("welMail", $welcomeEmail->first());
-
+		$this->set("C2", $this->CONFIG_DATA);
 		$user = $this->Users->newEntity();
 		if ($this->request->is('post')) {
 			$user = $this->Users->patchEntity($user, $this->request->getData());
@@ -208,7 +204,7 @@ class UsersController extends AppController
 			}
 			if ( $this->request->getData('welcomeEmailSendCopy') ) {
 				$email = new Email('default');
-				$email->setTo(CINFO['adminmail'])
+				$email->setTo(rtrim($this->CONFIG_DATA["admin-email"]))
 					->setSubject('Welcome to TDTracStaff: ' . $this->request->getData('first') . " " .  $this->request->getData('last'));
 				$email->send(preg_replace("/\n/", "<br />\n", $this->request->getData('welcomeEmail')));
 			}
@@ -516,7 +512,7 @@ class UsersController extends AppController
 				$email->setTo(rtrim($user->username))
 					->setSubject('Welcome to TheaterBio');
 
-				$email->send("Good day!<br /><br />Welcome to TheaterBio digital bio / headshot system.<br /><br />Please follow the link below to active your account:<br /><br />http://bio.pittsburghmusicals.com/users/verify/" . $user->verify_hash . "<br /><br />Thank you!");
+				$email->send("Good day!<br /><br />Welcome to TheaterBio digital bio / head-shot system.<br /><br />Please follow the link below to active your account:<br /><br />http://bio.pittsburghmusicals.com/users/verify/" . $user->verify_hash . "<br /><br />Thank you!");
 
 				return $this->redirect(['action' => 'login']);
 			} else {
@@ -669,8 +665,8 @@ class UsersController extends AppController
 				"user_id" => $id
 			]);
 
-			$ents = $this->UsersRoles->newEntities($inserts);
-			$rslt = $this->UsersRoles->saveMany($ents);
+			$entities = $this->UsersRoles->newEntities($inserts);
+			$result   = $this->UsersRoles->saveMany($entities);
 			$this->Flash->success("Staff training updated");
 			$this->redirect(["action" => "view", $id]);
 		}

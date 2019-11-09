@@ -18,3 +18,4 @@
 	<?= $this->Form->button($this->Pretty->iconAdd("") . __('Add Setting'), ["class" => "w-100 btn-lg btn-outline-success"]) ?>
 	<?= $this->Form->end() ?>
 </div>
+<p><strong>WARNING: </strong>It is intentionally difficult to add new keys.  You can royally screw up the running system by adding values needlessly</p>

@@ -6,6 +6,40 @@
 ?>
 
 <h4><?= $job->name ?></h4>
+<div class="btn-group w-100 mb-2">
+<?= $this->Html->link(
+	$this->Pretty->iconTUp($job->id) . 'My Availability',
+	['action' => 'available', $job->id],
+	['escape' => false, 'class' => 'btn btn-sm btn-outline-warning']
+) ?>
+<?= $this->Html->link(
+	$this->Pretty->iconUnpaid($job->id) . 'My Hours',
+	['controller' => 'hours', 'action' => 'add-to-job', $job->id],
+	['escape' => false, 'class' => 'btn btn-sm btn-outline-warning']
+) ?>
+<?php if ($WhoAmI) : ?>
+<?= $this->Html->link(
+	$this->Pretty->iconPrint($job->id) . 'Print Scheduled',
+	['action' => 'print', $job->id],
+	['escape' => false, 'class' => 'btn btn-sm btn-outline-dark']
+) ?>
+<?= $this->Html->link(
+	$this->Pretty->iconSNeed($job->id) . 'Staff Needed',
+	['action' => 'staffNeed', $job->id],
+	['escape' => false, 'class' => 'btn btn-sm btn-outline-info']
+) ?>
+<?= $this->Html->link(
+	$this->Pretty->iconSAssign($job->id) . 'Staff Assigned',
+	['action' => 'staffAssign', $job->id],
+	['escape' => false, 'class' => 'btn btn-sm btn-outline-info']
+) ?>
+<?= $this->Html->link(
+	$this->Pretty->iconEdit($job->id) . 'Edit',
+	['action' => 'edit', $job->id],
+	['escape' => false, 'class' => 'btn btn-sm btn-outline-success']
+) ?>
+<?php endif; ?>
+</div>
 <?php
 	$locHref = "https://www.google.com/maps/search/?api=1&query=";
 	$locHref .= urlencode($job->location);
@@ -79,7 +113,7 @@
 <div class="embed-responsive embed-responsive-4by3">
 <div id="map-container" class="embed-responsive-item">
 <div id="map">
-<div class="mapouter"><div class="gmap_canvas"><iframe width="600" height="500" id="gmap_canvas" src="https://maps.google.com/maps?q=<?=urlencode($job->location)?>&t=&z=17&ie=UTF8&iwloc=&output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>Google Maps Generator by <a href="https://www.embedgooglemap.net">embedgooglemap.net</a></div></div>
+<div><div><iframe width="600" height="500" id="map_canvas" src="https://maps.google.com/maps?q=<?=urlencode($job->location)?>&t=&z=17&ie=UTF8&iwloc=&output=embed" frameborder="0" scrolling="no"></iframe></div></div>
 </div>
 </div> 
 </div>`

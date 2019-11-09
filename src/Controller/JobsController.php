@@ -268,9 +268,9 @@ class JobsController extends AppController
 				"job_id" => $id
 			]);
 
-			$ents = $this->JobsRoles->newEntities($inserts);
-			$rslt = $this->JobsRoles->saveMany($ents);
-			$this->Flash->success("Staff requirments updated");
+			$entities = $this->JobsRoles->newEntities($inserts);
+			$results = $this->JobsRoles->saveMany($entities);
+			$this->Flash->success("Staff requirements updated");
 			$this->redirect(["action" => "view", $id]);
 		}
 	}
@@ -735,9 +735,6 @@ class JobsController extends AppController
 						$eventsThisDay[] = [
 							"id"       => $job->id,
 							"name"     => $job->name,
-							"detail"   => $job->detail,
-							"category" => $job->category,
-							"location" => $job->location,
 							"status"   => ( ($isSch) ? 2 : ( ($isInt) ? 1 : 0 ) )
 						];
 					}
@@ -764,6 +761,51 @@ class JobsController extends AppController
 		$this->set('maxSize', $maxSize);
 		$this->set('calViewInfo', $calViewInfo);
 		$this->set('calData', $calData);
+		$this->set('dateView', $dateView);
+	}
+
+	public function day ( $date = null )
+	{
+		if ( is_null($date) ) {
+			$date = date("Y-m-d");
+		}
+
+		$realDate = new Date($date);
+
+		$nextDate = new Date($date);
+		$nextDate = $nextDate->addDay(1);
+		$prevDate = new Date($date);
+		$prevDate = $prevDate->subDay(1);
+
+		$dateView = [];
+
+		$dateView["nextLink"] = "/jobs/day/" . $nextDate->format("Y-m-d");
+		$dateView["prevLink"] = "/jobs/day/" . $prevDate->format("Y-m-d");
+
+		$calData = [];
+
+		$jobs = $this->Jobs->find("all")
+			->contain([
+				"UsersBoth" => function (Query $q) {
+					return $q->where(['UsersJobs.user_id' => $this->Auth->user("id")]);
+				}
+			])
+			->where([
+				"is_active" => 1,
+				"is_open" => 1,
+				"date_start <=" => $realDate,
+				"date_end >=" => $realDate
+			])
+			->order(["name" => "ASC"]);
+
+		$this->set('crumby', [
+			["/", __("Dashboard")],
+			["/jobs/", __("Jobs")],
+			["/jobs/calendar/" . $realDate->format("Y") . "/" . $realDate->format("n"), "Calendar"],
+			[null, $realDate->format("M j, Y")]
+		]);
+		$this->set('jobs', $jobs);
+		$this->set('date', $realDate);
 		$this->set('dateView', $dateView);
 	}
 }

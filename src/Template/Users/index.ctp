@@ -75,22 +75,3 @@
 		<p><?= $this->Paginator->counter() ?></p>
 	</div>
 </div>
-
-<?= $this->Pretty->helpMeStart(__('User List')); ?>
-<p><?= __('This system administrator only display shows users associated with this system. "Administrators" are users with super user privledges.  "Active" users can login and be assigned permission roles.') ?></p>
-<p><?= __('Near the title, you will see one button:') ?></p>
-<?= $this->Html->nestedList([
-		$this->Pretty->helpButton('plus', 'success', __('Plus Button'), __('Add a user to the system'))
-	], ['class' => 'list-group'], ['class' => 'list-group-item']
-); ?>
-
-<p><?= __('For each user, you will see four buttons:') ?></p>
-<?= $this->Html->nestedList([
-		$this->Pretty->helpButton('eye', 'default', __('Eye Button'), __('View a detailed user record')),
-		$this->Pretty->helpButton('lock', 'default', __('Lock Button'), __('Change the user\'s password')),
-		$this->Pretty->helpButton('pencil', 'default', __('Pencil Button'), __('Edit the user record')),
-		$this->Pretty->helpButton('trash', 'danger', __('Trash Button'), __('Permanantly remove the user from the system, and all historical data about them.  Very, very destructive - use with extream caution.'))
-	], ['class' => 'list-group'], ['class' => 'list-group-item']
-); ?>
-
-<?= $this->Pretty->helpMeEnd(); ?>

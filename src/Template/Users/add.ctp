@@ -3,21 +3,24 @@
 	<fieldset>
 		<legend><?= __('Add User') ?></legend>
 		<?php
-			echo $this->Form->input('username', ['label' => __("E-Mail Address")]);
-			echo $this->Form->input('password', ['label' => 'Password', 'data-minlength' => 6]);
+			echo $this->Form->input('username', ["autocomplete"=>"new-password", 'label' => __("E-Mail Address")]);
+			echo $this->Form->input('password', ["autocomplete"=>"new-password", 'label' => 'Password', 'data-minlength' => 6]);
 			echo $this->Form->input('first', ['label' => __("First Name")]);
 			echo $this->Form->input('last', ['label' => __("Last Name")]);
 			echo $this->Form->input('phone', ['label' => __("Phone Number"), "help" => "###-###-#### preferred"]);
 		?>
 		<?php
-			function doEet($matches) {
-				if ( isset(CINFO[$matches[1]]) ) {
-					return CINFO[$matches[1]];
-				}
-				return "!!Variable-Not-Defined!!";
-			}
-			$welcomeMailText = $welMail->value_long;
-			$welcomeMailText = preg_replace_callback("/{{(\w+)}}/m", "doEet", $welcomeMailText);
+			$welcomeMailText = $CONFIG['welcome-email'];
+			$welcomeMailText = preg_replace_callback(
+				"/{{([\w-]+)}}/m",
+				function ($matches) use ( $CONFIG ) {
+					if ( !empty($CONFIG[$matches[1]]) ) {
+						return $CONFIG[$matches[1]];
+					}
+					return "!!Variable-Not-Defined!!";
+				},
+				$welcomeMailText
+			);
 		?>
 		<div class="form-group">
 			<label for="welcomeEmail">Welcome E-Mail</label>

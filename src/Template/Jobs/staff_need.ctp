@@ -32,5 +32,5 @@
 		}
 	?>
 </fieldset>
-<?= $this->Form->button($this->Pretty->iconSave("") . __('Set Staff Requirments'), ["class" => "w-100 btn-lg btn-outline-success"]) ?>
+<?= $this->Form->button($this->Pretty->iconSave("") . __('Set Staff Requirements'), ["class" => "w-100 btn-lg btn-outline-success"]) ?>
 <?= $this->Form->end() ?>

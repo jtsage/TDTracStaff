@@ -15,9 +15,9 @@
 
 
 if ( $this->request->getParam('controller') == "Pages" ) {
-	$cakeDescription = 'TDTracStaff: the theater time and job tracker '. CINFO['longname'];
+	$cakeDescription = 'TDTracStaff: the theater time and job tracker '. $CONFIG['long-name'];
 } else {
-	$cakeDescription = 'TDTracStaff:' . CINFO['shortname'] . ":" . $this->fetch('title');
+	$cakeDescription = 'TDTracStaff:' . $CONFIG['short-name'] . ":" . $this->fetch('title');
 }
 
 ?>
@@ -65,7 +65,7 @@ if ( $this->request->getParam('controller') == "Pages" ) {
 	<body>
 
 	<nav class="navbar navbar-expand-lg navbar-light bg-light">
-		<a href="/" class="navbar-brand">TDTrac<span style="color:#C3593C">Staff</span><span style="color:#c39b1f"><?= CINFO['shortname']?></span></a>
+		<a href="/" class="navbar-brand">TDTrac<span style="color:#C3593C">Staff</span><span style="color:#c39b1f"><?= $CONFIG['short-name']?></span></a>
 		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
 		</button>
@@ -80,6 +80,7 @@ if ( $this->request->getParam('controller') == "Pages" ) {
 						<div class="dropdown-divider"></div>
 						<a class="dropdown-item" href="/jobs/">All Jobs</a>
 						<a class="dropdown-item" href="/jobs/calendar/">Calendar</a>
+						<a class="dropdown-item" href="/jobs/day/">Today</a>
 					</div>
 				</li>
 				<li class="nav-item <?= ($this->request->getParam('controller') == "Payrolls" ? "active'":"") ?>"><a class="nav-link" href="/payrolls/"><?= __("Hours") ?></a></li>
@@ -121,7 +122,7 @@ if ( $this->request->getParam('controller') == "Pages" ) {
 	
 	</div>
 	<footer class="d-print-none" style="padding-top: 20px; margin-top: 20px; border-top: 1px solid #e5e5e5;">
-		<p class="text-center text-muted"><?= __("TDTracStaff - the Theater time and job tracker") ?><br /><small>Site Administrator Contact: <a href="mailto:<?= CINFO['adminmail'] ?>"><?= CINFO['adminname'] ?></a></small></p>
+		<p class="text-center text-muted"><?= __("TDTracStaff - the Theater time and job tracker") ?><br /><small>Site Administrator Contact: <a href="mailto:<?= $CONFIG['admin-email'] ?>"><?= $CONFIG['admin-name'] ?></a></small></p>
 		<ul class="text-center list-inline text-muted d-print-none">
 			<li class="list-inline-item"><?= __('Currently v0.0.0a1') ?></li>
 			<li class="list-inline-item"><a href="https://github.com/jtsage/TDTracStaff">GitHub</a></li>

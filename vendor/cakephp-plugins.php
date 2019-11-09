@@ -9,6 +9,7 @@ return [
         'Gourmet/Email' => $baseDir . '/vendor/gourmet/email/',
         'Gourmet/Whoops' => $baseDir . '/vendor/gourmet/whoops/',
         'Josegonzalez/Upload' => $baseDir . '/vendor/josegonzalez/cakephp-upload/',
+        'Markdown' => $baseDir . '/vendor/ivanamat/cakephp3-markdown/',
         'Migrations' => $baseDir . '/vendor/cakephp/migrations/',
         'WyriHaximus/TwigView' => $baseDir . '/vendor/wyrihaximus/twig-view/'
     ]

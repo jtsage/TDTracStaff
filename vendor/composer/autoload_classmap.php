@@ -10,6 +10,8 @@ return array(
     'File_Iterator_Facade' => $vendorDir . '/phpunit/php-file-iterator/src/Facade.php',
     'File_Iterator_Factory' => $vendorDir . '/phpunit/php-file-iterator/src/Factory.php',
     'JsonException' => $vendorDir . '/symfony/polyfill-php73/Resources/stubs/JsonException.php',
+    'Markdown\\Parsedown\\Parsedown' => $vendorDir . '/ivanamat/cakephp3-markdown/Lib/Parsedown/Parsedown.php',
+    'Markdown\\Parsedown\\ParsedownExtra' => $vendorDir . '/ivanamat/cakephp3-markdown/Lib/Parsedown/ParsedownExtra.php',
     'Mobile_Detect' => $vendorDir . '/mobiledetect/mobiledetectlib/Mobile_Detect.php',
     'PHPUnit\\Exception' => $vendorDir . '/phpunit/phpunit/src/Exception.php',
     'PHPUnit\\Framework\\Assert' => $vendorDir . '/phpunit/phpunit/src/Framework/Assert.php',

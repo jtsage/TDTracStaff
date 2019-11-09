@@ -4956,5 +4956,57 @@
             "psr",
             "psr-7"
         ]
+    },
+    {
+        "name": "ivanamat/cakephp3-markdown",
+        "version": "1.1",
+        "version_normalized": "1.1.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/ivanamat/cakephp3-markdown.git",
+            "reference": "2a057dae22e9e6173ba77ad2b118ca95b0459f5b"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/ivanamat/cakephp3-markdown/zipball/2a057dae22e9e6173ba77ad2b118ca95b0459f5b",
+            "reference": "2a057dae22e9e6173ba77ad2b118ca95b0459f5b",
+            "shasum": ""
+        },
+        "require": {
+            "cakephp/cakephp": "~3.0",
+            "php": ">=5.4.16"
+        },
+        "time": "2018-02-18T15:18:32+00:00",
+        "type": "cakephp-plugin",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Markdown\\": "src"
+            },
+            "classmap": [
+                "Lib/Parsedown"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Ivan Amat",
+                "homepage": "http://www.ivanamat.es",
+                "role": "Author"
+            }
+        ],
+        "description": "CakePHP 3.x - Markdown",
+        "homepage": "https://github.com/ivanamat/cakephp3-markdown",
+        "keywords": [
+            "cake3",
+            "cakephp",
+            "cakephp3",
+            "markdown",
+            "parsedown",
+            "plugin"
+        ]
     }
 ]

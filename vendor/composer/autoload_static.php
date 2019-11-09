@@ -83,6 +83,7 @@ class ComposerStaticInite673dc35686ce819fb2df780aa5bbcee
         'M' => 
         array (
             'Migrations\\' => 11,
+            'Markdown\\' => 9,
             'M1\\Env\\' => 7,
         ),
         'L' => 
@@ -261,6 +262,10 @@ class ComposerStaticInite673dc35686ce819fb2df780aa5bbcee
         array (
             0 => __DIR__ . '/..' . '/cakephp/migrations/src',
         ),
+        'Markdown\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/ivanamat/cakephp3-markdown/src',
+        ),
         'M1\\Env\\' => 
         array (
             0 => __DIR__ . '/..' . '/m1/env/src',
@@ -435,6 +440,8 @@ class ComposerStaticInite673dc35686ce819fb2df780aa5bbcee
         'File_Iterator_Facade' => __DIR__ . '/..' . '/phpunit/php-file-iterator/src/Facade.php',
         'File_Iterator_Factory' => __DIR__ . '/..' . '/phpunit/php-file-iterator/src/Factory.php',
         'JsonException' => __DIR__ . '/..' . '/symfony/polyfill-php73/Resources/stubs/JsonException.php',
+        'Markdown\\Parsedown\\Parsedown' => __DIR__ . '/..' . '/ivanamat/cakephp3-markdown/Lib/Parsedown/Parsedown.php',
+        'Markdown\\Parsedown\\ParsedownExtra' => __DIR__ . '/..' . '/ivanamat/cakephp3-markdown/Lib/Parsedown/ParsedownExtra.php',
         'Mobile_Detect' => __DIR__ . '/..' . '/mobiledetect/mobiledetectlib/Mobile_Detect.php',
         'PHPUnit\\Exception' => __DIR__ . '/..' . '/phpunit/phpunit/src/Exception.php',
         'PHPUnit\\Framework\\Assert' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Assert.php',

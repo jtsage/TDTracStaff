@@ -224,8 +224,8 @@ return [
     'Email' => [
         'default' => [
             'transport' => 'default',
-	    'from' => ['tdtrac@hearcorp.com' => 'TDTracStaff @ HearCorp'],
-	    'emailFormat' => 'both',
+            //'from' => ['noreply@tdtrac.com' => 'TDTracStaff @ Unconfigured'],
+            'emailFormat' => 'html',
             //'charset' => 'utf-8',
             //'headerCharset' => 'utf-8',
         ],

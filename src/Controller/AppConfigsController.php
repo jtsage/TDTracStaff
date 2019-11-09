@@ -28,7 +28,13 @@ class AppConfigsController extends AppController
 			$this->Flash->error(__('You may not configure this application'));
 			return $this->redirect(["controller" => "jobs", "action" => "index"]);
 		}
-		$appConfigs = $this->paginate($this->AppConfigs);
+
+		$configs = $this->AppConfigs->find("all")
+			->order([
+				"key_name" => "ASC"
+			]);
+
+		$appConfigs = $this->paginate($configs);
 
 		$this->set('crumby', [
 			["/", __("Dashboard")],

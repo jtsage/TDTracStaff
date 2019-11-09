@@ -21,5 +21,9 @@
         "riday",
         "ueday",
         "unday"
-    ]
+    ],
+    "files.watcherExclude": {
+        "**/tmp/**": true,
+        "**/vendor/**": true
+    }
 }

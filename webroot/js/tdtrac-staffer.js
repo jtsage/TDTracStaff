@@ -27,6 +27,15 @@ $(document).ready(function() {
 	
 	$('#password').on('change', do_rep);
 	$('#username').on('change', do_rep);
+
+	$(".loadingClick").on('click', function() {
+		$(".loading").each(function() {
+			$(this).removeClass("loading");
+		});
+		$(".btn").each(function() {
+			$(this).addClass("disabled");
+		})
+	});
 });
 
 function linker(obby, nextDatebox) {

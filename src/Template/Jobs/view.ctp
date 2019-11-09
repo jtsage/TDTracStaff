@@ -6,37 +6,42 @@
 ?>
 
 <h4><?= $job->name ?></h4>
-<div class="btn-group w-100 mb-2">
+<div class="btn-group btn-group-sm-vertical w-100 mb-2">
 <?= $this->Html->link(
 	$this->Pretty->iconTUp($job->id) . 'My Availability',
 	['action' => 'available', $job->id],
-	['escape' => false, 'class' => 'btn btn-sm btn-outline-warning']
+	['escape' => false, 'class' => 'btn btn-outline-warning']
 ) ?>
 <?= $this->Html->link(
 	$this->Pretty->iconUnpaid($job->id) . 'My Hours',
 	['controller' => 'hours', 'action' => 'add-to-job', $job->id],
-	['escape' => false, 'class' => 'btn btn-sm btn-outline-warning']
+	['escape' => false, 'class' => 'btn btn-outline-warning']
 ) ?>
 <?php if ($WhoAmI) : ?>
 <?= $this->Html->link(
 	$this->Pretty->iconPrint($job->id) . 'Print Scheduled',
 	['action' => 'print', $job->id],
-	['escape' => false, 'class' => 'btn btn-sm btn-outline-dark']
+	['escape' => false, 'class' => 'btn btn-outline-dark']
 ) ?>
 <?= $this->Html->link(
-	$this->Pretty->iconSNeed($job->id) . 'Staff Needed',
+	$this->Pretty->iconSNeed($job->id) . 'Set Staff Needed',
 	['action' => 'staffNeed', $job->id],
-	['escape' => false, 'class' => 'btn btn-sm btn-outline-info']
+	['escape' => false, 'class' => 'btn btn-outline-info']
 ) ?>
 <?= $this->Html->link(
-	$this->Pretty->iconSAssign($job->id) . 'Staff Assigned',
+	$this->Pretty->iconMail($job->id) . 'E-Mail Needs',
+	['action' => 'email', $job->id],
+	['escape' => false, 'class' => 'loadingClick btn btn-outline-dark']
+) ?>
+<?= $this->Html->link(
+	$this->Pretty->iconSAssign($job->id) . 'Assign Staff',
 	['action' => 'staffAssign', $job->id],
-	['escape' => false, 'class' => 'btn btn-sm btn-outline-info']
+	['escape' => false, 'class' => 'btn btn-outline-info']
 ) ?>
 <?= $this->Html->link(
 	$this->Pretty->iconEdit($job->id) . 'Edit',
 	['action' => 'edit', $job->id],
-	['escape' => false, 'class' => 'btn btn-sm btn-outline-success']
+	['escape' => false, 'class' => 'btn btn-outline-success']
 ) ?>
 <?php endif; ?>
 </div>
@@ -116,9 +121,4 @@
 <div><div><iframe width="600" height="500" id="map_canvas" src="https://maps.google.com/maps?q=<?=urlencode($job->location)?>&t=&z=17&ie=UTF8&iwloc=&output=embed" frameborder="0" scrolling="no"></iframe></div></div>
 </div>
 </div> 
-</div>`
-
-
-
-
-		
+</div>

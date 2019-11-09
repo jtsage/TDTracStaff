@@ -64,7 +64,7 @@ if ( $this->request->getParam('controller') == "Pages" ) {
 	</head>
 	<body>
 
-	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+	<nav class="py-0 navbar navbar-expand-lg navbar-light bg-light">
 		<a href="/" class="navbar-brand">TDTrac<span style="color:#C3593C">Staff</span><span style="color:#c39b1f"><?= $CONFIG['short-name']?></span></a>
 		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
@@ -72,28 +72,29 @@ if ( $this->request->getParam('controller') == "Pages" ) {
 
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
 			<ul class="navbar-nav mr-auto">
-				<li class="nav-item <?= ($this->request->getParam('controller') == "Jobs" ? "active'":"") ?> dropdown">
+				<li class="nav-item <?= ($this->request->getParam('controller') == "Jobs" ? " active":"") ?> dropdown">
 					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Jobs<span class="caret"></span></a>
 					<div class="dropdown-menu">
+						<a class="dropdown-item" href="/jobs/">All Jobs</a>
+						<div class="dropdown-divider"></div>
 						<a class="dropdown-item" href="/jobs/myjobs/">My Qualified Jobs</a>
 						<a class="dropdown-item" href="/jobs/mysched/">My Scheduled Jobs</a>
 						<div class="dropdown-divider"></div>
-						<a class="dropdown-item" href="/jobs/">All Jobs</a>
 						<a class="dropdown-item" href="/jobs/calendar/">Calendar</a>
 						<a class="dropdown-item" href="/jobs/day/">Today</a>
 					</div>
 				</li>
-				<li class="nav-item <?= ($this->request->getParam('controller') == "Payrolls" ? "active'":"") ?>"><a class="nav-link" href="/payrolls/"><?= __("Hours") ?></a></li>
-				<?= ($WhoAmI) ? "<li class='nav-item" . ($this->request->getParam('controller') == "Roles" ? " class='active'":"") . "'><a class=\"nav-link\" href=\"/roles/\">Worker Titles</a></li>" : "" ?>
-				<li class="nav-item <?= ($this->request->getParam('controller') == "Users" ? "class='active'":"") ?>"><a class="nav-link" href="/users/"><?= ($WhoAmI) ? __("Users") : __("My Account") ?></a></li>
-				<?= ($WhoAmI) ? "<li class='nav-item" . ($this->request->getParam('controller') == "AppConfigs" ? " class='active'":"") . "'><a class=\"nav-link\" href=\"/app-configs/\">Configuration</a></li>" : "" ?>
+				<li class="nav-item <?= ($this->request->getParam('controller') == "Payrolls" ? " active":"") ?>"><a class="nav-link" href="/payrolls/"><?= __("Hours") ?></a></li>
+				<?= ($WhoAmI) ? "<li class='nav-item" . ($this->request->getParam('controller') == "Roles" ? " active":"") . "'><a class=\"nav-link\" href=\"/roles/\">Worker Titles</a></li>" : "" ?>
+				<li class="nav-item <?= ($this->request->getParam('controller') == "Users" ? " active":"") ?>"><a class="nav-link" href="/users/"><?= ($WhoAmI) ? __("Users") : __("My Account") ?></a></li>
+				<?= ($WhoAmI) ? "<li class='nav-item" . ($this->request->getParam('controller') == "AppConfigs" ? " active":"") . "'><a class=\"nav-link\" href=\"/app-configs/\">Configuration</a></li>" : "" ?>
 				<li class="nav-item"><a class="nav-link" href="/users/logout/"><?= __("Logout") ?></a></li>
 			</ul>
 			<?php 
 				$user = $this->request->getSession()->read('Auth.User');
 
 				if( ! empty( $user ) ) {
-					echo '<p class="navbar-text navbar-right">' . __("Signed in") . ': ' . $user['first'] . " " . $user['last'] . ' </p>';
+					echo '<span class="navbar-text navbar-right">' . __("Signed in") . ': ' . $user['first'] . " " . $user['last'] . ' </span>';
 				}
 			?>
 		</div>
@@ -132,6 +133,9 @@ if ( $this->request->getParam('controller') == "Pages" ) {
 		<p class="text-center text-muted">Printed on <?= date('Y-m-d H:i T') ?></p>
 	</footer>
 
-
+	
+	<div class="overlay loading"></div>
+	<div class="spinner loading"></div>
+	
 	</body>
 </html>

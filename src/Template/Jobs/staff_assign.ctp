@@ -38,6 +38,11 @@
 							['action' => 'sched-set', $person->id, 0],
 							['escape' => false, 'class' => 'btn w-50 btn-outline-primary' . ($person->is_scheduled?"":" active")]
 						) ?>
+						<?= $this->Html->link(
+							$this->Pretty->iconMail($person->id) . 'Notify of decision',
+							['action' => 'notify', $person->id],
+							['escape' => false, 'class' => 'btn w-50 btn-outline-danger loadingClick']
+						) ?>
 					</div></td>
 				</tr> 
 			<?php endif; ?>

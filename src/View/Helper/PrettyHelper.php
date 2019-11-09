@@ -22,6 +22,10 @@ class PrettyHelper extends Helper
 	{
 		return PrettyHelper::makeIcon($name, 'user-plus', __('Needed'));
 	}
+	public function iconMail($name)
+	{
+		return PrettyHelper::makeIcon($name, 'envelope', __('E-Mail'));
+	}
 	public function iconSAssign($name)
 	{
 		return PrettyHelper::makeIcon($name, 'users', __('Assigned'));

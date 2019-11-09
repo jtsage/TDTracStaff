@@ -6,6 +6,7 @@ use Cake\ORM\Query;
 use Cake\I18n\Date;
 use Cake\Chronos\ChronosInterface;
 use Cake\Chronos\Chronos;
+use Cake\Mailer\Email;
 
 /**
  * Jobs Controller
@@ -764,6 +765,18 @@ class JobsController extends AppController
 		$this->set('dateView', $dateView);
 	}
 
+
+	/*
+	       .o8                        
+	      "888                        
+	  .oooo888   .oooo.   oooo    ooo 
+	 d88' `888  `P  )88b   `88.  .8'  
+	 888   888   .oP"888    `88..8'   
+	 888   888  d8(  888     `888'    
+	 `Y8bod88P" `Y888""8o     .8'     
+	                      .o..P'      
+	                      `Y8P'       
+	*/
 	public function day ( $date = null )
 	{
 		if ( is_null($date) ) {
@@ -807,5 +820,178 @@ class JobsController extends AppController
 		$this->set('jobs', $jobs);
 		$this->set('date', $realDate);
 		$this->set('dateView', $dateView);
+	}
+
+
+
+	/*
+	                                        o8o  oooo  
+	                                        `"'  `888  
+	  .ooooo.  ooo. .oo.  .oo.    .oooo.   oooo   888  
+	 d88' `88b `888P"Y88bP"Y88b  `P  )88b  `888   888  
+	 888ooo888  888   888   888   .oP"888   888   888  
+	 888    .o  888   888   888  d8(  888   888   888  
+	 `Y8bod8P' o888o o888o o888o `Y888""8o o888o o888o 
+	*/
+	public function email($id)
+	{
+		if ( !$this->Auth->user('is_admin') ) {
+			$this->Flash->error("Sorry, you do not have access to this module.");
+			$this->redirect(["action" => "index"]);
+		}
+
+		$this->loadComponent('Markdown.Markdown');
+
+		$job = $this->Jobs->get($id);
+
+		$jobArray = $job->toArray();
+		
+		foreach ( $jobArray as $key => $value ) {
+			if ( gettype($value) == "object" ) {
+				if ( get_class($value) == "Cake\I18n\FrozenDate" ) {
+					$jobArray[$key . "_string"] = $value->format("l, F j, Y");
+				}
+			}
+		}
+
+		$this->loadModel("UsersRoles");
+		$this->loadModel("JobsRoles");
+
+		$roles = $this->JobsRoles->find("all")
+			->select("role_id")
+			->where(["job_id" => $id]);
+
+		$users = $this->UsersRoles->find("all")
+			->distinct(["user_id"])
+			->contain(["Users"])
+			->where(["role_id IN" => $roles]);
+
+		$mailList = [];
+
+		foreach ( $users as $user ) {
+			if ( $user->user->is_active ) {
+				$mailList[] = [ $user->user->username, $user->user->first . " " . $user->user->last ];
+			}
+		}
+
+		$CONFIG = $this->CONFIG_DATA;
+
+		$mailText = ( $job->created_at->wasWithinLast('2 days') ) ?
+			$CONFIG['job-new-email'] :
+			$CONFIG['job-old-email'];
+
+		$mailText = preg_replace_callback(
+			"/{{([\w-]+)}}/m",
+			function ($matches) use ( $CONFIG ) {
+				if ( !empty($CONFIG[$matches[1]]) ) {
+					return $CONFIG[$matches[1]];
+				}
+				return $matches[1];
+			},
+			$mailText
+		);
+		$mailText = preg_replace_callback(
+			"/\[\[([\w-]+)\]\]/m",
+			function ($matches) use ( $jobArray ) {
+				if ( !empty($jobArray[$matches[1]]) ) {
+					return $jobArray[$matches[1]];
+				}
+				return $matches[1];
+			},
+			$mailText
+		);
+
+		$mailHTML = $this->Markdown->parse($mailText);
+
+		$totalSent = 0;
+
+		foreach ( $mailList as $mailloc ) {
+			$email = new Email('default');
+			$email
+				->setTo(rtrim($mailloc[0]), $mailloc[1])
+				->setSubject("A job requires staffing - " . $job->name);
+			$email->send($mailHTML);
+			$totalSent++;
+		}
+
+		$this->Flash->success($totalSent . " Messages sent.");
+		$this->redirect(['action' => 'view', $id]);
+	}
+
+
+
+	/*
+	                           .    o8o   .o88o.             
+	                         .o8    `"'   888 `"             
+	 ooo. .oo.    .ooooo.  .o888oo oooo  o888oo  oooo    ooo 
+	 `888P"Y88b  d88' `88b   888   `888   888     `88.  .8'  
+	  888   888  888   888   888    888   888      `88..8'   
+	  888   888  888   888   888 .  888   888       `888'    
+	 o888o o888o `Y8bod8P'   "888" o888o o888o       .8'     
+	                                             .o..P'      
+	                                             `Y8P'       
+	*/
+	function notify ($id = null )
+	{
+		if ( is_null($id) ) {
+			$this->Flash->error(__('Invalid Action'));
+			$this->redirect(['action' => 'index']);
+		}
+		if ( !$this->Auth->user('is_admin') ) {
+			$this->Flash->error("Sorry, you do not have access to this module.");
+			$this->redirect(["action" => "index"]);
+		}
+
+		$this->loadComponent('Markdown.Markdown');
+
+		$this->loadModel("UsersJobs");
+
+		$jobRec = $this->UsersJobs->get($id, [ "contain" => ["Jobs", "Users"]]);
+
+		$jobArray = $jobRec->job->toArray();
+
+		foreach ( $jobArray as $key => $value ) {
+			if ( gettype($value) == "object" ) {
+				if ( get_class($value) == "Cake\I18n\FrozenDate" ) {
+					$jobArray[$key . "_string"] = $value->format("l, F j, Y");
+				}
+			}
+		}
+
+		$CONFIG = $this->CONFIG_DATA;
+
+		$mailText = $CONFIG['notify-email'];
+
+		$mailText = preg_replace_callback(
+			"/{{([\w-]+)}}/m",
+			function ($matches) use ( $CONFIG ) {
+				if ( !empty($CONFIG[$matches[1]]) ) {
+					return $CONFIG[$matches[1]];
+				}
+				return $matches[1];
+			},
+			$mailText
+		);
+		$mailText = preg_replace_callback(
+			"/\[\[([\w-]+)\]\]/m",
+			function ($matches) use ( $jobArray ) {
+				if ( !empty($jobArray[$matches[1]]) ) {
+					return $jobArray[$matches[1]];
+				}
+				return $matches[1];
+			},
+			$mailText
+		);
+
+		$mailHTML = $this->Markdown->parse($mailText);
+
+		$email = new Email('default');
+		$email
+			->setTo(rtrim($jobRec->user->username), $jobRec->user->first . " " . $jobRec->user->last)
+			->setSubject("A job now has staffing - " . $jobRec->job->name);
+		$email->send($mailHTML);
+
+		$this->Flash->success("Mail sent to " . $jobRec->user->first . " " . $jobRec->user->last);
+		$this->redirect(['action' => 'staff-assign', $jobRec->job_id]);
 	}
 }

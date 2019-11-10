@@ -32,3 +32,6 @@
 	</tr>
 <?php endforeach; ?>
 </table>
+
+<?= $this->Pretty->helpMeStart("Topic Unavailable"); ?>
+<?= $this->Pretty->helpMeEnd(); ?>

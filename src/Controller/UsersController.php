@@ -195,6 +195,7 @@ class UsersController extends AppController
 			$user = $this->Users->patchEntity($user, $this->request->getData());
 
 			$user->is_verified = 1;
+			$user->is_password_expired = 1;
 			
 			if ( $this->request->getData('welcomeEmailSend') ) {
 				$email = new Email('default');

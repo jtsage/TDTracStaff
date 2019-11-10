@@ -17,3 +17,8 @@
 	<?= $this->Form->button($this->Pretty->iconSave("") . __('Save Setting'), ["class" => "w-100 btn-lg btn-outline-success"]) ?>
 	<?= $this->Form->end() ?>
 </div>
+
+
+<?= $this->Pretty->helpMeStart("Topic Unavailable"); ?>
+<p>View help at the Application Configuration list screen instead.</p>
+<?= $this->Pretty->helpMeEnd(); ?>

@@ -19,3 +19,7 @@
 	<?= $this->Form->end() ?>
 </div>
 <p><strong>WARNING: </strong>It is intentionally difficult to add new keys.  You can royally screw up the running system by adding values needlessly</p>
+
+<?= $this->Pretty->helpMeStart("Topic Unavailable"); ?>
+<p><strong>WARNING: </strong>It is intentionally difficult to add new keys.  You can royally screw up the running system by adding values needlessly</p>
+<?= $this->Pretty->helpMeEnd(); ?>

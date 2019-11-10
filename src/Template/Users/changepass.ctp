@@ -10,3 +10,6 @@
 	<?= $this->Form->button($this->Pretty->iconLock("") . __('Change Password'), ["class" => "w-100 btn-lg btn-outline-success"]) ?>
 	<?= $this->Form->end() ?>
 </div>
+
+<?= $this->Pretty->helpMeStart("Topic Unavailable"); ?>
+<?= $this->Pretty->helpMeEnd(); ?>

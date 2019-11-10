@@ -27,3 +27,11 @@
 	<div class="w-100 rounded-pill p-1 mb-1 border border-success text-center text-success">You are scheduled for this event</div>
 	<div class="w-100 rounded-pill p-1 mb-1 border border-warning text-center text-warning">You are available for this event</div>
 </div>
+
+<?= $this->Pretty->helpMeStart("Job Calendar - Daily"); ?>
+
+<p>This display shows a calendar of all jobs.  Click on a job listing for additional detail. (Mobile will bring up a day view).</p>
+
+<p>Please refer to the bottom of the page for details on the color code used.</p>
+
+<?= $this->Pretty->helpMeEnd(); ?>

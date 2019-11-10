@@ -11,3 +11,8 @@
 	<?= $this->Form->end() ?>
 </div>
 
+<?= $this->Pretty->helpMeStart("Edit Yourself"); ?>
+<p>This allows you to change your name.  To change your e-mail address, you must contact your
+administrator directly.</p>
+<?= $this->Pretty->helpMeEnd(); ?>
+

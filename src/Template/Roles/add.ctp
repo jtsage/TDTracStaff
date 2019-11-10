@@ -17,3 +17,7 @@
 	<?= $this->Form->button($this->Pretty->iconAdd("") . __('Add Worker Title'), ["class" => "w-100 btn-lg btn-outline-success"]) ?>
 	<?= $this->Form->end() ?>
 </div>
+
+<?= $this->Pretty->helpMeStart("Topic Unavailable"); ?>
+<p>View help at the Job Title Configuration list screen instead.</p>
+<?= $this->Pretty->helpMeEnd(); ?>

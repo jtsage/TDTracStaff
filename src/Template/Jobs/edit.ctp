@@ -20,6 +20,23 @@
 		?><div style="border-bottom: 1px dashed #ccc;" class="mt-4 mb-2"><h5>Payroll Dates</h5></div><?php
 			echo $this->Pretty->calPicker('due_payroll_submitted', 'Payroll Due Date (from employees)', $job->due_payroll_submitted);
 			echo $this->Pretty->calPicker('due_payroll_paid', 'Payroll Check Date', $job->due_payroll_paid);
+		?><div style="border-bottom: 1px dashed #ccc;" class="mt-4 mb-2"><h5>Job Status</h5></div><?php
+			echo $this->Pretty->check('is_active', $job->is_active, [
+				'label-width' => '150',
+				'label-text' => __('Is Active'),
+				'on-text' => __('YES'),
+				'off-text' => __('NO'),
+				'on-color' => 'success',
+				'off-color' => 'danger'
+			]);
+			echo $this->Pretty->check('is_open', $job->is_open, [
+				'label-width' => '150',
+				'label-text' => __('Is Open'),
+				'on-text' => __('YES'),
+				'off-text' => __('NO'),
+				'on-color' => 'success',
+				'off-color' => 'danger'
+			]);
 		?>
 	</fieldset>
 	<?= $this->Form->button($this->Pretty->iconSave("") . __('Save Job'), ["class" => "w-100 btn-lg btn-outline-success"]) ?>
@@ -72,9 +89,26 @@
 	} );
 
 	$("#due_payroll_submitted-dbox").datebox( { 
-		closeCallback : "linkerGuessDate",
+		closeCallback : "linker",
 		closeCallbackArgs :["due_payroll_paid-dbox"]
 	} );
 </script>
 
 
+<?= $this->Pretty->helpMeStart("Add Job"); ?>
+
+<p>Use this display to add a new job to the system.</p>
+
+<?= $this->Pretty->helpMeFld("Name", "Job Name"); ?>
+<?= $this->Pretty->helpMeFld("Description", "Job Description"); ?>
+<?= $this->Pretty->helpMeFld("Category", "Freeform category, will auto-complete from previously used categories"); ?>
+<?= $this->Pretty->helpMeFld("Location", "Location of job, full street address preferred to auto-link to a google map"); ?>
+<?= $this->Pretty->helpMeFld("Start Date", "Beginning date of the job"); ?>
+<?= $this->Pretty->helpMeFld("End Date", "End date of the job - for one day jobs, set the same as start date - cannot be left empty"); ?>
+<?= $this->Pretty->helpMeFld("Times", "Freeform description of times.  i.e. '9-11p' or 'Saturday: 1-5p, Sunday: 10a - 2p'"); ?>
+<?= $this->Pretty->helpMeFld("Payroll Due Date", "The last date payroll can be submitted for this job"); ?>
+<?= $this->Pretty->helpMeFld("Payroll Check Date", "Date checks will be cut for this job - standard pay dates are highlighted"); ?>
+<?= $this->Pretty->helpMeFld("is Active", "Active jobs are those jobs that are accepting staff availability information, staff assignment information, and payroll information. Active jobs have not yet been paid out in most cases. Jobs should typically be marked inactive when their paychecks are disbursed"); ?>
+<?= $this->Pretty->helpMeFld("is Open", "Open jobs are those jobs that still appear in a regular users list - for instance, and inactive but still open job provides a way for an employee to track what they are due on a future paycheck.  Jobs should be typically be marked as closed a pay period after their paychecks are disbursed"); ?>
+
+<?= $this->Pretty->helpMeEnd(); ?>

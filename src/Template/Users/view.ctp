@@ -1,52 +1,43 @@
 <div class="users view large-10 medium-9 columns">
 	<h3><?= h($user->first) . " " . h($user->last) ?></h3>
-	<div class='btn-group w-100 mb-3'>
+	<div class='btn-group btn-group-sm-vertical w-100 mb-3'>
 	<?= $this->Html->link(
 		$this->Pretty->iconEdit($user->username) . "Edit User",
 		['action' => 'edit', $user->id],
-		['escape' => false, 'class' => 'btn btn-outline-dark']
+		['escape' => false, 'class' => 'text-left text-md-center w-100 btn btn-outline-dark']
 	) ?>
 	<?= $this->Html->link(
 		$this->Pretty->iconLock($user->username) . "Change Password",
 		['action' => 'changepass', $user->id],
-		['escape' => false, 'class' => 'btn btn-outline-dark']
+		['escape' => false, 'class' => 'text-left text-md-center w-100 btn btn-outline-dark']
 	) ?>
 	<?= ( $WhoAmI ) ? $this->Html->link(
 		$this->Pretty->iconPerm($user->username) . "Change Titles",
 		['action' => 'roles', $user->id],
-		['escape' => false, 'class' => 'btn btn-outline-info']
+		['escape' => false, 'class' => 'text-left text-md-center w-100 btn btn-outline-info']
 	) : "" ?>
 	</div>
-	<div class="row">
+	<div class="row mb-3">
 		<div class="col-md-4">
-			<h4><span class="badge badge-primary"><?= __('Username') ?></span></h4>
-			<p><?= h($user->username) ?></p>
-			<h4><span class="badge badge-primary"><?= __('Full Name') ?></span></h4>
-			<p><?= h($user->first) ?> <?= h($user->last) ?></p>
-			<h4><span class="badge badge-primary"><?= __('Phone Number') ?></span></h4>
-			<p><?= h($user->phone) ?></p>
+			<dl class="m-0 mb-2"><dt>Username</dt><dd class="m-0 ml-3"><?= $user->username ?></dd></dl>
+			<dl class="m-0 mb-2"><dt>Full Name</dt><dd class="m-0 ml-3"><?= $user->first . " " . $user->last ?></dd></dl>
+			<dl class="m-0 mb-2"><dt>Phone Number</dt><dd class="m-0 ml-3"><?= $user->phone ?></dd></dl>
 		</div>
 		<div class="col-md-4">
-			<h4><span class="badge badge-warning"><?= __('Last Login At') ?></span></h4>
-			<p><?= $user->last_login_at->i18nFormat(null, $tz); ?></p>
-			<h4><span class="badge badge-warning"><?= __('User Created At') ?></span></h4>
-			<p><?= $user->created_at->i18nFormat(null, $tz); ?></p>
-			<h4><span class="badge badge-warning"><?= __('Last Update At') ?></span></h4>
-			<p><?= $user->updated_at->i18nFormat(null, $tz); ?></p>
+			<dl class="m-0 mb-2"><dt>Last Login At</dt><dd class="m-0 ml-3"><?= $user->last_login_at->i18nFormat("EEEE, MMMM d, YYYY @ h:mm a", $tz) ?></dd></dl>
+			<dl class="m-0 mb-2"><dt>User Added On</dt><dd class="m-0 ml-3"><?= $user->created_at->i18nFormat("EEEE, MMMM d, YYYY @ h:mm a", $tz) ?></dd></dl>
+			<dl class="m-0 mb-2"><dt>Last Updated At</dt><dd class="m-0 ml-3"><?= $user->updated_at->i18nFormat("EEEE, MMMM d, YYYY @ h:mm a", $tz) ?></dd></dl>
 		</div>
 		<div class="col-md-4">
-			<h4><span class="badge badge-success"><?= __('Active User?') ?></span></h4>
-			<p><?= $this->Bool->prefYes($user->is_active) ?></p>
-			<h4><span class="badge badge-success"><?= __('Expired Password?') ?></span></h4>
-			<p><?= $this->Bool->prefNo($user->is_password_expired); ?></p>
-			<h4><span class="badge badge-success"><?= __('E-Mail Verified?') ?></span></h4>
-			<p><?= $this->Bool->prefYes($user->is_verified); ?></p>
-			<h4><span class="badge badge-success"><?= __('Administrator?') ?></span></h4>
-			<p><?= $this->Bool->prefNo($user->is_admin); ?></p>
+			<dl class="m-0 mb-2"><dt>Active User?</dt><dd class="m-0 ml-3"><?= $this->Bool->prefYes($user->is_active) ?></dd></dl>
+			<dl class="m-0 mb-2"><dt>Expired Password?</dt><dd class="m-0 ml-3"><?= $this->Bool->prefNo($user->is_password_expired) ?></dd></dl>
+			<dl class="m-0 mb-2"><dt>E-Mail Verified?</dt><dd class="m-0 ml-3"><?= $this->Bool->prefYes($user->is_verified) ?></dd></dl>
+			<dl class="m-0 mb-2"><dt>Administrator?</dt><dd class="m-0 ml-3"><?= $this->Bool->prefNo($user->is_admin) ?></dd></dl>
 		</div>
 	</div>
-	<div class="row">
-		<h4><span class="badge badge-danger"><?= __('Assigned Titles') ?></span></h4><br />
+	
+	<h5>Training Profile</h5>
+	<div class="container">
 		<ul class="list-group w-100">
 			<?php foreach ( $user->roles as $role ) : ?>
 				<li class="list-group-item"><?= $role->title ?> <small><em><?= $role->detail ?></em></small></li>
@@ -54,3 +45,7 @@
 		</ul>
 	</div>
 </div>
+
+<?= $this->Pretty->helpMeStart("User View"); ?>
+<p>This shows all of the known detail about a user.</p>
+<?= $this->Pretty->helpMeEnd(); ?>

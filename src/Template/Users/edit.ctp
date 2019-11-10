@@ -48,3 +48,8 @@
 	<?= $this->Form->button($this->Pretty->iconSave("") . __('Save Changes'), ["class" => "w-100 btn-lg btn-outline-success"]) ?>
 	<?= $this->Form->end() ?>
 </div>
+
+<?= $this->Pretty->helpMeStart("Edit User"); ?>
+<p>Edit a user's detail's.  "is Verified" must be left true.  "is Password Expired" will remind a
+user to change their password at next login (defaults to true on new accounts).</p>
+<?= $this->Pretty->helpMeEnd(); ?>

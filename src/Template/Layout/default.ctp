@@ -89,6 +89,7 @@ if ( $this->request->getParam('controller') == "Pages" ) {
 				<li class="nav-item <?= ($this->request->getParam('controller') == "Users" ? " active":"") ?>"><a class="nav-link" href="/users/"><?= ($WhoAmI) ? __("Users") : __("My Account") ?></a></li>
 				<?= ($WhoAmI) ? "<li class='nav-item" . ($this->request->getParam('controller') == "AppConfigs" ? " active":"") . "'><a class=\"nav-link\" href=\"/app-configs/\">Configuration</a></li>" : "" ?>
 				<li class="nav-item"><a class="nav-link" href="/users/logout/"><?= __("Logout") ?></a></li>
+				<li class="nav-item"><a class="nav-link" onClick="javascript:$('#helpMeModal').modal(); return false;" href="#"><i class="fa fa-lg fa-fw fa-question-circle"></i>&thinsp;<?= __("Help") ?></a></li>
 			</ul>
 			<?php 
 				$user = $this->request->getSession()->read('Auth.User');
@@ -137,5 +138,13 @@ if ( $this->request->getParam('controller') == "Pages" ) {
 	<div class="overlay loading"></div>
 	<div class="spinner loading"></div>
 	
+	<script type="text/javascript">
+	$(document).ready(function () {
+		$('#due_payroll_paid-dbox').datebox({
+			highDatesRec    : <?= $CONFIG["paydates-fixed"] ?>,
+			highDatesPeriod : <?= $CONFIG["paydates-period"] ?>,
+		});
+	});
+	</script>
 	</body>
 </html>

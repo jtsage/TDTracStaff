@@ -15,3 +15,5 @@
     <?= $this->Form->end() ?>
 </div>
 
+<?= $this->Pretty->helpMeStart("Topic Unavailable"); ?>
+<?= $this->Pretty->helpMeEnd(); ?>

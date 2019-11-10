@@ -26,3 +26,8 @@
 
 <?= $this->Form->button($this->Pretty->iconSave("") . "Assign Titles", ["class" => "w-100 btn-lg btn-outline-success"]); ?>
 <?= $this->Form->end(); ?>
+
+<?= $this->Pretty->helpMeStart("User Roles"); ?>
+<p>This section allows you to set which job titles a user is "qualified" for - this controls what job
+offers they will see, and which job e-mails they will receive.</p>
+<?= $this->Pretty->helpMeEnd(); ?>

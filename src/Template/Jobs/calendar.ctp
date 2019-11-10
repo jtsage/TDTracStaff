@@ -50,3 +50,11 @@
 	<div class="w-100 rounded-pill p-1 mb-1 border border-success text-center text-success">You are scheduled <span class="d-md-none">on this day</span><span class="d-none d-md-inline">for this event</span></div>
 	<div class="w-100 rounded-pill p-1 mb-1 border border-warning text-center text-warning">You are available <span class="d-md-none">on this day</span><span class="d-none d-md-inline">for this event</span></div>
 </div>
+
+<?= $this->Pretty->helpMeStart("Job Calendar"); ?>
+
+<p>This display shows a calendar of all jobs.  Click on a job listing for additional detail. (Mobile will bring up a day view).</p>
+
+<p>Please refer to the bottom of the page for details on the color code used.</p>
+
+<?= $this->Pretty->helpMeEnd(); ?>

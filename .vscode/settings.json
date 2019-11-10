@@ -25,5 +25,6 @@
     "files.watcherExclude": {
         "**/tmp/**": true,
         "**/vendor/**": true
-    }
+    },
+    "git.ignoreLimitWarning": true
 }

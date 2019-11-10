@@ -25,24 +25,24 @@
 		<tbody>
 			<?php foreach ($roles as $role): ?>
 			<tr>
-				<td><?= h($role->sort_order) ?></td>
-				<td><?= h($role->title) ?></td>
-				<td><?= h($role->detail) ?></td>
+				<td class="align-middle"><?= h($role->sort_order) ?></td>
+				<td class="align-middle"><?= h($role->title) ?></td>
+				<td class="align-middle"><?= h($role->detail) ?></td>
 				<td class="actions text-center"><div class="w-100 btn-group btn-group-sm-vertical">
 					<?= $this->Html->link(
 						$this->Pretty->iconView("") . "View Workers",
 						['action' => 'view', $role->id],
-						['escape' => false, 'class' => 'btn btn-outline-dark btn-sm']
+						['escape' => false, 'class' => 'text-left text-md-center btn btn-outline-dark btn-sm']
 					) . 
 					$this->Html->link(
 						$this->Pretty->iconEdit("") . "Edit",
 						['action' => 'edit', $role->id],
-						['escape' => false, 'class' => 'btn btn-outline-success btn-sm']
+						['escape' => false, 'class' => 'text-left text-md-center btn btn-outline-success btn-sm']
 					) .
 					$this->Form->postLink(
 						$this->Pretty->iconDelete("") . "Remove",
 						['action' => 'delete', $role->id],
-						['escape' => false, 'confirm' => __('Are you sure you want to delete # {0}?', $role->id), 'class' => 'btn btn-outline-primary btn-sm']
+						['escape' => false, 'confirm' => __('Are you sure you want to delete # {0}?', $role->id), 'class' => 'text-left text-md-center btn btn-outline-primary btn-sm']
 					) ?>
 				</div></td>
 			</tr>
@@ -50,3 +50,8 @@
 		</tbody>
 	</table>
 </div>
+
+<?= $this->Pretty->helpMeStart("Job Titles"); ?>
+<p>Use this section to define job titles (roles) for all of the jobs in the system. Note
+that the "sort" field is to control what order titles are presented in.</p>
+<?= $this->Pretty->helpMeEnd(); ?>

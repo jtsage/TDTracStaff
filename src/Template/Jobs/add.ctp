@@ -76,9 +76,24 @@
 	} );
 
 	$("#due_payroll_submitted-dbox").datebox( { 
-		closeCallback : "linkerGuessDate",
+		closeCallback : "linker",
 		closeCallbackArgs :["due_payroll_paid-dbox"]
 	} );
 </script>
 
 
+<?= $this->Pretty->helpMeStart("Add Job"); ?>
+
+<p>Use this display to add a new job to the system.</p>
+
+<?= $this->Pretty->helpMeFld("Name", "Job Name"); ?>
+<?= $this->Pretty->helpMeFld("Description", "Job Description"); ?>
+<?= $this->Pretty->helpMeFld("Category", "Freeform category, will auto-complete from previously used categories"); ?>
+<?= $this->Pretty->helpMeFld("Location", "Location of job, full street address preferred to auto-link to a google map"); ?>
+<?= $this->Pretty->helpMeFld("Start Date", "Beginning date of the job"); ?>
+<?= $this->Pretty->helpMeFld("End Date", "End date of the job - for one day jobs, set the same as start date - cannot be left empty"); ?>
+<?= $this->Pretty->helpMeFld("Times", "Freeform description of times.  i.e. '9-11p' or 'Saturday: 1-5p, Sunday: 10a - 2p'"); ?>
+<?= $this->Pretty->helpMeFld("Payroll Due Date", "The last date payroll can be submitted for this job"); ?>
+<?= $this->Pretty->helpMeFld("Payroll Check Date", "Date checks will be cut for this job - standard pay dates are highlighted"); ?>
+
+<?= $this->Pretty->helpMeEnd(); ?>

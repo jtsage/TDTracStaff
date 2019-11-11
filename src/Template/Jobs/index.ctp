@@ -76,8 +76,13 @@
 		<div class="row">
 			<div class="col-md-9 m-0">
 				<h5><?= $job->category . ": " . $job->name ?>
-					<span class="pull-right badge badge-pill badge-<?= $actStyle[0] ?>"><?= $actStyle[1] ?></span>
-					<span class="pull-right badge badge-pill badge-<?= $openStyle[0] ?>"><?= $openStyle[1] ?></span>
+					<?php if ( $WhoAmI ) : ?>
+						<a href="#" data-change="active" data-name="<?= $job->name ?>" data-job="<?= $job->id ?>" class="act-<?= $job->id ?> clickOpenAct pull-right badge badge-pill badge-<?= $actStyle[0] ?>"><?= $actStyle[1] ?></a>
+						<a href="#" data-change="open" data-name="<?= $job->name ?>" data-job="<?= $job->id ?>" class="open-<?= $job->id ?> clickOpenAct pull-right badge badge-pill badge-<?= $openStyle[0] ?>"><?= $openStyle[1] ?></a>
+					<?php else : ?>
+						<span class="pull-right badge badge-pill badge-<?= $actStyle[0] ?>"><?= $actStyle[1] ?></span>
+						<span class="pull-right badge badge-pill badge-<?= $openStyle[0] ?>"><?= $openStyle[1] ?></span>
+					<?php endif; ?>
 				</h5>
 
 				<?php if ( $WhoAmI ) : ?>
@@ -123,8 +128,8 @@
 					['escape' => false, 'class' => 'btn btn-sm text-left btn-outline-warning']
 				) ?>
 				<?= $this->Html->link(
-					$this->Pretty->iconUnpaid($job->id) . 'My Hours',
-					['controller' => 'hours', 'action' => 'add-to-job', $job->id],
+					$this->Pretty->iconUnpaid($job->id) . 'Add My Hours',
+					['controller' => 'payrolls', 'action' => 'add', $job->id],
 					['escape' => false, 'class' => 'btn btn-sm text-left btn-outline-warning']
 				) ?>
 				</div>

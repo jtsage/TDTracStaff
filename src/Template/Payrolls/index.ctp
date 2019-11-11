@@ -4,64 +4,91 @@
  * @var \App\Model\Entity\Payroll[]|\Cake\Collection\CollectionInterface $payrolls
  */
 ?>
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <ul class="side-nav">
-        <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Html->link(__('New Payroll'), ['action' => 'add']) ?></li>
-        <li><?= $this->Html->link(__('List Users'), ['controller' => 'Users', 'action' => 'index']) ?></li>
-        <li><?= $this->Html->link(__('New User'), ['controller' => 'Users', 'action' => 'add']) ?></li>
-        <li><?= $this->Html->link(__('List Jobs'), ['controller' => 'Jobs', 'action' => 'index']) ?></li>
-        <li><?= $this->Html->link(__('New Job'), ['controller' => 'Jobs', 'action' => 'add']) ?></li>
-    </ul>
-</nav>
-<div class="payrolls index large-9 medium-8 columns content">
-    <h3><?= __('Payrolls') ?></h3>
-    <table cellpadding="0" cellspacing="0">
-        <thead>
-            <tr>
-                <th scope="col"><?= $this->Paginator->sort('id') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('date_worked') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('time_start') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('time_end') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('hours_worked') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('is_paid') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('user_id') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('job_id') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('created_at') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('updated_at') ?></th>
-                <th scope="col" class="actions"><?= __('Actions') ?></th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($payrolls as $payroll): ?>
-            <tr>
-                <td><?= h($payroll->id) ?></td>
-                <td><?= h($payroll->date_worked) ?></td>
-                <td><?= h($payroll->time_start) ?></td>
-                <td><?= h($payroll->time_end) ?></td>
-                <td><?= $this->Number->format($payroll->hours_worked) ?></td>
-                <td><?= h($payroll->is_paid) ?></td>
-                <td><?= $payroll->has('user') ? $this->Html->link($payroll->user->print_name, ['controller' => 'Users', 'action' => 'view', $payroll->user->id]) : '' ?></td>
-                <td><?= $payroll->has('job') ? $this->Html->link($payroll->job->name, ['controller' => 'Jobs', 'action' => 'view', $payroll->job->id]) : '' ?></td>
-                <td><?= h($payroll->created_at) ?></td>
-                <td><?= h($payroll->updated_at) ?></td>
-                <td class="actions">
-                    <?= $this->Html->link(__('View'), ['action' => 'view', $payroll->id]) ?>
-                    <?= $this->Html->link(__('Edit'), ['action' => 'edit', $payroll->id]) ?>
-                    <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $payroll->id], ['confirm' => __('Are you sure you want to delete # {0}?', $payroll->id)]) ?>
-                </td>
-            </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
-    <div class="paginator">
-        <ul class="pagination">
-            <?= $this->Paginator->first('<< ' . __('first')) ?>
-            <?= $this->Paginator->prev('< ' . __('previous')) ?>
-            <?= $this->Paginator->numbers() ?>
-            <?= $this->Paginator->next(__('next') . ' >') ?>
-            <?= $this->Paginator->last(__('last') . ' >>') ?>
-        </ul>
-        <p><?= $this->Paginator->counter(['format' => __('Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} total')]) ?></p>
-    </div>
+
+
+<h3><?= __('Hours Submitted') ?></h3>
+<table class="table table-bordered table-striped">
+	<thead>
+		<tr>
+			<?php if ( $multiUser ) : ?>
+				<th scope="col">User</th>
+			<?php endif; ?>
+			<th scope="col">Job</th>
+
+			<th scope="col">Date</th>
+
+			<?php if ( $CONFIG['require-hours'] ) : ?>
+				<th class="d-none d-md-table-cell" scope="col">Start Time</th>
+				<th class="d-none d-md-table-cell" scope="col">End Time</th>
+			<?php endif; ?>
+
+			<th scope="col">Hours</th>
+			<th class="d-none d-md-table-cell" scope="col">Paid?</th>
+			<th scope="col" class="text-center"><?= __('Actions') ?></th>
+		</tr>
+	</thead>
+	<tbody>
+		<?php $currentUserID = "" ?>
+		<?php foreach ($payrolls as $payroll): ?>
+		<tr>
+			<?php if ( $multiUser ) : ?>
+				<td class="align-middle">
+				<span class="d-none d-md-inline"><?= $payroll->user->first ?></span>
+				<?= $payroll->user->last ?>
+				</td>
+			<?php endif; ?>
+			<td class="align-middle"><?= $payroll->job->name ?></td>
+
+			<td class="align-middle text-right">
+				<span class="d-none d-md-inline"><?= $payroll->date_worked->format("Y-m-d") ?></span>
+				<span class="d-md-none"><?= $payroll->date_worked->format("m/d") ?></span>
+			</td>
+
+			<?php if ( $CONFIG['require-hours'] ) : ?>
+				<td class="d-none d-md-table-cell align-middle text-right"><?= $payroll->time_start->format("H:i a") ?></td>
+				<td class="d-none d-md-table-cell align-middle text-right"><?= $payroll->time_end->format("H:i a") ?></td>
+			<?php endif; ?>
+
+			<td class="<?= ( ! $payroll->is_paid ) ? "font-weight-bold" : "" ?> hours-worked-col align-middle text-right">
+				<?= number_format($payroll->hours_worked, 2) ?>
+			</td>
+			<td class="is-paid-col d-none d-md-table-cell align-middle"><?= $this->Bool->prefYes($payroll->is_paid) ?></td>
+			<td class="align-middle text-center"><div class="btn-group btn-group-sm-vertical w-100">
+				<?= ( $WhoAmI && !$payroll->is_paid ) ? $this->Html->link(
+					$this->Pretty->iconMark($payroll->id) . 'Mark',
+					['action' => 'edit', $payroll->id],
+					[
+						'escape' => false,
+						'class' => 'w-100 btn btn-sm btn-outline-warning clickMark mark-' . $payroll->id,
+						'data-payroll' => $payroll->id
+					]
+				) : "" ?>
+				<?= ( $WhoAmI ) ? $this->Html->link(
+					$this->Pretty->iconEdit($payroll->id) . 'Edit',
+					['action' => 'edit', $payroll->id],
+					['escape' => false, 'class' => 'w-100 btn btn-sm btn-outline-success']
+				) : "" ?>
+				<?= $this->Form->postLink(
+					$this->Pretty->iconDelete($payroll->id) . 'Remove',
+					['action' => 'delete', $payroll->id],
+					['escape' => false, 'class' => 'w-100 btn btn-sm btn-outline-primary', 'confirm' => 'Are you sure you want to delete payroll?']
+				) ?>
+			</div></td>
+		</tr>
+		<?php endforeach; ?>
+	</tbody>
+</table>
+
+<?php if ( !empty($this->Paginator) ) : ?>
+<div class="paginator">
+	<ul class="pagination">
+		<?= $this->Paginator->first('<< ' . __('first')) ?>
+		<?= $this->Paginator->prev('< ' . __('previous')) ?>
+		<?= $this->Paginator->numbers() ?>
+		<?= $this->Paginator->next(__('next') . ' >') ?>
+		<?= $this->Paginator->last(__('last') . ' >>') ?>
+	</ul>
+	<p><?= $this->Paginator->counter(['format' => __('Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} total')]) ?></p>
 </div>
+<?php endif; ?>
+

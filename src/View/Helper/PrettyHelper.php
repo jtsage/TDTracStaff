@@ -195,6 +195,7 @@ class PrettyHelper extends Helper
 	}
 
 	public function joinAnd($values) {
+		if ( empty($values) ) { return "<em><small>none</small></em>"; }
 		if ( count($values) == 1 ) {
 			return $values[0];
 		}

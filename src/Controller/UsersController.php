@@ -199,14 +199,20 @@ class UsersController extends AppController
 			
 			if ( $this->request->getData('welcomeEmailSend') ) {
 				$email = new Email('default');
-				$email->setTo(rtrim($user->username))
-					->setSubject('Welcome to TDTracStaff');
+				$email
+					->template('default')
+					->setTo(rtrim($user->username))
+					->setSubject('Welcome to TDTracStaff')
+					->setViewVars(['CONFIG' => $this->CONFIG_DATA]);
 				$email->send(preg_replace("/\n/", "<br />\n", $this->request->getData('welcomeEmail')));
 			}
 			if ( $this->request->getData('welcomeEmailSendCopy') ) {
 				$email = new Email('default');
-				$email->setTo(rtrim($this->CONFIG_DATA["admin-email"]))
-					->setSubject('Welcome to TDTracStaff: ' . $this->request->getData('first') . " " .  $this->request->getData('last'));
+				$email
+					->template('default')
+					->setTo(rtrim($this->CONFIG_DATA["admin-email"]))
+					->setSubject('Welcome to TDTracStaff: ' . $this->request->getData('first') . " " .  $this->request->getData('last'))
+					->setViewVars(['CONFIG' => $this->CONFIG_DATA]);
 				$email->send(preg_replace("/\n/", "<br />\n", $this->request->getData('welcomeEmail')));
 			}
 
@@ -459,10 +465,9 @@ class UsersController extends AppController
 				$userReset = $this->__genPassToken($userReset);
 				if ( $this->Users->save($userReset) ) {
 					$email = new Email('default');
-					$email->viewBuilder()->setTemplate('reset');
 					$email
-						->setEmailFormat('both')
-						
+						->template('reset')
+						->setEmailFormat('html')
 						->setTo($userReset->username)
 						->setSubject('Password Reset Requested')
 						->setViewVars([
@@ -470,9 +475,11 @@ class UsersController extends AppController
 							'ip' => $_SERVER['REMOTE_ADDR'],
 							'hash' => $userReset->reset_hash,
 							'expire' => $userReset->reset_hash_time,
-							'fullURL' => "http://" . $_SERVER['HTTP_HOST'] . "/users/reset_password/",
+							'fullURL' => $this->CONFIG_DATA['server-name'] . "/users/reset_password/",
+							'CONFIG' => $this->CONFIG_DATA
 						])
 						->send();
+
 					$this->Flash->error(__('Password reset instructions sent.  You have 24 hours to complete this request.'));
 					return $this->redirect('/');
 				}
@@ -494,40 +501,8 @@ class UsersController extends AppController
 	*/
 	public function register()
 	{
-		if ( ! is_null($this->Auth->user('id'))) {
-			$this->Flash->error(__('You are logged in.'));
-			return $this->redirect('/');
-		}
-
-		$user = $this->Users->newEntity();
-		if ($this->request->is('post')) {
-			$user = $this->Users->patchEntity($user, $this->request->getData());
-
-			$user = $this->__genVerifyToken($user);
-
-			if ($this->Users->save($user)) {
-				$this->Flash->success(__('User account created.  Please check your e-mail to verify your e-mail prior to logging in.'));
-
-				$email = new Email('default');
-
-				$email->setTo(rtrim($user->username))
-					->setSubject('Welcome to TheaterBio');
-
-				$email->send("Good day!<br /><br />Welcome to TheaterBio digital bio / head-shot system.<br /><br />Please follow the link below to active your account:<br /><br />http://bio.pittsburghmusicals.com/users/verify/" . $user->verify_hash . "<br /><br />Thank you!");
-
-				return $this->redirect(['action' => 'login']);
-			} else {
-				$this->Flash->error(__('The user could not be saved. Please, try again.'));
-			}
-		}
-
-		$this->set('crumby', [
-			["/", __("Dashboard")],
-			["/users/", __("Users")],
-			[null, __("Register")]
-		]);
-		$this->set(compact('user'));
-		$this->set('_serialize', ['user']);
+		$this->Flash->error(__('Feature DISABLED - UNSAFE FOR THIS APPLICATION!'));
+		return $this->redirect('/');
 	}
 
 
@@ -614,13 +589,13 @@ class UsersController extends AppController
 	}
 
 	/*
-						oooo                     
-						`888                     
-	oooo d8b  .ooooo.   888   .ooooo.   .oooo.o 
-	`888""8P d88' `88b  888  d88' `88b d88(  "8 
-	888     888   888  888  888ooo888 `"Y88b.  
-	888     888   888  888  888    .o o.  )88b 
-	d888b    `Y8bod8P' o888o `Y8bod8P' 8""888P' 
+	                    oooo                     
+	                    `888                     
+	 oooo d8b  .ooooo.   888   .ooooo.   .oooo.o 
+	 `888""8P d88' `88b  888  d88' `88b d88(  "8 
+	  888     888   888  888  888ooo888 `"Y88b.  
+	  888     888   888  888  888    .o o.  )88b 
+	 d888b    `Y8bod8P' o888o `Y8bod8P' 8""888P' 
 	*/
 	function roles($id)
 	{

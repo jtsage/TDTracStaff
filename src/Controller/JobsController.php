@@ -34,11 +34,11 @@ class JobsController extends AppController
 			[null, __("All Jobs")]
 		]);
 
-		// If not admin, hide non-open and non-active shows from Job view.
+		// If not admin, hide non-open jobs from Job view.
 		$where = [];
 
 		if ( !$this->Auth->user('is_admin') ) {
-			$where = ["is_open" => 1, "is_active" => 1 ];
+			$where = ["is_open" => 1 ];
 		}
 
 		$jobFind = $this->Jobs->find("all")
@@ -905,11 +905,13 @@ class JobsController extends AppController
 
 		$totalSent = 0;
 
-		foreach ( $mailList as $mailloc ) {
+		foreach ( $mailList as $location ) {
 			$email = new Email('default');
 			$email
-				->setTo(rtrim($mailloc[0]), $mailloc[1])
-				->setSubject("A job requires staffing - " . $job->name);
+				->template('default')
+				->setTo(rtrim($location[0]), $location[1])
+				->setSubject("A job requires staffing - " . $job->name)
+				->setViewVars(['CONFIG' => $CONFIG]);
 			$email->send($mailHTML);
 			$totalSent++;
 		}
@@ -987,11 +989,100 @@ class JobsController extends AppController
 
 		$email = new Email('default');
 		$email
+			->template('default')
 			->setTo(rtrim($jobRec->user->username), $jobRec->user->first . " " . $jobRec->user->last)
-			->setSubject("A job now has staffing - " . $jobRec->job->name);
+			->setSubject("A job now has staffing - " . $jobRec->job->name . "-" . date("Y-m-d"))
+			->setViewVars(['CONFIG' => $CONFIG]);
 		$email->send($mailHTML);
 
 		$this->Flash->success("Mail sent to " . $jobRec->user->first . " " . $jobRec->user->last);
 		$this->redirect(['action' => 'staff-assign', $jobRec->job_id]);
+	}
+
+
+
+
+	/*
+	           oooo                                .oooooo..o     .                 .   
+	           `888                               d8P'    `Y8   .o8               .o8   
+	  .ooooo.   888 .oo.   ooo. .oo.    .oooooooo Y88bo.      .o888oo  .oooo.   .o888oo 
+	 d88' `"Y8  888P"Y88b  `888P"Y88b  888' `88b   `"Y8888o.    888   `P  )88b    888   
+	 888        888   888   888   888  888   888       `"Y88b   888    .oP"888    888   
+	 888   .o8  888   888   888   888  `88bod8P'  oo     .d8P   888 . d8(  888    888 . 
+	 `Y8bod8P' o888o o888o o888o o888o `8oooooo.  8""88888P'    "888" `Y888""8o   "888" 
+	                                   d"     YD                                        
+	                                   "Y88888P'                                        
+	*/
+	public function changeStatus($id = null, $meth = null)
+	{
+		$this->RequestHandler->renderAs($this, 'json');
+		$this->set('success', false);
+
+		if ( !$this->Auth->user('is_admin') ) {
+			$this->set('responseString', "You do not have access to do this!");
+			$this->set('_serialize', ['responseString', 'success']);
+			return;
+		}
+
+		if ( is_null($id) || is_null($meth) ) {
+			$this->set('responseString', "Invalid action!");
+			$this->set('_serialize', ['responseString', 'success']);
+			return;
+		}
+
+		$job = $this->Jobs->get($id);
+
+		if ( ! $job ) {
+			$this->set('responseString', "Record not found!");
+			$this->set('_serialize', ['responseString', 'success']);
+			return;
+		}
+		
+		$did = false;
+		
+		if ( $meth == "open" ) {
+			$did = true;
+			$this->set('pillID', "open-" . $job->id);
+			if ( $job->is_open == 1 ) {
+				$job->is_open = 0;
+				$this->set('pillText', "Closed");
+				$this->set('pillClass', "primary");
+				$this->set('responseString', $job->name . " is now closed");
+			} else {
+				$job->is_open = 1;
+				$this->set('pillText', "Open");
+				$this->set('pillClass', "success");
+				$this->set('responseString', $job->name . " is now open");
+			}
+		}
+
+		if ( $meth == "active" ) {
+			$did = true;
+			$this->set('pillID', "act-" . $job->id);
+			if ( $job->is_active == 1 ) {
+				$job->is_active = 0;
+				$this->set('pillText', "In-Active");
+				$this->set('pillClass', "primary");
+				$this->set('responseString', $job->name . " is now inactive");
+			} else {
+				$job->is_active = 1;
+				$this->set('pillText', "Active");
+				$this->set('pillClass', "success");
+				$this->set('responseString', $job->name . " is now active");
+			}
+		}
+
+		if ( $did ) {
+			if ( $this->Jobs->save($job) ) {
+				$this->set('success', true);
+				$this->set('_serialize', ['responseString', 'success', 'pillID', 'pillClass', 'pillText']);
+			} else {
+				$this->set('responseString', "Save failed!");
+				$this->set('_serialize', ['responseString', 'success']);
+			}
+		} else {
+			$this->set('responseString', "Invalid method!");
+			$this->set('_serialize', ['responseString', 'success']);
+		}
 	}
 }

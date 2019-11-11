@@ -57,6 +57,7 @@
 <?= $this->Pretty->helpMeFld("job-new-email", "Template for email's sent when a job is newly added to the database and needs staff to indicate availability. {{Variables}} are substituted for configuration values, [[variables]] are substituted for job details."); ?>
 <?= $this->Pretty->helpMeFld("job-old-email", "Template for email's sent when a job is NOT newly added to the database and either STILL needs staff to indicate availability, or staffing needs have changed.  See above for variable expansion."); ?>
 <?= $this->Pretty->helpMeFld("long-name", "Long name of the system, usually a company name"); ?>
+<?= $this->Pretty->helpMeFld("mailing-address", "Mailing address of the company - make e-mails less spammy.  Set correctly."); ?>
 <?= $this->Pretty->helpMeFld("notify-email", "Email sent when you have scheduled 1 or more staff members. {{Variables}} are substituted for configuration values, [[variables]] are substituted for job details."); ?>
 <?= $this->Pretty->helpMeFld("paydates-fixed", "Set of fixed paydate, in the fixed format: [ [-1,-1,15], [-1,-1,30] ] (15th and 30th) or false -  - for details, see https://datebox.jtsage.dev :: highDatesRec"); ?>
 <?= $this->Pretty->helpMeFld("paydates-period", "Set of period paydate, in the format [ \"2019-09-11\", 14 ] (start, period) or false - for details, see https://datebox.jtsage.dev :: highDatesPeriod"); ?>

@@ -14,27 +14,6 @@
  */
 ?>
 
-<?php 
-	$fixed_content = preg_replace(
-		"/<p>/m",
-		"<p style=\"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px;\">",
-		$content
-	);
-	$fixed_content = preg_replace_callback(
-		"/@@@(.+?)@@@/",
-		function ($matches) {
-			$parts = explode("|", $matches[1]);
-
-			$returns  = '<table border="0" cellpadding="0" cellspacing="0" class="btn btn-primary" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; box-sizing: border-box;"><tbody><tr>';
-			$returns .= '<td align="left" style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding-bottom: 15px;">';
-			$returns .= '<table border="0" cellpadding="0" cellspacing="0" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%;"><tbody><tr>';
-			$returns .= '<td style="font-family: sans-serif; font-size: 14px; vertical-align: top; background-color: #3498db; border-radius: 5px; text-align: center;"> <a href="' . $parts[0] . '" target="_blank" style="display: inline-block; color: #ffffff; background-color: #3498db; border: solid 1px #3498db; border-radius: 5px; box-sizing: border-box; cursor: pointer; text-decoration: none; font-size: 14px; font-weight: bold; margin: 0; padding: 12px 25px; text-transform: capitalize; border-color: #3498db; width:100%">' . $parts[1] . '</a> </td>';
-			$returns .= '</tr></tbody></table></td></tr></tbody></table>';
-			return $returns;
-		},
-		$fixed_content
-	);
-?>
 <!doctype html>
 <html>
 	<head>
@@ -140,7 +119,15 @@
 					<table border="0" cellpadding="0" cellspacing="0" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%;">
 					<tr>
 						<td style="font-family: sans-serif; font-size: 14px; vertical-align: top;">
-						<?= $fixed_content ?>
+						
+						<h3>Password reset requested!</h3>
+
+						<p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px;">Your, or someone else from a computer at <strong><?= $ip ?></strong> has requested a password reset for <strong><?= $username ?></strong>.</p>
+
+						<p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px;">To reset your password please go to <a href="<?= $fullURL . $hash ?>"><?= $fullURL . $hash ?></a> before <strong><?= $expire ?></strong>.</p>
+
+						<p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px;">If you did not request this action, please just ignore this e-mail.  It was only sent to your address, and you should not assume your account has been compromised. If you are still concerned, logging in normally will clear this temporary reset link.</p>
+
 						</td>
 					</tr>
 					</table>

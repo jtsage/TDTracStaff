@@ -20,6 +20,15 @@
 	$locHref = "https://www.google.com/maps/search/?api=1&query=";
 	$locHref .= urlencode($job->location);
 
+	$actStyle = [
+		( $job->is_active ) ? "success" : "primary",
+		( $job->is_active ) ? "Active" : "In-Active"
+	];
+	$openStyle = [
+		( $job->is_open ) ? "success" : "primary",
+		( $job->is_open ) ? "Open" : "Closed"
+	];
+
 	if ( !empty($yourStat) ) {
 		if ( $yourStat->is_available ) {
 			$my_Status = 1;
@@ -75,7 +84,10 @@
 	$percent_Done = intval(($count_Assigned / $count_Needed) * 100);
 ?>
 
-<h4><?= $job->category . ": " . $job->name ?></h4>
+<h4><?= $job->category . ": " . $job->name ?>
+<span class="pull-right badge badge-pill badge-<?= $actStyle[0] ?>"><?= $actStyle[1] ?></span>
+<span class="pull-right badge badge-pill badge-<?= $openStyle[0] ?>"><?= $openStyle[1] ?></span>
+</h4>
 <div class="btn-group btn-group-sm-vertical w-100 mb-2">
 	<?= $this->Html->link(
 		$this->Pretty->iconTUp($job->id) . 'My Availability',
@@ -83,8 +95,8 @@
 		['escape' => false, 'class' => 'text-left text-md-center w-100 btn btn-outline-warning']
 	) ?>
 	<?= $this->Html->link(
-		$this->Pretty->iconUnpaid($job->id) . 'My Hours',
-		['controller' => 'hours', 'action' => 'add-to-job', $job->id],
+		$this->Pretty->iconUnpaid($job->id) . 'Add My Hours',
+		['controller' => 'payrolls', 'action' => 'add', $job->id],
 		['escape' => false, 'class' => 'text-left text-md-center w-100 btn btn-outline-warning']
 	) ?>
 </div>

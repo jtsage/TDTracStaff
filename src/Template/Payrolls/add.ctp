@@ -4,32 +4,38 @@
  * @var \App\Model\Entity\Payroll $payroll
  */
 ?>
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <ul class="side-nav">
-        <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Html->link(__('List Payrolls'), ['action' => 'index']) ?></li>
-        <li><?= $this->Html->link(__('List Users'), ['controller' => 'Users', 'action' => 'index']) ?></li>
-        <li><?= $this->Html->link(__('New User'), ['controller' => 'Users', 'action' => 'add']) ?></li>
-        <li><?= $this->Html->link(__('List Jobs'), ['controller' => 'Jobs', 'action' => 'index']) ?></li>
-        <li><?= $this->Html->link(__('New Job'), ['controller' => 'Jobs', 'action' => 'add']) ?></li>
-    </ul>
-</nav>
 <div class="payrolls form large-9 medium-8 columns content">
-    <?= $this->Form->create($payroll) ?>
-    <fieldset>
-        <legend><?= __('Add Payroll') ?></legend>
-        <?php
-            echo $this->Form->control('date_worked');
-            echo $this->Form->control('time_start');
-            echo $this->Form->control('time_end');
-            echo $this->Form->control('hours_worked');
-            echo $this->Form->control('is_paid');
-            echo $this->Form->control('user_id', ['options' => $users]);
-            echo $this->Form->control('job_id', ['options' => $jobs]);
-            echo $this->Form->control('created_at');
-            echo $this->Form->control('updated_at');
-        ?>
-    </fieldset>
-    <?= $this->Form->button(__('Submit')) ?>
-    <?= $this->Form->end() ?>
+	<?= $this->Form->create($payroll) ?>
+	<fieldset>
+		<legend><?= __('Add Payroll') ?></legend>
+		<?php
+			$jobHelp = ( $CONFIG['allow-unscheduled-hours'] ) ? "You may add hours to shows you have not been scheduled for" : "";
+			$jobHelp = ( (count($jobs) > 1 )? "Please select a show. " : "" ) . $jobHelp;
+			echo $this->Form->control('user_id', ['readonly' => 'readonly', 'options' => $users]);
+			if ( count($jobs) < 2 ) {
+				echo $this->Form->control('job_id', ['help' => $jobHelp, 'readonly' => 'readonly', 'options' => $jobs]);
+			} else {
+				echo $this->Form->control('job_id', ['help' => $jobHelp, 'options' => $jobs]);
+			}
+
+			echo $this->Pretty->datePicker('date_worked', __('Date Worked'));
+			
+			if ( $CONFIG['require-hours'] ) {
+				echo $this->Pretty->clockPicker('time_start', __('Start Time'), '9:00');
+				echo $this->Pretty->clockPicker('time_end', __('End Time'),  '16:00');
+			} else {
+				echo $this->Form->control('hours_worked', ['help' => 'Enter the total number of hours worked as a decimal - i.e. 7.5', 'required' => 'required']);
+			}
+		?>
+	</fieldset>
+	<?= $this->Form->button($this->Pretty->iconAdd("") . __('Add Hours'), ["class" => "w-100 btn-lg btn-outline-success"]) ?>
+	<?= $this->Form->end() ?>
 </div>
+
+<script>
+$(document).ready( function() {
+	$('#date_worked-dbox').datebox({
+		beforeToday: true
+	});
+});
+</script>

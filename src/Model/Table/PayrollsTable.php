@@ -5,6 +5,7 @@ use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use Cake\Database\Expression\IdentifierExpression;
 
 /**
  * Payrolls Model
@@ -23,86 +24,141 @@ use Cake\Validation\Validator;
  */
 class PayrollsTable extends Table
 {
-    /**
-     * Initialize method
-     *
-     * @param array $config The configuration for the Table.
-     * @return void
-     */
-    public function initialize(array $config)
-    {
-        parent::initialize($config);
+	/**
+	 * Initialize method
+	 *
+	 * @param array $config The configuration for the Table.
+	 * @return void
+	 */
+	public function initialize(array $config)
+	{
+		parent::initialize($config);
 
-        $this->setTable('payrolls');
-        $this->setDisplayField('id');
-        $this->setPrimaryKey('id');
+		$this->setTable('payrolls');
+		$this->setDisplayField('id');
+		$this->setPrimaryKey('id');
 
-        $this->belongsTo('Users', [
-            'foreignKey' => 'user_id',
-            'joinType' => 'INNER'
-        ]);
-        $this->belongsTo('Jobs', [
-            'foreignKey' => 'job_id',
-            'joinType' => 'INNER'
-        ]);
-    }
+		$this->belongsTo('Users', [
+			'foreignKey' => 'user_id',
+			'joinType' => 'INNER'
+		]);
+		$this->belongsTo('Jobs', [
+			'foreignKey' => 'job_id',
+			'joinType' => 'INNER'
+		]);
+	}
 
-    /**
-     * Default validation rules.
-     *
-     * @param \Cake\Validation\Validator $validator Validator instance.
-     * @return \Cake\Validation\Validator
-     */
-    public function validationDefault(Validator $validator)
-    {
-        $validator
-            ->uuid('id')
-            ->allowEmptyString('id', 'create');
+	public function findUserTotals(Query $query, array $options)
+	{
+		//$user = $options['user'];
+		
+		$unPaidCase = $query->newExpr()
+			->addCase(
+				[ $query->newExpr()->add(['is_paid' => '0']) ],
+				[ new IdentifierExpression('hours_worked'), 0 ]
+			);
+		$paidCase = $query->newExpr()
+			->addCase(
+				[ $query->newExpr()->add(['is_paid' => '1']) ],
+				[ new IdentifierExpression('hours_worked'), 0 ]
+			);
 
-        $validator
-            ->date('date_worked')
-            ->requirePresence('date_worked', 'create')
-            ->allowEmptyDate('date_worked', false);
+		if ( !empty($options['job_id']) ) {
+			$query->where(["job_id" => $options['job_id']]);
+		}
+			
+		return $query->select([
+			'user_id',
+			'total_worked' => $query->func()->sum('hours_worked'),
+			'total_unpaid' => $query->func()->sum($unPaidCase),
+			'total_paid' => $query->func()->sum($paidCase)
+		])->group(["user_id"]);
+	}
 
-        $validator
-            ->time('time_start')
-            ->allowEmptyTime('time_start', false);
+	public function findJobTotals(Query $query, array $options)
+	{
+		//$user = $options['user'];
+		
+		$unPaidCase = $query->newExpr()
+			->addCase(
+				[ $query->newExpr()->add(['is_paid' => '0']) ],
+				[ new IdentifierExpression('hours_worked'), 0 ]
+			);
+		$paidCase = $query->newExpr()
+			->addCase(
+				[ $query->newExpr()->add(['is_paid' => '1']) ],
+				[ new IdentifierExpression('hours_worked'), 0 ]
+			);
 
-        $validator
-            ->time('time_end')
-            ->allowEmptyTime('time_end', false);
+		$query->contain(["Jobs"]);
+		$query->where(["Jobs.is_open" => 1]);
+			
+		return $query->select([
+			'job_id',
+			"Jobs.name",
+			"Jobs.is_active",
+			'total_worked' => $query->func()->sum('hours_worked'),
+			'total_unpaid' => $query->func()->sum($unPaidCase),
+			'total_paid' => $query->func()->sum($paidCase)
+		])->group(["job_id"]);
+	}
 
-        $validator
-            ->integer('hours_worked')
-            ->allowEmptyString('hours_worked');
+	/**
+	 * Default validation rules.
+	 *
+	 * @param \Cake\Validation\Validator $validator Validator instance.
+	 * @return \Cake\Validation\Validator
+	 */
+	public function validationDefault(Validator $validator)
+	{
+		$validator
+			->uuid('id')
+			->allowEmptyString('id', 'create');
 
-        $validator
-            ->boolean('is_paid')
-            ->allowEmptyString('is_paid', false);
+		$validator
+			->date('date_worked')
+			->requirePresence('date_worked', 'create')
+			->allowEmptyDate('date_worked', false);
 
-        $validator
-            ->dateTime('created_at')
-            ->allowEmptyDateTime('created_at', false);
+		$validator
+			->time('time_start')
+			->allowEmptyTime('time_start', false);
 
-        $validator
-            ->dateTime('updated_at')
-            ->allowEmptyDateTime('updated_at', false);
+		$validator
+			->time('time_end')
+			->allowEmptyTime('time_end', false);
 
-        return $validator;
-    }
+		$validator
+			->decimal('hours_worked')
+			->allowEmpty('hours_worked');
 
-    /**
-     * Returns a rules checker object that will be used for validating
-     * application integrity.
-     *
-     * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
-     * @return \Cake\ORM\RulesChecker
-     */
-    public function buildRules(RulesChecker $rules)
-    {
-        $rules->add($rules->existsIn(['user_id'], 'Users'));
-        $rules->add($rules->existsIn(['job_id'], 'Jobs'));
+		$validator
+			->boolean('is_paid')
+			->allowEmptyString('is_paid', false);
 
-        return $rules;
-    }
+		$validator
+			->dateTime('created_at')
+			->allowEmptyDateTime('created_at', false);
+
+		$validator
+			->dateTime('updated_at')
+			->allowEmptyDateTime('updated_at', false);
+
+		return $validator;
+	}
+
+	/**
+	 * Returns a rules checker object that will be used for validating
+	 * application integrity.
+	 *
+	 * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
+	 * @return \Cake\ORM\RulesChecker
+	 */
+	public function buildRules(RulesChecker $rules)
+	{
+		$rules->add($rules->existsIn(['user_id'], 'Users'));
+		$rules->add($rules->existsIn(['job_id'], 'Jobs'));
+
+		return $rules;
+	}
 }

@@ -27,7 +27,7 @@
 ) ?>
 <?= $this->Html->link(
 	$this->Pretty->iconView("") . 'View Qualifying Jobs ',
-	['action' => 'myjobs'],
+	['action'=> 'myjobs'],
 	['escape' => false, 'class' => 'w-100 btn btn-outline-dark']
 ) ?>
 <?= $this->Html->link(

@@ -81,32 +81,13 @@ class JobsController extends AppController
 			[null, __("My Qualified Jobs")]
 		]);
 
-		$this->loadModel("UsersRoles");
-		$this->loadModel("JobsRoles");
+		//$this->loadModel("UsersRoles");
+		//$this->loadModel("JobsRoles");
 
-		$jobsAvail = $this->JobsRoles->find("all")
-			->select("job_id")
-			->where(["role_id IN" => $this->UsersRoles->find("all")->select("role_id")->where(["user_id" => $this->Auth->user("id")])]);
-
-		$where = [
-			"is_open"   => 1,
-			"is_active" => 1,
-			"id IN"     => $jobsAvail
-		];
-
-		$jobFind = $this->Jobs->find("all")
-			->contain([
-				"Roles" => [
-					'sort' => ['Roles.sort_order' => 'ASC']
-				],
-				"UsersScheduled",
-				"UsersInterested"
-			])
-			->where($where)
-			->order([
-				"date_start" => "DESC",
-				"name"       => "ASC"
-			]);
+		$jobFind = $this->Jobs->find("detailSubset", [
+			"userID"    => $this->Auth->user("id"),
+			"limitList" => $this->loadModel("JobsRoles")->find("mine", ["userID" => $this->Auth->user("id")])
+		]);
 
 		$jobs = $this->paginate($jobFind);
 
@@ -135,35 +116,13 @@ class JobsController extends AppController
 			[null, __("My Scheduled Jobs")]
 		]);
 
-		$this->loadModel("UsersRoles");
-		$this->loadModel("UsersJobs");
-
-		$jobsAvail = $this->UsersJobs->find("all")
-			->select("job_id")
-			->where([
-				"user_id" => $this->Auth->user("id"),
-				"is_scheduled" => 1
-			 ]);
-
-		$where = [
-			"is_open"   => 1,
-			"is_active" => 1,
-			"id IN"     => $jobsAvail
-		];
-
-		$jobFind = $this->Jobs->find("all")
-			->contain([
-				"Roles" => [
-					'sort' => ['Roles.sort_order' => 'ASC']
-				],
-				"UsersScheduled",
-				"UsersInterested"
+		$jobFind = $this->Jobs->find("detailSubset", [
+			"userID"    => $this->Auth->user("id"),
+			"limitList" => $this->loadModel("UsersJobs")->find("mine", [
+				"userID"      =>  $this->Auth->user("id"),
+				"true_filter" => "is_scheduled"
 			])
-			->where($where)
-			->order([
-				"date_start" => "DESC",
-				"name"       => "ASC"
-			]);
+		]);
 
 		$jobs = $this->paginate($jobFind);
 
@@ -594,9 +553,9 @@ class JobsController extends AppController
 
 		$jobRec = $this->UsersJobs->newEntity();
 
-		$jobRec->user_id = $this->Auth->user("id");
-		$jobRec->role_id = $roleId;
-		$jobRec->job_id = $jobId;
+		$jobRec->user_id      = $this->Auth->user("id");
+		$jobRec->role_id      = $roleId;
+		$jobRec->job_id       = $jobId;
 		$jobRec->is_available = $avail;
 
 		if ($this->UsersJobs->save($jobRec)) {

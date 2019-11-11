@@ -5,6 +5,7 @@ use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use Cake\ORM\TableRegistry;
 
 /**
  * Jobs Model
@@ -90,6 +91,37 @@ class JobsTable extends Table
 				]
 			]
 		]);
+	}
+
+	public function findActiveOpenList(Query $query, array $options)
+	{
+		$query->where(["is_open" => 1, "is_active" => 1]);
+		$query->order(["date_start" => "DESC", "name" => "ASC"]);
+		return $query->formatResults(function(\Cake\Datasource\ResultSetInterface $results) use ($options) {
+		 	return $results->combine($options['keyField'], $options['valueField']);
+		});
+	}
+	public function findDetailSubset(Query $query, array $options)
+	{
+		$jobsRolesTable = TableRegistry::get('JobsRoles');
+
+		return $query
+			->contain([
+				"Roles" => [
+					'sort' => ['Roles.sort_order' => 'ASC']
+				],
+				"UsersScheduled",
+				"UsersInterested"
+			])
+			->where([
+				"is_open"   => 1,
+				"is_active" => 1,
+				"id IN"     => $options['limitList'] //$jobsRolesTable->find("mine", $options)
+			])
+			->order([
+				"date_start" => "DESC",
+				"name"       => "ASC"
+			]);
 	}
 
 	/**

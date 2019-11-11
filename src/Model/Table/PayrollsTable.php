@@ -48,6 +48,20 @@ class PayrollsTable extends Table
 		]);
 	}
 
+	
+	public function findListDetail(Query $query, array $options)
+	{
+		return $query->contain([
+			"Users" => ["fields" => ["first", "last", "id"]],
+			"Jobs" => ["fields" => ["id", "name"]]
+		])
+		->order([
+			"Users.last" => "ASC",
+			"date_worked" => "DESC",
+			"Payrolls.created_at" => "DESC"
+		]);
+	}
+
 	public function findUserTotals(Query $query, array $options)
 	{
 		//$user = $options['user'];

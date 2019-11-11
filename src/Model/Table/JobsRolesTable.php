@@ -5,6 +5,7 @@ use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use Cake\ORM\TableRegistry;
 
 /**
  * JobsRoles Model
@@ -23,61 +24,72 @@ use Cake\Validation\Validator;
  */
 class JobsRolesTable extends Table
 {
-    /**
-     * Initialize method
-     *
-     * @param array $config The configuration for the Table.
-     * @return void
-     */
-    public function initialize(array $config)
-    {
-        parent::initialize($config);
+	/**
+	 * Initialize method
+	 *
+	 * @param array $config The configuration for the Table.
+	 * @return void
+	 */
+	public function initialize(array $config)
+	{
+		parent::initialize($config);
 
-        $this->setTable('jobs_roles');
-        $this->setDisplayField('id');
-        $this->setPrimaryKey('id');
+		$this->setTable('jobs_roles');
+		$this->setDisplayField('id');
+		$this->setPrimaryKey('id');
 
-        $this->belongsTo('Jobs', [
-            'foreignKey' => 'job_id',
-            'joinType' => 'INNER'
-        ]);
-        $this->belongsTo('Roles', [
-            'foreignKey' => 'role_id',
-            'joinType' => 'INNER'
-        ]);
-    }
+		$this->belongsTo('Jobs', [
+			'foreignKey' => 'job_id',
+			'joinType' => 'INNER'
+		]);
+		$this->belongsTo('Roles', [
+			'foreignKey' => 'role_id',
+			'joinType' => 'INNER'
+		]);
+	}
 
-    /**
-     * Default validation rules.
-     *
-     * @param \Cake\Validation\Validator $validator Validator instance.
-     * @return \Cake\Validation\Validator
-     */
-    public function validationDefault(Validator $validator)
-    {
-        $validator
-            ->nonNegativeInteger('id')
-            ->allowEmptyString('id', 'create');
+	public function findMine(Query $query, array $options)
+	{
+		$userRolesTable = TableRegistry::get('UsersRoles');
+		
 
-        $validator
-            ->integer('number_needed')
-            ->allowEmptyString('number_needed', false);
+		$query->select(["job_id"]);
+		$query->where([
+			"role_id IN" => $userRolesTable->find("mine", $options)
+		]);
+		return $query;
+	}
+	/**
+	 * Default validation rules.
+	 *
+	 * @param \Cake\Validation\Validator $validator Validator instance.
+	 * @return \Cake\Validation\Validator
+	 */
+	public function validationDefault(Validator $validator)
+	{
+		$validator
+			->nonNegativeInteger('id')
+			->allowEmptyString('id', 'create');
 
-        return $validator;
-    }
+		$validator
+			->integer('number_needed')
+			->allowEmptyString('number_needed', false);
 
-    /**
-     * Returns a rules checker object that will be used for validating
-     * application integrity.
-     *
-     * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
-     * @return \Cake\ORM\RulesChecker
-     */
-    public function buildRules(RulesChecker $rules)
-    {
-        $rules->add($rules->existsIn(['job_id'], 'Jobs'));
-        $rules->add($rules->existsIn(['role_id'], 'Roles'));
+		return $validator;
+	}
 
-        return $rules;
-    }
+	/**
+	 * Returns a rules checker object that will be used for validating
+	 * application integrity.
+	 *
+	 * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
+	 * @return \Cake\ORM\RulesChecker
+	 */
+	public function buildRules(RulesChecker $rules)
+	{
+		$rules->add($rules->existsIn(['job_id'], 'Jobs'));
+		$rules->add($rules->existsIn(['role_id'], 'Roles'));
+
+		return $rules;
+	}
 }

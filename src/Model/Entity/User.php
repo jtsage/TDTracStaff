@@ -56,6 +56,14 @@ class User extends Entity
     {
         return (new DefaultPasswordHasher)->hash($password);
     }
+    protected function _getFullName()
+    {
+        return $this->first . ' ' . $this->last;
+    }
+    protected function _getCommaName()
+    {
+        return $this->last . ', ' . $this->first;
+    }
 
     /**
      * Fields that are excluded from JSON versions of the entity.

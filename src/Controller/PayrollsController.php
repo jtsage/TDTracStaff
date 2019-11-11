@@ -14,11 +14,15 @@ use Cake\Chronos\Chronos;
  */
 class PayrollsController extends AppController
 {
-	/**
-	 * Index method
-	 *
-	 * @return \Cake\Http\Response|null
-	 */
+	/*
+	  o8o                    .o8                        
+	  `"'                   "888                        
+	 oooo  ooo. .oo.    .oooo888   .ooooo.  oooo    ooo 
+	 `888  `888P"Y88b  d88' `888  d88' `88b  `88b..8P'  
+	  888   888   888  888   888  888ooo888    Y888'    
+	  888   888   888  888   888  888    .o  .o8"'88b   
+	 o888o o888o o888o `Y8bod88P" `Y8bod8P' o88'   888o 
+	*/
 	public function index()
 	{
 		if ( !$this->Auth->user('is_admin') ) {
@@ -32,16 +36,7 @@ class PayrollsController extends AppController
 			[null, "All Hours - System Wide"]
 		]);
 
-		$pays = $this->Payrolls->find("all")
-			->contain([
-				"Users" => ["fields" => ["first", "last", "id"]],
-				"Jobs" => ["fields" => ["id", "name"]]
-			])
-			->order([
-				"Users.last" => "ASC",
-				"date_worked" => "DESC",
-				"Payrolls.created_at" => "DESC"
-			]);
+		$pays = $this->Payrolls->find("listDetail");
 
 		$this->set("userTotals", $this->Payrolls->find('userTotals')->indexBy('user_id'));
 
@@ -76,16 +71,19 @@ class PayrollsController extends AppController
 		$payroll = $this->Payrolls->newEntity();
 		if ($this->request->is('post')) {
 
-			$fixed_data = array_merge($this->request->getData(), ['is_paid' => 0, 'user_id' => $this->Auth->user("id")]);
+			$fixed_data = array_merge($this->request->getData(), [
+				'is_paid' => 0,
+				'user_id' => $this->Auth->user("id")
+			]);
 
 			if ( $this->CONFIG_DATA['require-hours'] ) {
-				$fixed_data['time_start'] = Chronos::createFromFormat('H:i',$this->request->getData('time_start'));
-				$fixed_data['time_end'] = Chronos::createFromFormat('H:i',$this->request->getData('time_end'));
+				$fixed_data['time_start']   = Chronos::createFromFormat('H:i', $this->request->getData('time_start'));
+				$fixed_data['time_end']     = Chronos::createFromFormat('H:i', $this->request->getData('time_end'));
 				$fixed_data['hours_worked'] = ($fixed_data['time_end']->diffInMinutes($fixed_data['time_start']) / 60);
 			} else {
-				$fixed_data['time_start'] = Chronos::createFromFormat('H:i',"0:00");
-				$fixed_data['time_end'] = Chronos::createFromFormat('H:i', "0:00");
-				$fixed_data['time_end'] = $fixed_data["time_end"]->addMinutes(intval($fixed_data["hours_worked"] * 60));
+				$fixed_data['time_start'] = Chronos::createFromFormat('H:i', "0:00");
+				$fixed_data['time_end']   = Chronos::createFromFormat('H:i', "0:00");
+				$fixed_data['time_end']   = $fixed_data["time_end"]->addMinutes(intval($fixed_data["hours_worked"] * 60));
 			}
 
 			$payroll = $this->Payrolls->patchEntity($payroll, $fixed_data);
@@ -97,89 +95,41 @@ class PayrollsController extends AppController
 			$this->Flash->error(__('The payroll could not be saved. Please, try again.'));
 		}
 
-		$users = $this->Payrolls->Users->find('list',  [
-				'keyField'   => 'id',
-				'valueField' => function ($row) {
-					return $row['last'] . ', ' . $row['first'];
-				},
-				'limit'      => 500
-			])
-			->where([
-				"id" => $this->Auth->user("id")
-			])
-			->order([
-				"last"  => "ASC",
-				"first" => "ASC"
-			]);
+		$users = [ $this->Auth->User("id") => $this->Auth->User("first") . " " . $this->Auth->User("last") ];
 			
 		$this->loadModel("UsersJobs");
 
 		if ( !is_null($jobID) ) {
-			$sched_jobs_list = $this->UsersJobs->find("all")
-				->distinct(["job_id"])
-				->select(["job_id"])
-				->where([
-					"user_id" => $this->Auth->user("id"),
-					"is_scheduled" => 1,
-					"job_id" => $jobID
-				]);
-			
-			if ( $sched_jobs_list->count() < 1 && !$this->CONFIG_DATA["allow-unscheduled-hours"] ) {
-				$this->Flash->error(__('You are not scheduled for that show, sorry'));
-				return $this->redirect(['controller' => 'jobs', 'action' => 'view', $jobID]);
-			}
+			$job = $this->loadModel("Jobs")->get($jobID);
 
-			$jobs_sch = $this->Payrolls->Jobs->find('list', [
-				'keyField' => 'id',
-				'valueField' => function ($row) {
-					return $row["name"] . " (scheduled)";
-				}
-			])
-			->where([
-				"id" => $jobID,
-				"is_open" => 1,
-				"is_active" => 1
-			])
-			->order(["date_start" => "DESC", "name" => "ASC"]);
-
-			$jobs = $jobs_sch->toArray();
+			$jobs = [ $job->id => $job->name ];
 		} else {
-			$sched_jobs_list = $this->UsersJobs->find("all")
-				->distinct(["job_id"])
-				->select(["job_id"])
-				->where([
-					"user_id" => $this->Auth->user("id"),
-					"is_scheduled" => 1
-				]);
+			$sched_jobs_list = $this->UsersJobs->find("mine", [
+				"userID"      =>  $this->Auth->user("id"),
+				"true_filter" => "is_scheduled"
+			]);
 
-			$jobs_sch = $this->Payrolls->Jobs->find('list', [
-				'keyField' => 'id',
+			$jobs_sch = $this->Payrolls->Jobs->find("activeOpenList", [
+				'keyField'   => 'id',
 				'valueField' => function ($row) {
 					return $row["name"] . " (scheduled)";
 				}
-			])
-			->where([
-				"id IN" => $sched_jobs_list,
-				"is_open" => 1,
-				"is_active" => 1
-			])
-			->order(["date_start" => "DESC", "name" => "ASC"]);
+			])->where([
+				"id IN" => $sched_jobs_list
+			]);
 
 			$jobs = $jobs_sch->toArray();
 
 			if ( $this->CONFIG_DATA["allow-unscheduled-hours"] ) {
-				$jobs_otr = $this->Payrolls->Jobs->find('list', [
-					'keyField' => 'id',
+				$jobs_otr = $this->Payrolls->Jobs->find("activeOpenList", [
+					'keyField'   => 'id',
 					'valueField' => function ($row) {
 						return $row["name"] . " (not scheduled)";
 					}
-				])
-				->where([
-					"id NOT IN" => $sched_jobs_list,
-					"is_open" => 1,
-					"is_active" => 1
-				])
-				->order(["date_start" => "DESC", "name" => "ASC"]);
+				])->where([
+					"id NOT IN" => $sched_jobs_list
+				]);
+
 				$jobs = array_merge($jobs, $jobs_otr->toArray());
 			}
 		}
@@ -192,13 +142,16 @@ class PayrollsController extends AppController
 		$this->set(compact('payroll', 'users', 'jobs'));
 	}
 
-	/**
-	 * Edit method
-	 *
-	 * @param string|null $id Payroll id.
-	 * @return \Cake\Http\Response|null Redirects on successful edit, renders view otherwise.
-	 * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-	 */
+
+	/*
+	                 .o8   o8o      .   
+	                "888   `"'    .o8   
+	  .ooooo.   .oooo888  oooo  .o888oo 
+	 d88' `88b d88' `888  `888    888   
+	 888ooo888 888   888   888    888   
+	 888    .o 888   888   888    888 . 
+	 `Y8bod8P' `Y8bod88P" o888o   "888" 
+	*/
 	public function edit($id = null)
 	{
 		if ( !$this->Auth->user('is_admin') ) {
@@ -222,13 +175,17 @@ class PayrollsController extends AppController
 		$this->set(compact('payroll', 'users', 'jobs'));
 	}
 
-	/**
-	 * Delete method
-	 *
-	 * @param string|null $id Payroll id.
-	 * @return \Cake\Http\Response|null Redirects to index.
-	 * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-	 */
+
+	
+	/*
+	       .o8            oooo                .             
+	      "888            `888              .o8             
+	  .oooo888   .ooooo.   888   .ooooo.  .o888oo  .ooooo.  
+	 d88' `888  d88' `88b  888  d88' `88b   888   d88' `88b 
+	 888   888  888ooo888  888  888ooo888   888   888ooo888 
+	 888   888  888    .o  888  888    .o   888 . 888    .o 
+	 `Y8bod88P" `Y8bod8P' o888o `Y8bod8P'   "888" `Y8bod8P' 
+	*/
 	public function delete($id = null)
 	{
 		$this->request->allowMethod(['post', 'delete']);

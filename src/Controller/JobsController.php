@@ -57,6 +57,11 @@ class JobsController extends AppController
 
 		$jobs = $this->paginate($jobFind);
 
+		$this->loadModel("Payrolls");
+
+		$this->set("myTotals", $this->Payrolls->find('jobTotals')->where(["user_id"=>$this->Auth->user("id")])->indexBy('job_id')->toArray());
+		$this->set("jobTotals", $this->Payrolls->find('jobTotals')->indexBy('job_id')->toArray());
+
 		$this->set(compact('jobs'));
 	}
 
@@ -81,13 +86,14 @@ class JobsController extends AppController
 			[null, __("My Qualified Jobs")]
 		]);
 
-		//$this->loadModel("UsersRoles");
-		//$this->loadModel("JobsRoles");
-
 		$jobFind = $this->Jobs->find("detailSubset", [
 			"userID"    => $this->Auth->user("id"),
 			"limitList" => $this->loadModel("JobsRoles")->find("mine", ["userID" => $this->Auth->user("id")])
 		]);
+
+		$this->loadModel("Payrolls");
+		$this->set("myTotals", $this->Payrolls->find('jobTotals')->where(["user_id"=>$this->Auth->user("id")])->indexBy('job_id')->toArray());
+		$this->set("jobTotals", $this->Payrolls->find('jobTotals')->indexBy('job_id')->toArray());
 
 		$jobs = $this->paginate($jobFind);
 
@@ -123,6 +129,10 @@ class JobsController extends AppController
 				"true_filter" => "is_scheduled"
 			])
 		]);
+	
+		$this->loadModel("Payrolls");
+		$this->set("myTotals", $this->Payrolls->find('jobTotals')->where(["user_id"=>$this->Auth->user("id")])->indexBy('job_id')->toArray());
+		$this->set("jobTotals", $this->Payrolls->find('jobTotals')->indexBy('job_id')->toArray());
 
 		$jobs = $this->paginate($jobFind);
 
@@ -162,6 +172,11 @@ class JobsController extends AppController
 				"user_id" => $this->Auth->user("id"),
 				"job_id" => $job1->id
 			]);
+
+		$this->loadModel("Payrolls");
+
+		$this->set("userTotals", $this->Payrolls->find('userTotals')->where(["job_id"=>$job1->id,"user_id"=>$this->Auth->user("id")])->first());
+		$this->set("jobTotals", $this->Payrolls->find('jobTotals')->where(["job_id"=>$job1->id])->first());
 
 		$this->set('crumby', [
 			["/", __("Dashboard")],

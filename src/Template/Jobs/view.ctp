@@ -81,7 +81,8 @@
 		$names_Available[] = "<a class='text-info' href='/users/view/" . $key . "'>" . $theseNames[$key] . (($value > 1 ) ? " <em>(".$value.")</em>":"") . "</a>";
 	}
 
-	$percent_Done = intval(($count_Assigned / $count_Needed) * 100);
+	$percent_Done = ($count_Needed == 0) ? 0 : intval(($count_Assigned / $count_Needed) * 100);
+
 ?>
 
 <h4><?= $job->category . ": " . $job->name ?>
@@ -100,6 +101,11 @@
 		['escape' => false, 'class' => 'text-left text-md-center w-100 btn btn-outline-warning']
 	) ?>
 </div>
+<?= $this->Html->link(
+	$this->Pretty->iconUnpaid($job->id) . 'View '. ($WhoAmI?"":"My ") .'Payroll',
+	['controller' => 'payrolls', 'action' => 'job', $job->id],
+	['escape' => false, 'class' => 'btn mb-2 w-100 btn-outline-danger']
+) ?>
 
 <?php if ($WhoAmI) : ?>
 	<div class="btn-group btn-group-sm-vertical w-100 mb-2">
@@ -164,6 +170,24 @@
 			</dd>
 		</dl>
 	</div>
+	<?php
+		$myTot = (!is_null($userTotals) ? $userTotals->total_worked :0);
+		$myUpd = (!is_null($userTotals) ? $userTotals->total_unpaid :0);
+		$myPad = (!is_null($userTotals) ? $userTotals->total_paid :0);
+		$myPrc = (is_null($userTotals) ? 0 : intval(($myPad / $myTot) * 100));
+	?>
+	<div class="col-sm-12 col-md-6 border-bottom">
+		<dl class="m-0"><dt>Your Hours Submitted</dt><dd class="m-0 ml-3"><?= number_format($myTot, 2) ?></dd></dl>
+	</div>
+	<div class="col-sm-12 col-md-6 border-bottom">
+		<dl class="m-0"><dt>Your Hours Pending Payment</dt><dd class="m-0 ml-3"><?= number_format($myUpd, 2) ?></dd></dl>
+	</div>
+	<div class="col-12 mt-1">
+		<div class="border progress mb-md-2" title="<?= number_format($myPad,2) ?> paid hours of <?= number_format($myTot,2) ?> total" style="height: 14px">
+			<div class="progress-bar progress-bar-striped bg-danger text-dark font-weight-bold" role="progressbar" style="width: <?= $myPrc ?>%" aria-valuenow="<?= $myPrc ?>" aria-valuemin="0" aria-valuemax="100"><?= $myPrc ?>% My Hours Paid</div>
+		</div>
+	</div>
+	
 
 	<div class="col-12 mt-4 mb-1 p-0" style="border-bottom: 1px dashed #ccc;"><h5 class="p-0 m-0 mb-1">Staffing</h5></div>
 	<div class="col-12 border-bottom">
@@ -195,14 +219,36 @@
 			</dl>
 		</div>
 		<div class="col-12 mt-1">
-			<div class="progress mb-md-2" title="<?= $count_Assigned ?> staff assigned to <?= $count_Needed ?> positions" style="height: 8px">
-				<div class="progress-bar progress-bar-striped bg-info text-dark" role="progressbar" style="width: <?= $percent_Done ?>%" aria-valuenow="<?= $percent_Done ?>" aria-valuemin="0" aria-valuemax="100"><?= $percent_Done ?>%</div>
+			<div class="border progress mb-md-2" title="<?= $count_Assigned ?> staff assigned to <?= $count_Needed ?> positions" style="height: 14px">
+				<div class="progress-bar progress-bar-striped bg-info text-dark font-weight-bold" role="progressbar" style="width: <?= $percent_Done ?>%" aria-valuenow="<?= $percent_Done ?>" aria-valuemin="0" aria-valuemax="100"><?= $percent_Done ?>% Staffed</div>
 			</div>
 			<div class="text-muted text-center mb-2 d-md-none"><?= $count_Assigned ?> staff assigned to <?= $count_Needed ?> positions</div>
 		</div>
+
+		<div class="col-12 mt-4 mb-1 p-0" style="border-bottom: 1px dashed #ccc;"><h5 class="p-0 m-0 mb-1">Payroll</h5></div>
+		<?php
+			$jobTot = (!is_null($jobTotals) ? $jobTotals->total_worked :0);
+			$jobUpd = (!is_null($jobTotals) ? $jobTotals->total_unpaid :0);
+			$jobPad = (!is_null($jobTotals) ? $jobTotals->total_paid :0);
+			$jobPrc = (is_null($jobTotals) ? 0 : intval(($jobPad / $jobTot) * 100));
+		?>
+		<div class="col-sm-12 col-md-6 border-bottom">
+			<dl class="m-0"><dt>Total Hours Submitted</dt><dd class="m-0 ml-3"><?= number_format($jobTot, 2) ?></dd></dl>
+		</div>
+		<div class="col-sm-12 col-md-6 border-bottom">
+			<dl class="m-0"><dt>Total Hours Pending Payment</dt><dd class="m-0 ml-3"><?= number_format($jobUpd, 2) ?></dd></dl>
+		</div>
+		<div class="col-12 mt-1">
+			<div class="border progress mb-md-2" title="<?= number_format($jobPad,2) ?> paid hours of <?= number_format($jobTot,2) ?> total" style="height: 14px">
+				<div class="progress-bar progress-bar-striped bg-danger text-dark font-weight-bold" role="progressbar" style="width: <?= $jobPrc ?>%" aria-valuenow="<?= $jobPrc ?>" aria-valuemin="0" aria-valuemax="100"><?= $jobPrc ?>% Total Hours Paid</div>
+			</div>
+		</div>
 	<?php endif; ?>
 </div>
-
+<div class="row">
+	<div class="col-12 mt-4 mb-1 p-0" style="border-bottom: 1px dashed #ccc;"><h5 class="p-0 m-0 mb-1">Notes</h5></div>
+	<div class="px-4" style="white-space: pre; line-height: initial;"><?= $job->notes ?></div>
+</div>
 <div class="row">
 	<div class="col-12 mt-4 mb-1 p-0" style="border-bottom: 1px dashed #ccc;"><h5 class="p-0 m-0 mb-1">Location</h5></div>
 	<div class="col-12 border-bottom">

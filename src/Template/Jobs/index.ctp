@@ -70,7 +70,33 @@
 			$total_Needed += $role->_joinData->number_needed;
 		}
 
-		$percent_Done = intval(($total_Assigned / $total_Needed) * 100);
+		$percent_Done = ($total_Needed == 0) ? 0 : intval(($total_Assigned / $total_Needed) * 100);
+
+		if ( $WhoAmI ) {
+			if ( array_key_exists($job->id, $jobTotals) ) {
+				$pay_Total   = $jobTotals[$job->id]["total_worked"];
+				$pay_Paid    = $jobTotals[$job->id]["total_paid"];
+				$pay_Unpaid  = $jobTotals[$job->id]["total_unpaid"];
+				$pay_Percent = intval(($pay_Paid / $pay_Total) * 100);
+			} else {
+				$pay_Total   = 0;
+				$pay_Paid    = 0;
+				$pay_Unpaid  = 0;
+				$pay_Percent = 0;
+			}
+		} else {
+			if ( array_key_exists($job->id, $myTotals) ) {
+				$pay_Total   = $myTotals[$job->id]["total_worked"];
+				$pay_Paid    = $myTotals[$job->id]["total_paid"];
+				$pay_Unpaid  = $myTotals[$job->id]["total_unpaid"];
+				$pay_Percent = intval(($pay_Paid / $pay_Total) * 100);
+			} else {
+				$pay_Total   = 0;
+				$pay_Paid    = 0;
+				$pay_Unpaid  = 0;
+				$pay_Percent = 0;
+			}
+		}
 	?>
 	<div class="border mb-2 p-3">
 		<div class="row">
@@ -86,12 +112,17 @@
 				</h5>
 
 				<?php if ( $WhoAmI ) : ?>
-					<div class="progress mb-md-2" title="<?= $total_Assigned ?> staff assigned to <?= $total_Needed ?> positions" style="height: 8px">
-						<div class="progress-bar progress-bar-striped bg-info text-dark" role="progressbar" style="width: <?= $percent_Done ?>%" aria-valuenow="<?= $percent_Done ?>" aria-valuemin="0" aria-valuemax="100"><?= $percent_Done ?>%</div>
+					<div class="border progress mb-md-1" title="<?= $total_Assigned ?> staff assigned to <?= $total_Needed ?> positions" style="height: 14px">
+						<div class="progress-bar progress-bar-striped bg-info text-dark font-weight-bold" role="progressbar" style="width: <?= $percent_Done ?>%" aria-valuenow="<?= $percent_Done ?>" aria-valuemin="0" aria-valuemax="100"><?= $percent_Done ?>% Staffed</div>
 					</div>
 					<div class="text-muted text-center d-md-none mb-2"><?= $total_Assigned ?> staff assigned to <?= $total_Needed ?> positions</div>
 				<?php endif; ?>
-		
+
+				<div class="border progress mb-md-2" title="<?= $pay_Paid ?> hours paid out of <?= $pay_Total ?> total" style="height: 14px">
+					<div class="progress-bar progress-bar-striped bg-danger text-dark font-weight-bold" role="progressbar" style="width: <?= $pay_Percent ?>%" aria-valuenow="<?= $pay_Percent ?>" aria-valuemin="0" aria-valuemax="100"><?= $pay_Percent ?>% <?= ($WhoAmI?"Total":"") ?> Paid</div>
+				</div>
+				<div class="text-muted text-center d-md-none mb-2"><?= $pay_Paid ?> hours paid out of <?= $pay_Total ?> total</div>
+
 				<div class="row pl-3">
 					<div class="col-12 border-bottom">
 						<dl class="m-0"><dt>Description</dt><dd class="m-0 ml-3"><?= $job->detail ?></dd></dl>
@@ -114,6 +145,12 @@
 					<div class="col-sm-12 col-md-6 border-bottom">
 						<dl class="m-0"><dt>Paycheck Date</dt><dd class="m-0 ml-3"><?= $job->due_payroll_paid->format("l, F j, Y") ?></dd></dl>
 					</div>
+					<div class="col-sm-12 col-md-6 border-bottom">
+						<dl class="m-0"><dt><?= ($WhoAmI)?"All":"Your" ?> Hours Total</dt><dd class="m-0 ml-3"><?= number_format($pay_Total, 2) ?></dd></dl>
+					</div>
+					<div class="col-sm-12 col-md-6 border-bottom">
+						<dl class="m-0"><dt><?= ($WhoAmI)?"All":"Your" ?> Hours Unpaid</dt><dd class="m-0 ml-3"><?= number_format($pay_Unpaid, 2) ?></dd></dl>
+					</div>
 				</div>
 			</div><div class="col-md-3">
 				<div class="btn-group-vertical w-100">
@@ -131,6 +168,12 @@
 					$this->Pretty->iconUnpaid($job->id) . 'Add My Hours',
 					['controller' => 'payrolls', 'action' => 'add', $job->id],
 					['escape' => false, 'class' => 'btn btn-sm text-left btn-outline-warning']
+				) ?>
+				</div><div class="btn-group-vertical mt-1 w-100">
+				<?= $this->Html->link(
+					$this->Pretty->iconUnpaid($job->id) . 'View '. ($WhoAmI?"":"My ") .'Payroll',
+					['controller' => 'payrolls', 'action' => 'job', $job->id],
+					['escape' => false, 'class' => 'btn btn-sm text-left btn-outline-danger']
 				) ?>
 				</div>
 				<?php if ($WhoAmI) : ?>

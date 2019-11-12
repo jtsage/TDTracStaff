@@ -42,6 +42,7 @@ class Job extends Entity
         'date_start' => true,
         'date_end' => true,
         'time_string' => true,
+        'notes' => true,
         'is_active' => true,
         'is_open' => true,
         'created_at' => true,

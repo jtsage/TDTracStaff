@@ -75,8 +75,10 @@ if ( $this->request->getParam('controller') == "Pages" ) {
 				<li class="nav-item <?= ($this->request->getParam('controller') == "Jobs" ? " active":"") ?> dropdown">
 					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Jobs<span class="caret"></span></a>
 					<div class="dropdown-menu">
-						<a class="dropdown-item" href="/jobs/">All Jobs</a>
-						<div class="dropdown-divider"></div>
+						<?php if ($WhoAmI) : ?>
+							<a class="dropdown-item" href="/jobs/">All Jobs</a>
+							<div class="dropdown-divider"></div>
+						<?php endif; ?>
 						<a class="dropdown-item" href="/jobs/myjobs/">My Qualified Jobs</a>
 						<a class="dropdown-item" href="/jobs/mysched/">My Scheduled Jobs</a>
 						<div class="dropdown-divider"></div>
@@ -84,7 +86,26 @@ if ( $this->request->getParam('controller') == "Pages" ) {
 						<a class="dropdown-item" href="/jobs/day/">Today</a>
 					</div>
 				</li>
-				<li class="nav-item <?= ($this->request->getParam('controller') == "Payrolls" ? " active":"") ?>"><a class="nav-link" href="/payrolls/"><?= __("Hours") ?></a></li>
+				<li class="nav-item <?= ($this->request->getParam('controller') == "Payrolls" ? " active":"") ?> dropdown">
+					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Hours<span class="caret"></span></a>
+					<div class="dropdown-menu">
+						<a class="dropdown-item" href="/payrolls/add/">Add Hours</a>
+						<div class="dropdown-divider"></div>
+						<?php if ($WhoAmI) : ?>
+							<a class="dropdown-item" href="/payrolls/">All Hours</a>
+							<a class="dropdown-item" href="/payrolls/unpaid">All Unpaid Hours</a>
+							<div class="dropdown-divider"></div>
+							<a class="dropdown-item" href="/payrolls/paydate/">Search by Paydate</a>
+							<a class="dropdown-item" href="/payrolls/dates/">Search by Date</a>
+							<div class="dropdown-divider"></div>
+						<?php endif; ?>
+						<a class="dropdown-item" href="/payrolls/mine/">My Hours</a>
+						<a class="dropdown-item" href="/payrolls/mine/unpaid/">My Unpaid Hours</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="/payrolls/mypaydate/">My Hours by Paydate</a>
+						<a class="dropdown-item" href="/payrolls/mydates/">My Hours by Date</a>
+					</div>
+				</li>
 				<?= ($WhoAmI) ? "<li class='nav-item" . ($this->request->getParam('controller') == "Roles" ? " active":"") . "'><a class=\"nav-link\" href=\"/roles/\">Worker Titles</a></li>" : "" ?>
 				<li class="nav-item <?= ($this->request->getParam('controller') == "Users" ? " active":"") ?>"><a class="nav-link" href="/users/"><?= ($WhoAmI) ? __("Users") : __("My Account") ?></a></li>
 				<?= ($WhoAmI) ? "<li class='nav-item" . ($this->request->getParam('controller') == "AppConfigs" ? " active":"") . "'><a class=\"nav-link\" href=\"/app-configs/\">Configuration</a></li>" : "" ?>

@@ -26,7 +26,6 @@ class PayrollsController extends AppController
 	public function index()
 	{
 		if ( !$this->Auth->user('is_admin') ) {
-			$this->Flash->error("Sorry, you do not have access to this module.");
 			$this->redirect(["action" => "mine"]);
 		}
 
@@ -38,15 +37,578 @@ class PayrollsController extends AppController
 
 		$pays = $this->Payrolls->find("listDetail");
 
-		$this->set("userTotals", $this->Payrolls->find('userTotals')->indexBy('user_id'));
-
-		// $this->set("jobTotals", $this->Payrolls->find('jobTotals')->indexBy('job_id'));
+		$this->set("userTotals", $this->Payrolls->find('userTotals')->indexBy('user_id')->toArray());
 			
 		$payrolls = $this->paginate($pays);
+		$this->set("isPaged", true);
+
+		$this->set("mainTitle", "System Wide Payroll Hours");
+		$this->set("subTitle", "This shows the system-wide payroll hours, both paid and unpaid. This view is only available to administrators.");
+		$this->set("userCounts", true);
+		$this->set("userCountsUnpaidOnly", false);
+		$this->set("multiUser", true);
+		$this->set(compact('payrolls'));
+	}
+
+
+
+	/*
+	                                               o8o        .o8  
+	                                               `"'       "888  
+	 oooo  oooo  ooo. .oo.   oo.ooooo.   .oooo.   oooo   .oooo888  
+	 `888  `888  `888P"Y88b   888' `88b `P  )88b  `888  d88' `888  
+	  888   888   888   888   888   888  .oP"888   888  888   888  
+	  888   888   888   888   888   888 d8(  888   888  888   888  
+	  `V88V"V8P' o888o o888o  888bod8P' `Y888""8o o888o `Y8bod88P" 
+	                          888                                  
+	                         o888o                                 
+	*/
+	public function unpaid()
+	{
+		if ( !$this->Auth->user('is_admin') ) {
+			$this->redirect(["action" => "mine", "unpaid"]);
+		}
+
+		$this->set('crumby', [
+			["/", __("Dashboard")],
+			["/payrolls/", __("Hours")],
+			[null, "All Unpaid Hours - System Wide"]
+		]);
+
+		$pays = $this->Payrolls->find("listDetail")->where(["is_paid"=>0]);
+
+		$this->set("userTotals", $this->Payrolls->find('userTotals')->where(["is_paid"=>0])->indexBy('user_id')->toArray());
+			
+		$payrolls = $pays;
+		$this->set("isPaged", false);
+
+		$this->set("mainTitle", "System Wide Unpaid Payroll Hours");
+		$this->set("subTitle", "This shows the system-wide payroll hours, unpaid only. This view is only available to administrators.");
+		$this->set("userCounts", true);
+		$this->set("userCountsUnpaidOnly", true);
+		$this->set("multiUser", true);
+		$this->set(compact('payrolls'));
+		$this->render("index");
+	}
+
+
+
+	/*
+	                    o8o                        
+	                    `"'                        
+	 ooo. .oo.  .oo.   oooo  ooo. .oo.    .ooooo.  
+	 `888P"Y88bP"Y88b  `888  `888P"Y88b  d88' `88b 
+	  888   888   888   888   888   888  888ooo888 
+	  888   888   888   888   888   888  888    .o 
+	 o888o o888o o888o o888o o888o o888o `Y8bod8P' 
+	*/
+	public function mine($unpaid = null)
+	{
+
+		$this->set('crumby', [
+			["/", __("Dashboard")],
+			["/payrolls/", __("Hours")],
+			[null, "My Hours" . ( !is_null($unpaid) ? " - Unpaid" : "")]
+		]);
+
+		$where = [ "user_id" => $this->Auth->User("id") ];
+
+		if ( !is_null($unpaid) ) {
+			$where[] = [ "is_paid" => 0 ];
+		}
+
+		$pays = $this->Payrolls->find("listDetail")->where($where);
+
+		$this->set("userTotals", $this->Payrolls->find('userTotals')->indexBy('user_id')->toArray());
+			
+		if ( is_null($unpaid) ) {
+			$this->set("mainTitle", "Your Payroll Hours");
+			$this->set("subTitle", "This shows your payroll hours, both paid and unpaid.");
+			$payrolls = $this->paginate($pays);
+			$this->set("isPaged", true);
+			$this->set("userCountsUnpaidOnly", false);
+		} else {
+			$this->set("mainTitle", "Your Unpaid Payroll Hours");
+			$this->set("subTitle", "This shows your payroll hours, unpaid only.");
+			$payrolls = $pays;
+			$this->set("isPaged", false);
+			$this->set("userCountsUnpaidOnly", true);
+		}
+
+		$this->set("userCounts", true);
+		$this->set("multiUser", false);
+		$this->set(compact('payrolls'));
+		$this->render("index");
+	}
+
+
+
+	/*
+	 oooo  oooo   .oooo.o  .ooooo.  oooo d8b 
+	 `888  `888  d88(  "8 d88' `88b `888""8P 
+	  888   888  `"Y88b.  888ooo888  888     
+	  888   888  o.  )88b 888    .o  888     
+	  `V88V"V8P' 8""888P' `Y8bod8P' d888b    
+	*/
+	public function user($userID, $unpaid = null)
+	{
+		if ( !$this->Auth->user('is_admin') ) {
+			$this->redirect(["action" => "mine"]);
+		}
+
+		$user = $this->loadModel("Users")->get($userID);
+
+		$this->set('crumby', [
+			["/", __("Dashboard")],
+			["/payrolls/", __("Hours")],
+			[null, $user->full_name . "'s Hours" . ( !is_null($unpaid) ? " - Unpaid" : "")]
+		]);
+
+		$where = [ "user_id" => $user->id ];
+
+		if ( !is_null($unpaid) ) {
+			$where[] = [ "is_paid" => 0 ];
+		}
+
+		$pays = $this->Payrolls->find("listDetail")->where($where);
+
+		$this->set("userTotals", $this->Payrolls->find('userTotals')->indexBy('user_id')->toArray());
+			
+		if ( is_null($unpaid) ) {
+			$this->set("mainTitle", $user->full_name . "'s Payroll Hours");
+			$this->set("subTitle", "This shows " .$user->full_name . "'s payroll hours, both paid and unpaid.");
+			$payrolls = $this->paginate($pays);
+			$this->set("isPaged", true);
+			$this->set("userCountsUnpaidOnly", false);
+		} else {
+			$this->set("mainTitle", $user->full_name . "'s Unpaid Payroll Hours");
+			$this->set("subTitle", "This shows " .$user->full_name . "'s payroll hours, unpaid only.");
+			$payrolls = $pays;
+			$this->set("isPaged", false);
+			$this->set("userCountsUnpaidOnly", true);
+		}
+
+		$this->set("userCounts", true);
+		$this->set("multiUser", false);
+		$this->set(compact('payrolls'));
+		$this->render("index");
+	}
+
+
+
+	/*
+	     o8o            .o8       
+	     `"'           "888       
+	    oooo  .ooooo.   888oooo.  
+	    `888 d88' `88b  d88' `88b 
+	     888 888   888  888   888 
+	     888 888   888  888   888 
+	     888 `Y8bod8P'  `Y8bod8P' 
+	     888                      
+	 .o. 88P                      
+	 `Y888P                       
+	*/
+	public function job($jobID, $unpaid = null)
+	{
+		if ( !$this->Auth->user('is_admin') ) {
+			$this->redirect(["action" => "myjob", $jobID, $unpaid]);
+		}
+
+		$job = $this->loadModel("Jobs")->get($jobID);
+
+		$this->set('crumby', [
+			["/", __("Dashboard")],
+			["/payrolls/", __("Hours")],
+			[null, $job->name . "'s Hours" . ( !is_null($unpaid) ? " - Unpaid" : "")]
+		]);
+
+		$where = [ "job_id" => $job->id ];
+
+		if ( !is_null($unpaid) ) {
+			$where[] = [ "is_paid" => 0 ];
+		}
+
+		$pays = $this->Payrolls->find("listDetail")->where($where);
+
+		$this->set("userTotals", $this->Payrolls->find('userTotals')->where(['job_id'=>$jobID])->indexBy('user_id')->toArray());
+			
+		if ( is_null($unpaid) ) {
+			$this->set("mainTitle", $job->name . "'s Payroll Hours");
+			$this->set("subTitle", "This shows " .$job->name . "'s payroll hours, both paid and unpaid.");
+			$payrolls = $this->paginate($pays);
+			$this->set("isPaged", true);
+			$this->set("userCountsUnpaidOnly", false);
+		} else {
+			$this->set("mainTitle", $job->name . "'s Unpaid Payroll Hours");
+			$this->set("subTitle", "This shows " .$job->name . "'s payroll hours, unpaid only.");
+			$payrolls = $pays;
+			$this->set("isPaged", false);
+			$this->set("userCountsUnpaidOnly", true);
+		}
 
 		$this->set("userCounts", true);
 		$this->set("multiUser", true);
 		$this->set(compact('payrolls'));
+		$this->render("index");
+	}
+
+
+
+	/*
+	                                  oooo            .o8       
+	                                  `888           "888       
+	 ooo. .oo.  .oo.   oooo    ooo     888  .ooooo.   888oooo.  
+	 `888P"Y88bP"Y88b   `88.  .8'      888 d88' `88b  d88' `88b 
+	  888   888   888    `88..8'       888 888   888  888   888 
+	  888   888   888     `888'        888 888   888  888   888 
+	 o888o o888o o888o     .8'     .o. 88P `Y8bod8P'  `Y8bod8P' 
+	                   .o..P'      `Y888P                       
+	                   `Y8P'                                    
+	*/
+	public function myjob($jobID, $unpaid = null)
+	{
+		$job = $this->loadModel("Jobs")->get($jobID);
+
+		$this->set('crumby', [
+			["/", __("Dashboard")],
+			["/payrolls/", __("Hours")],
+			[null, "Your " . $job->name . "'s Hours" . ( !is_null($unpaid) ? " - Unpaid" : "")]
+		]);
+
+		$where = [ 
+			"user_id" => $this->Auth->User("id"),
+			"job_id" => $job->id
+		];
+
+		if ( !is_null($unpaid) ) {
+			$where[] = [ "is_paid" => 0 ];
+		}
+
+		$pays = $this->Payrolls->find("listDetail")->where($where);
+
+		$this->set("userTotals", $this->Payrolls->find('userTotals')->where(['job_id'=>$jobID])->indexBy('user_id')->toArray());
+			
+		if ( is_null($unpaid) ) {
+			$this->set("mainTitle", "Your Payroll Hours for " . $job->name);
+			$this->set("subTitle", "This shows your payroll hours for " .$job->name . ", both paid and unpaid.");
+			$payrolls = $this->paginate($pays);
+			$this->set("isPaged", true);
+			$this->set("userCountsUnpaidOnly", false);
+		} else {
+			$this->set("mainTitle", "Your unpaid Payroll Hours for " . $job->name);
+			$this->set("subTitle", "This shows your payroll hours for " .$job->name . ", unpaid only.");
+			$payrolls = $pays;
+			$this->set("isPaged", false);
+			$this->set("userCountsUnpaidOnly", true);
+		}
+
+		$this->set("userCounts", true);
+		$this->set("multiUser", true);
+		$this->set(compact('payrolls'));
+		$this->render("index");
+	}
+
+
+
+	/*
+	                                        .o8                .             
+	                                       "888              .o8             
+	 oo.ooooo.   .oooo.   oooo    ooo  .oooo888   .oooo.   .o888oo  .ooooo.  
+	  888' `88b `P  )88b   `88.  .8'  d88' `888  `P  )88b    888   d88' `88b 
+	  888   888  .oP"888    `88..8'   888   888   .oP"888    888   888ooo888 
+	  888   888 d8(  888     `888'    888   888  d8(  888    888 . 888    .o 
+	  888bod8P' `Y888""8o     .8'     `Y8bod88P" `Y888""8o   "888" `Y8bod8P' 
+	  888                 .o..P'                                             
+	 o888o                `Y8P'                                              
+	*/
+	public function paydate($date = null, $unpaid = null)
+	{
+		if ( !$this->Auth->user('is_admin') ) {
+			$this->redirect(["action" => "mypaydate"]);
+		}
+
+		if ( is_null($date) ) {
+			$this->set('crumby', [
+				["/", __("Dashboard")],
+				["/payrolls/", __("Hours")],
+				[null, "List by Payroll Date"]
+			]);
+
+			if ($this->request->is('post')) {
+				$action = [
+					"action" => "paydate",
+					$this->request->getData('due_payroll_paid')
+				];
+				if ( $this->request->getData('unpaid') ) { $action[] = "unpaid"; }
+				return $this->redirect($action);
+			}
+		} else {
+			$this->set('crumby', [
+				["/", __("Dashboard")],
+				["/payrolls/", __("Hours")],
+				["/payrolls/paydate/", "List by Payroll Date"],
+				[null, $date]
+			]);
+	
+			$jobs = $this->loadModel("Jobs")->findByDuePayrollPaid($date)->select(["id"]);
+
+			$this->set('jobs', $jobs);
+	
+			$where = [ "job_id IN" => $jobs ];
+	
+			if ( !is_null($unpaid) ) {
+				$where[] = [ "is_paid" => 0 ];
+			}
+	
+			$pays = $this->Payrolls->find("listDetail")->where($where);
+	
+			$this->set("userTotals", $this->Payrolls->find('userTotals')->where(['job_id IN'=>$jobs])->indexBy('user_id')->toArray());
+				
+			if ( is_null($unpaid) ) {
+				$this->set("mainTitle", $date . " Pay Date Payroll Hours");
+				$this->set("subTitle", "This shows payroll hours, both paid and unpaid for the ". $date . " pay date");
+				$payrolls = $this->paginate($pays);
+				$this->set("isPaged", true);
+				$this->set("userCountsUnpaidOnly", false);
+			} else {
+				$this->set("mainTitle", $date . " Pay Date Unpaid Payroll Hours");
+				$this->set("subTitle", "This shows unpaid payroll hours for the ". $date . " pay date");
+				$payrolls = $pays;
+				$this->set("isPaged", false);
+				$this->set("userCountsUnpaidOnly", true);
+			}
+	
+			$this->set("userCounts", true);
+			$this->set("multiUser", true);
+			$this->set(compact('payrolls'));
+			$this->render("index");
+		}
+	}
+
+
+
+	/*
+	       .o8                .                      
+	      "888              .o8                      
+	  .oooo888   .oooo.   .o888oo  .ooooo.   .oooo.o 
+	 d88' `888  `P  )88b    888   d88' `88b d88(  "8 
+	 888   888   .oP"888    888   888ooo888 `"Y88b.  
+	 888   888  d8(  888    888 . 888    .o o.  )88b 
+	 `Y8bod88P" `Y888""8o   "888" `Y8bod8P' 8""888P' 
+	*/
+	public function dates($start = null, $end = null, $unpaid = null)
+	{
+		if ( !$this->Auth->user('is_admin') ) {
+			$this->redirect(["action" => "mydates"]);
+		}
+
+		if ( is_null($start) || is_null($end) ) {
+			$this->set('crumby', [
+				["/", __("Dashboard")],
+				["/payrolls/", __("Hours")],
+				[null, "List by Date Range"]
+			]);
+
+			if ($this->request->is('post')) {
+				$action = [
+					"action" => "dates",
+					$this->request->getData('date_start'),
+					$this->request->getData('date_end'),
+
+				];
+				if ( $this->request->getData('unpaid') ) { $action[] = "unpaid"; }
+				return $this->redirect($action);
+			}
+		} else {
+			$this->set('crumby', [
+				["/", __("Dashboard")],
+				["/payrolls/", __("Hours")],
+				["/payrolls/dates/", "List by Date Range"],
+				[null, $start . " through " . $end]
+			]);
+	
+			$where = [ 
+				"date_worked >=" => $start,
+				"date_worked <=" => $end
+			 ];
+	
+			if ( !is_null($unpaid) ) {
+				$where[] = [ "is_paid" => 0 ];
+			}
+	
+			$pays = $this->Payrolls->find("listDetail")->where($where);
+	
+			$this->set("userTotals", $this->Payrolls->find('userTotals')->where(["date_worked >=" => $start, "date_worked <=" => $end])->indexBy('user_id')->toArray());
+				
+			if ( is_null($unpaid) ) {
+				$this->set("mainTitle", "Date Range: " . $start . " through " . $end . " Payroll Hours");
+				$this->set("subTitle", "This shows payroll hours, both paid and unpaid for the date range ". $start . " through " . $end . ".");
+				$payrolls = $this->paginate($pays);
+				$this->set("isPaged", true);
+				$this->set("userCountsUnpaidOnly", false);
+			} else {
+				$this->set("mainTitle", "Date Range: " . $start . " through " . $end . " Unpaid Payroll Hours");
+				$this->set("subTitle", "This shows unpaid payroll hours for the date range ". $start . " through " . $end . ".");
+				$payrolls = $pays;
+				$this->set("isPaged", false);
+				$this->set("userCountsUnpaidOnly", true);
+			}
+	
+			$this->set("userCounts", true);
+			$this->set("multiUser", true);
+			$this->set(compact('payrolls'));
+			$this->render("index");
+		}
+	}
+
+
+
+/*
+                                     .o8                .                      
+                                    "888              .o8                      
+ ooo. .oo.  .oo.   oooo    ooo  .oooo888   .oooo.   .o888oo  .ooooo.   .oooo.o 
+ `888P"Y88bP"Y88b   `88.  .8'  d88' `888  `P  )88b    888   d88' `88b d88(  "8 
+  888   888   888    `88..8'   888   888   .oP"888    888   888ooo888 `"Y88b.  
+  888   888   888     `888'    888   888  d8(  888    888 . 888    .o o.  )88b 
+ o888o o888o o888o     .8'     `Y8bod88P" `Y888""8o   "888" `Y8bod8P' 8""888P' 
+                   .o..P'                                                      
+                   `Y8P'                                                       
+*/
+	public function mydates($start = null, $end = null, $unpaid = null)
+	{
+		if ( is_null($start) || is_null($end) ) {
+			$this->set('crumby', [
+				["/", __("Dashboard")],
+				["/payrolls/", __("Hours")],
+				[null, "List by Date Range"]
+			]);
+
+			if ($this->request->is('post')) {
+				$action = [
+					"action" => "mydates",
+					$this->request->getData('date_start'),
+					$this->request->getData('date_end'),
+
+				];
+				if ( $this->request->getData('unpaid') ) { $action[] = "unpaid"; }
+				return $this->redirect($action);
+			}
+			$this->render("dates");
+		} else {
+			$this->set('crumby', [
+				["/", __("Dashboard")],
+				["/payrolls/", __("Hours")],
+				["/payrolls/dates/", "List by Date Range"],
+				[null, $start . " through " . $end]
+			]);
+	
+			$where = [ 
+				"date_worked >=" => $start,
+				"date_worked <=" => $end,
+				"user_id" => $this->Auth->user("id")
+			 ];
+	
+			if ( !is_null($unpaid) ) {
+				$where[] = [ "is_paid" => 0 ];
+			}
+	
+			$pays = $this->Payrolls->find("listDetail")->where($where);
+	
+			$this->set("userTotals", $this->Payrolls->find('userTotals')->where(["date_worked >=" => $start, "date_worked <=" => $end])->indexBy('user_id')->toArray());
+				
+			if ( is_null($unpaid) ) {
+				$this->set("mainTitle", "Your Date Range: " . $start . " through " . $end . " Payroll Hours");
+				$this->set("subTitle", "This shows your payroll hours, both paid and unpaid for the date range ". $start . " through " . $end . ".");
+				$payrolls = $this->paginate($pays);
+				$this->set("isPaged", true);
+				$this->set("userCountsUnpaidOnly", false);
+			} else {
+				$this->set("mainTitle", "Your Date Range: " . $start . " through " . $end . " Unpaid Payroll Hours");
+				$this->set("subTitle", "This shows your unpaid payroll hours for the date range ". $start . " through " . $end . ".");
+				$payrolls = $pays;
+				$this->set("isPaged", false);
+				$this->set("userCountsUnpaidOnly", true);
+			}
+	
+			$this->set("userCounts", true);
+			$this->set("multiUser", false);
+			$this->set(compact('payrolls'));
+			$this->render("index");
+		}
+	}
+
+
+
+	/*
+	                                                                      .o8                .             
+	                                                                     "888              .o8             
+	 ooo. .oo.  .oo.   oooo    ooo oo.ooooo.   .oooo.   oooo    ooo  .oooo888   .oooo.   .o888oo  .ooooo.  
+	 `888P"Y88bP"Y88b   `88.  .8'   888' `88b `P  )88b   `88.  .8'  d88' `888  `P  )88b    888   d88' `88b 
+	  888   888   888    `88..8'    888   888  .oP"888    `88..8'   888   888   .oP"888    888   888ooo888 
+	  888   888   888     `888'     888   888 d8(  888     `888'    888   888  d8(  888    888 . 888    .o 
+	 o888o o888o o888o     .8'      888bod8P' `Y888""8o     .8'     `Y8bod88P" `Y888""8o   "888" `Y8bod8P' 
+	                   .o..P'       888                 .o..P'                                             
+	                   `Y8P'       o888o                `Y8P'                                              
+	*/
+	public function mypaydate($date = null, $unpaid = null)
+	{
+		if ( is_null($date) ) {
+			$this->set('crumby', [
+				["/", __("Dashboard")],
+				["/payrolls/", __("Hours")],
+				[null, "List by Payroll Date"]
+			]);
+
+			if ($this->request->is('post')) {
+				$action = [
+					"action" => "mypaydate",
+					$this->request->getData('due_payroll_paid')
+				];
+				if ( $this->request->getData('unpaid') ) { $action[] = "unpaid"; }
+				return $this->redirect($action);
+			}
+			$this->render("paydate");
+		} else {
+			$this->set('crumby', [
+				["/", __("Dashboard")],
+				["/payrolls/", __("Hours")],
+				["/payrolls/mypaydate/", "List by Payroll Date"],
+				[null, $date]
+			]);
+	
+			$jobs = $this->loadModel("Jobs")->findByDuePayrollPaid($date)->select(["id"]);
+
+			$this->set('jobs', $jobs);
+	
+			$where = [ "job_id IN" => $jobs, "user_id" => $this->Auth->user("id") ];
+	
+			if ( !is_null($unpaid) ) {
+				$where[] = [ "is_paid" => 0 ];
+			}
+	
+			$pays = $this->Payrolls->find("listDetail")->where($where);
+	
+			$this->set("userTotals", $this->Payrolls->find('userTotals')->where(['job_id IN'=>$jobs])->indexBy('user_id')->toArray());
+				
+			if ( is_null($unpaid) ) {
+				$this->set("mainTitle", "Your " . $date . " Pay Date Payroll Hours");
+				$this->set("subTitle", "This shows your payroll hours, both paid and unpaid for the ". $date . " pay date");
+				$payrolls = $this->paginate($pays);
+				$this->set("isPaged", true);
+				$this->set("userCountsUnpaidOnly", false);
+			} else {
+				$this->set("mainTitle", "Your " . $date . " Pay Date Unpaid Payroll Hours");
+				$this->set("subTitle", "This shows your unpaid payroll hours for the ". $date . " pay date");
+				$payrolls = $pays;
+				$this->set("isPaged", false);
+				$this->set("userCountsUnpaidOnly", true);
+			}
+	
+			$this->set("userCounts", true);
+			$this->set("multiUser", false);
+			$this->set(compact('payrolls'));
+			$this->render("index");
+		}
 	}
 
 

@@ -2,6 +2,11 @@
 	<h3><?= h($user->first) . " " . h($user->last) ?></h3>
 	<div class='btn-group btn-group-sm-vertical w-100 mb-3'>
 	<?= $this->Html->link(
+		$this->Pretty->iconUnpaid($user->username) . "View Payroll",
+		['controller' => 'payrolls', 'action' => 'user', $user->id],
+		['escape' => false, 'class' => 'text-left text-md-center w-100 btn btn-outline-danger']
+	) ?>
+	<?= $this->Html->link(
 		$this->Pretty->iconEdit($user->username) . "Edit User",
 		['action' => 'edit', $user->id],
 		['escape' => false, 'class' => 'text-left text-md-center w-100 btn btn-outline-dark']

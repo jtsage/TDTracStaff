@@ -37,6 +37,8 @@
 				'on-color' => 'success',
 				'off-color' => 'danger'
 			]);
+		?><div style="border-bottom: 1px dashed #ccc;" class="mt-4 mb-2"><h5>Job Notes</h5></div><?php
+			echo $this->Form->control('notes', ["rows" => 20]);
 		?>
 	</fieldset>
 	<?= $this->Form->button($this->Pretty->iconSave("") . __('Save Job'), ["class" => "w-100 btn-lg btn-outline-success"]) ?>

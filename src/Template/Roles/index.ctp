@@ -42,11 +42,17 @@
 						['action' => 'edit', $role->id],
 						['class' => 'w-100 text-left text-md-center btn btn-outline-success btn-sm']
 					) .
-					$this->Form->postLink(
-						$this->HtmlExt->icon("delete") . "&nbsp;Remove",
-						['action' => 'delete', $role->id],
-						['escape' => false, 'confirm' => __('Are you sure you want to delete # {0}?', $role->id), 'class' => 'text-left text-md-center btn btn-outline-danger btn-sm w-100']
-					) ?>
+					$this->HtmlExt->iconBtnLink(
+						"delete", "Remove",
+						"#",
+						[
+							'data-id'      => $role->id,
+							'data-msg'     => "Are you sure you wish to delete the title '" . $role->title . "'?",
+							'data-control' => 'roles',
+							'class'        => "deleteBtn w-100 text-left text-md-center btn btn-outline-danger btn-sm"
+						]
+					);
+					?>
 				</div></td>
 			</tr>
 			<?php endforeach; ?>

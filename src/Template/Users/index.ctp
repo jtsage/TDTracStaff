@@ -56,10 +56,15 @@
 					['action' => 'roles', $user->id],
 					['class' => 'btn btn-outline-purp btn-sm text-left']
 				) .
-				$this->Form->postLink(
-					$this->HtmlExt->icon("account-minus") . " Remove",
-					['action' => 'delete', $user->id],
-					['escape' => false, 'confirm' => __('Are you sure you want to delete # {0}?', $user->id), 'class' => 'btn btn-outline-danger btn-sm text-left']
+				$this->HtmlExt->iconBtnLink(
+					"delete", "Remove",
+					"#",
+					[
+						'data-id'      => $user->id,
+						'data-msg'     => "Are you sure you wish to delete the title '" . $user->first . " " . $user->last . "'?",
+						'data-control' => 'users',
+						'class'        => "deleteBtn w-100 text-left btn btn-outline-danger btn-sm"
+					]
 				) .
 				'</div>',
 				['class' => 'w-25 text-center']

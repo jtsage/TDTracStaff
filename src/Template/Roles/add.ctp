@@ -4,8 +4,9 @@
  * @var \App\Model\Entity\Role $role
  */
 ?>
-<h3>Add New Worker Title</h3>
-<div class="roles form large-9 medium-8 columns content">
+<div class="card p-3 rounded border shadow-sm mb-2">
+	<h3 class="text-dark mb-4">Add New Worker Title</h3>
+
 	<?= $this->Form->create($role) ?>
 	<fieldset>
 		<?php
@@ -14,7 +15,7 @@
 			echo $this->Form->control('sort_order', ["label" => "Sort"]);
 		?>
 	</fieldset>
-	<?= $this->Form->button($this->Pretty->iconAdd("") . __('Add Worker Title'), ["class" => "w-100 btn-lg btn-outline-success"]) ?>
+	<?= $this->Form->button($this->HtmlExt->icon("content-save") . __(' Add Worker Title'), ["class" => "w-100 btn-lg btn-outline-success"]) ?>
 	<?= $this->Form->end() ?>
 </div>
 

@@ -377,7 +377,7 @@ class UsersController extends AppController
 			$this->Flash->error(__('You may not delete users'));
 			return $this->redirect(['action' => 'view', $this->Auth->user('id')]);
 		}
-		$this->request->allowMethod(['post', 'delete']);
+		
 		$user = $this->Users->get($id);
 		if ($this->Users->delete($user)) {
 			$this->Flash->success(__('The user has been deleted.'));

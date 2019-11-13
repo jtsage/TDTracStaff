@@ -59,6 +59,7 @@ $user = $this->request->getSession()->read('Auth.User');
 			echo $this->Html->script('popper.min.js');
 
 			echo $this->Html->script('bootstrap.min.js');
+			echo $this->Html->script('bootbox.min.js');
 			echo $this->Html->script('validator.min');
 			echo $this->Html->script('jtsage-datebox.min.js');
 			echo $this->Html->script('tdtrac-staffer');

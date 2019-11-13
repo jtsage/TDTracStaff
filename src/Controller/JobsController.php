@@ -98,6 +98,7 @@ class JobsController extends AppController
 		$jobs = $this->paginate($jobFind);
 
 		$this->set("subtitle", "Qualified For");
+		$this->set("subtext", "This display shows those shows that you have the required training for - please make sure to indicate your availability if you have not already.");
 		$this->set(compact('jobs'));
 		$this->render("index");
 	}
@@ -137,6 +138,7 @@ class JobsController extends AppController
 		$jobs = $this->paginate($jobFind);
 
 		$this->set("subtitle", "Scheduled For");
+		$this->set("subtext", "This display shows those shows that you have been scheduled to work, as approved by the administrator(s).");
 		$this->set(compact('jobs'));
 		$this->render("index");
 	}
@@ -346,7 +348,7 @@ class JobsController extends AppController
 			$this->Flash->error("Sorry, you do not have access to this module.");
 			$this->redirect(["action" => "index"]);
 		}
-		$this->request->allowMethod(['post', 'delete']);
+		
 		$job = $this->Jobs->get($id);
 		if ($this->Jobs->delete($job)) {
 			$this->Flash->success(__('The job has been deleted.'));

@@ -3,9 +3,9 @@ $(document).ready(function() {
 		$('#sidebar').toggleClass('active');
 	});
 	
-	$(".bootcheck").each(function() {
-		$(this).bootstrapSwitch();
-	});
+	// $(".bootcheck").each(function() {
+	// 	$(this).bootstrapSwitch();
+	// });
 
 	$('input[type="text"]').each(function() {
 		$(this).after($('<div class="help-block with-errors"></div>'));
@@ -16,9 +16,25 @@ $(document).ready(function() {
 			container: 'body'
 		});
 	});
-	
-	$('[role="alert"].error').addClass('alert alert-warning');
 
+	$( ".deleteBtn" ).on( "click", function () {
+		var thisEle = $(this).data(),
+			startScroll = $(document).scrollTop();
+
+		bootbox.confirm({ 
+			message: thisEle.msg,
+			centerVertical : true,
+			callback: function(result) { 
+				if ( result ) {
+					window.location.href = location.protocol + "//" + location.host + "/" + thisEle.control + "/delete/" + thisEle.id;
+				} else {
+					$(document).scrollTop(startScroll);
+				}
+			}
+		});
+	});
+
+	
 	function do_rep() {
 		var cur_pass = $('#password').val(),
 			cur_user = $('#username').val(),

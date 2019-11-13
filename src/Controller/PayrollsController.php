@@ -750,7 +750,7 @@ class PayrollsController extends AppController
 	*/
 	public function delete($id = null)
 	{
-		$this->request->allowMethod(['post', 'delete']);
+		
 		$payroll = $this->Payrolls->get($id);
 		if ($this->Payrolls->delete($payroll)) {
 			$this->Flash->success(__('The payroll has been deleted.'));

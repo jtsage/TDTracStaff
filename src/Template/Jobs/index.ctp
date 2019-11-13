@@ -5,40 +5,44 @@
  */
 ?>
 
-<h2>Job List<?= !empty($subtitle) ? " - " . $subtitle : "" ?></h2>
+<div class="card p-3 rounded border shadow-sm mb-2">
+	<h3 class="text-dark mb-4">Job List<?= !empty($subtitle) ? " - " . $subtitle : "" ?></h3>
 
-<?php if (empty($subtitle)) : ?>
-<p>Full list of jobs. Regular users see open, active jobs (upcoming).  Administrators see the full history of jobs. Active jobs allow changes to needed or assigned staff. Inactive, Open jobs allow changes to payroll only.  Closed jobs provide historical data only. </p>
-<?php endif; ?>
+	<?php if (empty($subtitle)) : ?>
+	<p>Full list of jobs. Regular users see open, active jobs (upcoming).  Administrators see the full history of jobs. Active jobs allow changes to needed or assigned staff. Inactive, Open jobs allow changes to payroll only.  Closed jobs provide historical data only. </p>
+	<?php elseif ( !empty($subtext)) : ?>
+	<p><?= $subtext ?></p>
+	<?php endif; ?>
 
-<?php if ( $WhoAmI && empty($subtitle) ) : ?>
-<?= $this->Html->link(
-	$this->Pretty->iconAdd("") . 'Add New Job',
-	['action' => 'add'],
-	['escape' => false, 'class' => 'btn btn-outline-success w-100 mb-3 btn-lg']
-) ?>
-<?php endif; ?>
+	<?php if ( $WhoAmI && empty($subtitle) ) : ?>
+	<?= $this->Html->link(
+		$this->Pretty->iconAdd("") . 'Add New Job',
+		['action' => 'add'],
+		['escape' => false, 'class' => 'btn btn-outline-success w-100 mb-3 btn-lg']
+	) ?>
+	<?php endif; ?>
 
-<div class="btn-group btn-group-sm-vertical w-100 mb-3">
-<?= $this->Html->link(
-	$this->Pretty->iconView("") . 'View All Jobs ',
-	['action' => 'index'],
-	['escape' => false, 'class' => 'w-100 btn btn-outline-dark']
-) ?>
-<?= $this->Html->link(
-	$this->Pretty->iconView("") . 'View Qualifying Jobs ',
-	['action'=> 'myjobs'],
-	['escape' => false, 'class' => 'w-100 btn btn-outline-dark']
-) ?>
-<?= $this->Html->link(
-	$this->Pretty->iconView("") . 'View Scheduled Jobs',
-	['action' => 'mysched'],
-	['escape' => false, 'class' => 'w-100 btn btn-outline-dark']
-) ?>
+	<div class="btn-group btn-group-sm-vertical w-100 mb-3">
+	<?= $this->Html->link(
+		$this->Pretty->iconView("") . 'View All Jobs ',
+		['action' => 'index'],
+		['escape' => false, 'class' => 'w-100 btn btn-outline-dark']
+	) ?>
+	<?= $this->Html->link(
+		$this->Pretty->iconView("") . 'View Qualifying Jobs ',
+		['action'=> 'myjobs'],
+		['escape' => false, 'class' => 'w-100 btn btn-outline-dark']
+	) ?>
+	<?= $this->Html->link(
+		$this->Pretty->iconView("") . 'View Scheduled Jobs',
+		['action' => 'mysched'],
+		['escape' => false, 'class' => 'w-100 btn btn-outline-dark']
+	) ?>
+	</div>
 </div>
 
-<div class="mb-2 mt-4" style="border-bottom: 1px dashed #ccc;"><h4>Sort Order</h4></div>
-<ul class="breadcrumb">
+<ul class="bg-white border shadow-sm breadcrumb">
+	<li class="breadcrumb-item text-dark font-weight-bold">Sort Order</li>
 	<li class="breadcrumb-item"><?= $this->Paginator->sort('name') ?></li>
 	<li class="breadcrumb-item"><?= $this->Paginator->sort('category') ?></li>
 	<li class="breadcrumb-item"><?= $this->Paginator->sort('location') ?></li>
@@ -47,7 +51,7 @@
 	<li class="breadcrumb-item"><?= $this->Paginator->sort('due_payroll_paid', "Check Date") ?></li>
 </ul>
 
-<div class="mb-2 mt-4" style="border-bottom: 1px dashed #ccc;"><h4>Job Details</h4></div>
+
 
 <?php foreach ($jobs as $job): ?>
 	<?php
@@ -98,28 +102,28 @@
 			}
 		}
 	?>
-	<div class="border mb-2 p-3">
+	<div class="card p-3 rounded border shadow-sm mb-2">
 		<div class="row">
 			<div class="col-md-9 m-0">
-				<h5><?= $job->category . ": " . $job->name ?>
+				<h5 class="text-dark"><?= $job->category . ": " . $job->name ?>
 					<?php if ( $WhoAmI ) : ?>
-						<a href="#" data-change="active" data-name="<?= $job->name ?>" data-job="<?= $job->id ?>" class="act-<?= $job->id ?> clickOpenAct pull-right badge badge-pill badge-<?= $actStyle[0] ?>"><?= $actStyle[1] ?></a>
-						<a href="#" data-change="open" data-name="<?= $job->name ?>" data-job="<?= $job->id ?>" class="open-<?= $job->id ?> clickOpenAct pull-right badge badge-pill badge-<?= $openStyle[0] ?>"><?= $openStyle[1] ?></a>
+						<a href="#" data-change="active" data-name="<?= $job->name ?>" data-job="<?= $job->id ?>" class="act-<?= $job->id ?> clickOpenAct float-right badge ml-1 badge-<?= $actStyle[0] ?>"><?= $actStyle[1] ?></a>
+						<a href="#" data-change="open" data-name="<?= $job->name ?>" data-job="<?= $job->id ?>" class="open-<?= $job->id ?> clickOpenAct float-right badge ml-1 badge-<?= $openStyle[0] ?>"><?= $openStyle[1] ?></a>
 					<?php else : ?>
-						<span class="pull-right badge badge-pill badge-<?= $actStyle[0] ?>"><?= $actStyle[1] ?></span>
-						<span class="pull-right badge badge-pill badge-<?= $openStyle[0] ?>"><?= $openStyle[1] ?></span>
+						<span class="float-right badge ml-1 badge-<?= $actStyle[0] ?>"><?= $actStyle[1] ?></span>
+						<span class="float-right badge ml-1 badge-<?= $openStyle[0] ?>"><?= $openStyle[1] ?></span>
 					<?php endif; ?>
 				</h5>
 
 				<?php if ( $WhoAmI ) : ?>
-					<div class="border progress mb-md-1" title="<?= $total_Assigned ?> staff assigned to <?= $total_Needed ?> positions" style="height: 14px">
-						<div class="progress-bar progress-bar-striped bg-info text-dark font-weight-bold" role="progressbar" style="width: <?= $percent_Done ?>%" aria-valuenow="<?= $percent_Done ?>" aria-valuemin="0" aria-valuemax="100"><?= $percent_Done ?>% Staffed</div>
+					<div class="border progress mb-md-1" title="<?= $total_Assigned ?> staff assigned to <?= $total_Needed ?> positions">
+						<div class="progress-bar progress-bar-striped bg-purp " role="progressbar" style="width: <?= $percent_Done ?>%" aria-valuenow="<?= $percent_Done ?>" aria-valuemin="0" aria-valuemax="100"><?= $percent_Done ?>% Staffed</div>
 					</div>
 					<div class="text-muted text-center d-md-none mb-2"><?= $total_Assigned ?> staff assigned to <?= $total_Needed ?> positions</div>
 				<?php endif; ?>
 
-				<div class="border progress mb-md-2" title="<?= $pay_Paid ?> hours paid out of <?= $pay_Total ?> total" style="height: 14px">
-					<div class="progress-bar progress-bar-striped bg-danger text-dark font-weight-bold" role="progressbar" style="width: <?= $pay_Percent ?>%" aria-valuenow="<?= $pay_Percent ?>" aria-valuemin="0" aria-valuemax="100"><?= $pay_Percent ?>% <?= ($WhoAmI?"Total":"") ?> Paid</div>
+				<div class="border progress mb-md-2" title="<?= $pay_Paid ?> hours paid out of <?= $pay_Total ?> total">
+					<div class="progress-bar progress-bar-striped bg-info " role="progressbar" style="width: <?= $pay_Percent ?>%" aria-valuenow="<?= $pay_Percent ?>" aria-valuemin="0" aria-valuemax="100"><?= $pay_Percent ?>% <?= ($WhoAmI?"Total":"") ?> Paid</div>
 				</div>
 				<div class="text-muted text-center d-md-none mb-2"><?= $pay_Paid ?> hours paid out of <?= $pay_Total ?> total</div>
 
@@ -212,17 +216,19 @@
 <?php endforeach; ?>
 
 
-
-<div class="paginator">
-	<ul class="pagination">
-		<?= $this->Paginator->first('<< ' . __('first')) ?>
-		<?= $this->Paginator->prev('< ' . __('previous')) ?>
-		<?= $this->Paginator->numbers() ?>
-		<?= $this->Paginator->next(__('next') . ' >') ?>
-		<?= $this->Paginator->last(__('last') . ' >>') ?>
-	</ul>
-	<p><?= $this->Paginator->counter(['format' => __('Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} total')]) ?></p>
+<div class="card rounded border p-2 shadow-sm">
+	<div class="paginator">
+		<ul class="pagination justify-content-center mb-2">
+			<?= $this->Paginator->first('<< ' . __('first')) ?>
+			<?= $this->Paginator->prev('< ' . __('previous')) ?>
+			<?= $this->Paginator->numbers() ?>
+			<?= $this->Paginator->next(__('next') . ' >') ?>
+			<?= $this->Paginator->last(__('last') . ' >>') ?>
+		</ul>
+		<p class="text-center text-muted small m-0"><?= $this->Paginator->counter(['format' => __('Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} total')]) ?></p>
+	</div>
 </div>
+
 
 <?= $this->Pretty->helpMeStart("Job List"); ?>
 

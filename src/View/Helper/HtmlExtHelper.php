@@ -31,7 +31,7 @@ class HtmlExtHelper extends Helper
 		$options = array_merge($defOpt, $options);
 
 		return $this->Html->link(
-			HtmlExtHelper::icon($icon) . " " . $text,
+			HtmlExtHelper::icon($icon) . "&nbsp;" . $text,
 			$link,
 			$options
 		);

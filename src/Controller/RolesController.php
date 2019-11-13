@@ -54,8 +54,15 @@ class RolesController extends AppController
 			$this->Flash->error("Sorry, you do not have access to this module.");
 			$this->redirect(["controller" => "jobs", "action" => "index"]);
 		}
+
 		$role = $this->Roles->get($id, [
 			'contain' => ['Jobs', 'Users', 'UsersJobs']
+		]);
+
+		$this->set('crumby', [
+			["/", __("Dashboard")],
+			["/roles/", __("Worker Titles")],
+			[null, $role->title]
 		]);
 
 		$this->set('role', $role);
@@ -86,15 +93,13 @@ class RolesController extends AppController
 		if ($this->request->is('post')) {
 			$role = $this->Roles->patchEntity($role, $this->request->getData());
 			if ($this->Roles->save($role)) {
-				$this->Flash->success(__('The role has been saved.'));
+				$this->Flash->success(__('The employee title has been saved.'));
 
 				return $this->redirect(['action' => 'index']);
 			}
-			$this->Flash->error(__('The role could not be saved. Please, try again.'));
+			$this->Flash->error(__('The employee title could not be saved. Please, try again.'));
 		}
-		$jobs = $this->Roles->Jobs->find('list', ['limit' => 200]);
-		$users = $this->Roles->Users->find('list', ['limit' => 200]);
-		$this->set(compact('role', 'jobs', 'users'));
+		$this->set(compact('role'));
 	}
 
 
@@ -113,26 +118,28 @@ class RolesController extends AppController
 			$this->Flash->error("Sorry, you do not have access to this module.");
 			$this->redirect(["controller" => "jobs", "action" => "index"]);
 		}
-		$this->set('crumby', [
-			["/", __("Dashboard")],
-			["/roles/", __("Worker Titles")],
-			[null, __("Edit Worker Title")]
-		]);
+		
 		$role = $this->Roles->get($id, [
 			'contain' => ['Jobs', 'Users']
 		]);
+
+		$this->set('crumby', [
+			["/", __("Dashboard")],
+			["/roles/", __("Worker Titles")],
+			["/roles/view/" . $role->id, $role->title],
+			[null, __("Edit")]
+		]);
+
 		if ($this->request->is(['patch', 'post', 'put'])) {
 			$role = $this->Roles->patchEntity($role, $this->request->getData());
 			if ($this->Roles->save($role)) {
-				$this->Flash->success(__('The role has been saved.'));
+				$this->Flash->success(__('The employee title has been saved.'));
 
 				return $this->redirect(['action' => 'index']);
 			}
-			$this->Flash->error(__('The role could not be saved. Please, try again.'));
+			$this->Flash->error(__('The employee title could not be saved. Please, try again.'));
 		}
-		$jobs = $this->Roles->Jobs->find('list', ['limit' => 200]);
-		$users = $this->Roles->Users->find('list', ['limit' => 200]);
-		$this->set(compact('role', 'jobs', 'users'));
+		$this->set(compact('role'));
 	}
 
 
@@ -152,12 +159,12 @@ class RolesController extends AppController
 			$this->Flash->error("Sorry, you do not have access to this module.");
 			$this->redirect(["controller" => "jobs", "action" => "index"]);
 		}
-		$this->request->allowMethod(['post', 'delete']);
+		
 		$role = $this->Roles->get($id);
 		if ($this->Roles->delete($role)) {
-			$this->Flash->success(__('The role has been deleted.'));
+			$this->Flash->success(__('The employee title has been deleted.'));
 		} else {
-			$this->Flash->error(__('The role could not be deleted. Please, try again.'));
+			$this->Flash->error(__('The employee title could not be deleted. Please, try again.'));
 		}
 
 		return $this->redirect(['action' => 'index']);

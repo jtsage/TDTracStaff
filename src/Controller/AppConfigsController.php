@@ -34,7 +34,7 @@ class AppConfigsController extends AppController
 				"key_name" => "ASC"
 			]);
 
-		$appConfigs = $this->paginate($configs);
+		$appConfigs = $configs;
 
 		$this->set('crumby', [
 			["/", __("Dashboard")],
@@ -140,7 +140,7 @@ class AppConfigsController extends AppController
 		$this->set('crumby', [
 			["/", __("Dashboard")],
 			["/app-configs", __("Application Configuration")],
-			["/app-configs/" . $appConfig->id, $appConfig->key_name],
+			["/app-configs/view/" . $appConfig->id, $appConfig->key_name],
 			[null, "Edit Value"]
 		]);
 	}

@@ -158,7 +158,7 @@ class UsersController extends AppController
 			$this->set('crumby', [
 				["/", __("Dashboard")],
 				["/users/", __("Users")],
-				[null, __("View User")]
+				[null, $user->first . " " . $user->last]
 			]);
 		} else {
 			$this->set('crumby', [
@@ -631,10 +631,12 @@ class UsersController extends AppController
 			$inserts = [];
 			foreach ( $this->request->getData("role") as $roleID ) {
 				$inserts[] = [
-					'user_id'        => $id,
-					'role_id'       => $roleID
+					'user_id' => $id,
+					'role_id' => $roleID
 				];
 			}
+			//debug($inserts);
+			//debug($this->request->getData());
 			$this->loadModel("UsersRoles");
 
 			$this->UsersRoles->deleteAll([

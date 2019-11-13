@@ -4,48 +4,43 @@
  * @var \App\Model\Entity\AppConfig[]|\Cake\Collection\CollectionInterface $appConfigs
  */
 ?>
-<h3><?= __("Application Config") ?></h3>
 
-<div class="appConfigs index large-9 medium-8 columns content">
-	<table class="table table-striped table-bordered" cellpadding="0" cellspacing="0">
+<div class="card p-3 rounded border shadow-sm mb-2">
+	<h3 class="text-dark mb-4"><?= __("Application Config") ?></h3>
+	<p class='text-dark'>This display shows all of the available configuration options for the running application.</p>
+</div>
+
+<div class="card rounded border shadow-sm">
+	<table class="table table-striped table-bordered mb-0" cellpadding="0" cellspacing="0">
 		<thead>
 			<tr>
-				<th scope="col"><?= $this->Paginator->sort('key_name', "Setting Name") ?></th>
-				<th scope="col"><?= $this->Paginator->sort('value_short', "Description") ?></th>
-				<th scope="col" class="actions"><?= __('Actions') ?></th>
+				<th scope="col">Setting Name</th>
+				<th scope="col">Description</th>
+				<th scope="col" class="text-center"><?= __('Actions') ?></th>
 			</tr>
 		</thead>
 		<tbody>
 			<?php foreach ($appConfigs as $appConfig): ?>
 			<tr>
-				<td><?= h($appConfig->key_name) ?></td>
-				<td><?= h($appConfig->value_short) ?></td>
-				<td class="actions"><div class="btn-group w-100" role="group">
-					<?= $this->Html->link(
-						$this->Pretty->iconView($appConfig->key_name) . "View",
+				<td class="align-middle"><?= h($appConfig->key_name) ?></td>
+				<td class="align-middle"><?= h($appConfig->value_short) ?></td>
+				<td class="actions"><div class="btn-group btn-group-sm-vertical w-100" role="group">
+					<?= $this->HtmlExt->iconBtnLink(
+						"eye-outline", "View",
 						['action' => 'view', $appConfig->id],
-						['escape' => false, 'class' => 'btn btn-outline-dark btn-sm']
-					) ?> 
-					<?= $this->Html->link(
-						$this->Pretty->iconEdit($appConfig->key_name) . "Edit",
+						['class' => 'btn btn-outline-dark btn-sm w-100 text-left text-md-center']
+					); ?>
+						
+					<?= $this->HtmlExt->iconBtnLink(
+						"playlist-edit", "Edit",
 						['action' => 'edit', $appConfig->id],
-						['escape' => false, 'class' => 'btn btn-outline-success btn-sm']
+						['class' => 'btn btn-outline-success btn-sm w-100 text-left text-md-center']
 					) ?>
 				</div></td>
 			</tr>
 			<?php endforeach; ?>
 		</tbody>
 	</table>
-	<div class="paginator">
-		<ul class="pagination">
-			<?= $this->Paginator->first('<< ' . __('first')) ?>
-			<?= $this->Paginator->prev('< ' . __('previous')) ?>
-			<?= $this->Paginator->numbers() ?>
-			<?= $this->Paginator->next(__('next') . ' >') ?>
-			<?= $this->Paginator->last(__('last') . ' >>') ?>
-		</ul>
-		<p><?= $this->Paginator->counter(['format' => __('Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} total')]) ?></p>
-	</div>
 </div>
 
 <?= $this->Pretty->helpMeStart("Topic Unavailable"); ?>

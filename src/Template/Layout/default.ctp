@@ -20,6 +20,8 @@ if ( $this->request->getParam('controller') == "Pages" ) {
 	$cakeDescription = 'TDTracStaff:' . $CONFIG['short-name'] . ":" . $this->fetch('title');
 }
 
+$user = $this->request->getSession()->read('Auth.User');
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -41,17 +43,18 @@ if ( $this->request->getParam('controller') == "Pages" ) {
 			 echo $this->fetch('css');
 			 echo $this->fetch('script');
 			
+			 echo $this->Html->css('https://cdn.materialdesignicons.com/4.5.95/css/materialdesignicons.min.css');
 			 echo $this->Html->css('bootstrap.min.css');
-			 echo $this->Html->css('bootstrap-switch.min');
+			 echo $this->Html->css('bootstrap4-toggle.min.css');
 			 echo $this->Html->css('tdtracx');
 			 echo $this->Html->css('typeaheadjs.min.css');
-			 echo $this->Html->css('https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css');
+			 
 
 		?>
 		<?php
 			echo $this->Html->script('jquery-3.3.1.min.js');
 			echo $this->Html->script('typeahead.bundle.min.js');
-			echo $this->Html->script('bootstrap-switch.min');
+			echo $this->Html->script('bootstrap4-toggle.min.js');
 
 			echo $this->Html->script('popper.min.js');
 
@@ -63,97 +66,126 @@ if ( $this->request->getParam('controller') == "Pages" ) {
 
 	</head>
 	<body>
+	<div class="wrapper">
+		<!-- Sidebar  -->
+		<nav id="sidebar">
+			<div class="sidebar-header">
+				<h3 class="mb-0 pb-0 text-white">TDTrac<span style="color:#C3593C">Staff</span</h3>
+			</div>
 
-	<nav class="py-0 navbar navbar-expand-lg navbar-light bg-light">
-		<a href="/" class="navbar-brand">TDTrac<span style="color:#C3593C">Staff</span><span style="color:#c39b1f"><?= $CONFIG['short-name']?></span></a>
-		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-			<span class="navbar-toggler-icon"></span>
-		</button>
+			<ul class="list-unstyled components">
+				<li>
+					<a href="/"><?= $this->HtmlExt->icon("view-dashboard") ?> Dashboard</a>
+				</li>
+				<li class="<?= ($this->request->getParam('controller') == "Jobs" ? " active":"") ?>">
+					<a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><?= $this->HtmlExt->icon("worker") ?> Jobs</a>
+					<ul class="collapse list-unstyled" id="homeSubmenu">
+						<?php if ($WhoAmI) : ?>
+							<li class="border-bottom border-dark"><a href="/jobs/">All Jobs</a></li>
+						<?php endif; ?>
+						<li><a href="/jobs/myjobs/">My Qualified Jobs</a></li>
+						<li class="border-bottom border-dark"><a href="/jobs/mysched/">My Scheduled Jobs</a></li>
+						<li><a href="/jobs/calendar/">Calendar</a></li>
+						<li><a href="/jobs/day/">Today</a></li>
+					</ul>
+				</li>
+				<li class="<?= ($this->request->getParam('controller') == "Payrolls" ? " active":"") ?>">
+					<a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><?= $this->HtmlExt->icon("cash") ?> Payroll</a>
+					<ul class="collapse list-unstyled" id="pageSubmenu">
+						<li><a class="border-bottom border-dark" href="/payrolls/add/">Add Hours</a></li>
 
-		<div class="collapse navbar-collapse" id="navbarSupportedContent">
-			<ul class="navbar-nav mr-auto">
-				<li class="nav-item <?= ($this->request->getParam('controller') == "Jobs" ? " active":"") ?> dropdown">
-					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Jobs<span class="caret"></span></a>
-					<div class="dropdown-menu">
 						<?php if ($WhoAmI) : ?>
-							<a class="dropdown-item" href="/jobs/">All Jobs</a>
-							<div class="dropdown-divider"></div>
+							<li><a href="/payrolls/">All Hours</a></li>
+							<li><a class="border-bottom border-dark" href="/payrolls/unpaid">All Unpaid Hours</a></li>
+
+							<li><a href="/payrolls/paydate/">Search by Paydate</a></li>
+							<li><a class="border-bottom border-dark" href="/payrolls/dates/">Search by Date</a></li>
 						<?php endif; ?>
-						<a class="dropdown-item" href="/jobs/myjobs/">My Qualified Jobs</a>
-						<a class="dropdown-item" href="/jobs/mysched/">My Scheduled Jobs</a>
-						<div class="dropdown-divider"></div>
-						<a class="dropdown-item" href="/jobs/calendar/">Calendar</a>
-						<a class="dropdown-item" href="/jobs/day/">Today</a>
-					</div>
+						<li><a href="/payrolls/mine/">My Hours</a></li>
+						<li><a class="border-bottom border-dark" href="/payrolls/mine/unpaid/">My Unpaid Hours</a></li>
+
+						<li><a href="/payrolls/mypaydate/">My Hours by Paydate</a></li>
+						<li><a href="/payrolls/mydates/">My Hours by Date</a></li>
+					</ul>
 				</li>
-				<li class="nav-item <?= ($this->request->getParam('controller') == "Payrolls" ? " active":"") ?> dropdown">
-					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Hours<span class="caret"></span></a>
-					<div class="dropdown-menu">
-						<a class="dropdown-item" href="/payrolls/add/">Add Hours</a>
-						<div class="dropdown-divider"></div>
-						<?php if ($WhoAmI) : ?>
-							<a class="dropdown-item" href="/payrolls/">All Hours</a>
-							<a class="dropdown-item" href="/payrolls/unpaid">All Unpaid Hours</a>
-							<div class="dropdown-divider"></div>
-							<a class="dropdown-item" href="/payrolls/paydate/">Search by Paydate</a>
-							<a class="dropdown-item" href="/payrolls/dates/">Search by Date</a>
-							<div class="dropdown-divider"></div>
-						<?php endif; ?>
-						<a class="dropdown-item" href="/payrolls/mine/">My Hours</a>
-						<a class="dropdown-item" href="/payrolls/mine/unpaid/">My Unpaid Hours</a>
-						<div class="dropdown-divider"></div>
-						<a class="dropdown-item" href="/payrolls/mypaydate/">My Hours by Paydate</a>
-						<a class="dropdown-item" href="/payrolls/mydates/">My Hours by Date</a>
-					</div>
-				</li>
-				<?= ($WhoAmI) ? "<li class='nav-item" . ($this->request->getParam('controller') == "Roles" ? " active":"") . "'><a class=\"nav-link\" href=\"/roles/\">Worker Titles</a></li>" : "" ?>
-				<li class="nav-item <?= ($this->request->getParam('controller') == "Users" ? " active":"") ?>"><a class="nav-link" href="/users/"><?= ($WhoAmI) ? __("Users") : __("My Account") ?></a></li>
-				<?= ($WhoAmI) ? "<li class='nav-item" . ($this->request->getParam('controller') == "AppConfigs" ? " active":"") . "'><a class=\"nav-link\" href=\"/app-configs/\">Configuration</a></li>" : "" ?>
-				<li class="nav-item"><a class="nav-link" href="/users/logout/"><?= __("Logout") ?></a></li>
-				<li class="nav-item"><a class="nav-link" onClick="javascript:$('#helpMeModal').modal(); return false;" href="#"><i class="fa fa-lg fa-fw fa-question-circle"></i>&thinsp;<?= __("Help") ?></a></li>
+
+				<?= ($WhoAmI) ? "<li class='" . ($this->request->getParam('controller') == "Roles" ? "active":"") . "'><a href=\"/roles/\">{$this->HtmlExt->icon("account-star")} Worker Titles</a></li>" : "" ?>
+
+				<li class="<?= ($this->request->getParam('controller') == "Users" ? "active":"") ?>"><a href="/users/"><?= ($WhoAmI) ? $this->HtmlExt->icon("account-group") . " Users" : $this->HtmlExt->icon("account") . " My Account" ?></a></li>
+				
+				<?= ($WhoAmI) ? "<li class='" . ($this->request->getParam('controller') == "AppConfigs" ? "active":"") . "'><a href=\"/app-configs/\">{$this->HtmlExt->icon("settings")} Configuration</a></li>" : "" ?>
+
+				<li><a href="/users/logout/"><?= $this->HtmlExt->icon("logout") ?> <?= __("Logout") ?></a></li>
+
 			</ul>
-			<?php 
-				$user = $this->request->getSession()->read('Auth.User');
 
-				if( ! empty( $user ) ) {
-					echo '<span class="navbar-text navbar-right">' . __("Signed in") . ': ' . $user['first'] . " " . $user['last'] . ' </span>';
-				}
-			?>
+			<ul class="list-unstyled CTAs">
+				<li>
+					<a class="article" onClick="javascript:$('#helpMeModal').modal(); return false;" href="#">Online Help</a></li>
+					
+				</li>
+			</ul>
+		</nav>
+
+		<!-- Page Content  -->
+		<div id="content" class="bg-light">
+			<nav class="navbar navbar-expand-lg navbar-light mb-0" style="background-color:#2A3F54; height: 71px;">
+				<div class="container-fluid">
+
+					<button type="button" id="sidebarCollapse" class="btn btn-light">
+						<?= $this->HtmlExt->icon("menu") ?>
+						<span>Toggle Sidebar</span>
+					</button>
+					
+						<ul class="nav navbar-nav ml-auto">
+							<li class="nav-item text-white">
+								<?php if( ! empty( $user ) ) : ?>
+									<?= $this->HtmlExt->gravatar($user['username'],38) ?>
+									<span class="d-none d-md-inline">
+										 <?= $user['first'] ?> <?= $user['last'] ?>
+									</span>
+								<?php else : ?>
+									Please sign in.
+								<?php endif; ?>
+							</li>
+						</ul>
+				</div>
+			</nav>
+
+			<div class="p-1 p-md-3">
+				
+				<?php if ( !empty($crumby) && is_array($crumby) ) : ?>
+					<nav aria-label="breadcrumb">
+						<ol class="breadcrumb bg-white border shadow-sm">
+							<?php foreach ( $crumby as $crumb ) : ?>
+								<?php if ( is_null($crumb[0]) ) : ?>
+									<li class="breadcrumb-item active"><?= $crumb[1] ?></li>
+								<?php else : ?>
+									<li class="breadcrumb-item"><a href="<?= $crumb[0] ?>"><?= $crumb[1] ?></a></li>
+								<?php endif; ?>
+							<?php endforeach; ?>
+						</ol>
+					</nav>
+				<?php endif; ?>
+
+				<?= $this->Flash->render() ?>
+
+				<?= $this->fetch('content') ?>
+			
+			
+				<footer class="d-print-none" style="padding-top: 20px; margin-top: 20px; border-top: 1px solid #e5e5e5;">
+					<p class="text-center text-muted"><?= __("TDTracStaff - the Theater time and job tracker") ?><br /><small>Site Administrator Contact: <a href="mailto:<?= $CONFIG['admin-email'] ?>"><?= $CONFIG['admin-name'] ?></a></small></p>
+					<ul class="text-center list-inline text-muted d-print-none">
+						<li class="list-inline-item"><?= __('Currently v0.0.0a1') ?></li>
+						<li class="list-inline-item"><a href="https://github.com/jtsage/TDTracStaff">GitHub</a></li>
+					</ul>
+				</footer>
+				<footer class="d-print-block d-none" style="padding-top: 20px; margin-top: 20px; border-top: 1px solid #e5e5e5;">
+					<p class="text-center text-muted">Printed on <?= date('Y-m-d H:i T') ?></p>
+				</footer>
+			</div>
 		</div>
-	</nav>
-
-
-	<div class="container" style="padding-top:20px" role="main">
-
-		<?php 
-			if ( !empty($crumby) && is_array($crumby) ) {
-				echo '<nav aria-label="breadcrumb"><ol class="breadcrumb">';
-				foreach ( $crumby as $crumb ) {
-					if ( is_null($crumb[0]) ) {
-						echo "<li class='breadcrumb-item active'>" . $crumb[1] . "</li>";
-					} else {
-						echo "<li class='breadcrumb-item'><a href='" . $crumb[0] . "'>" . $crumb[1] . "</a></li>";
-					}
-				}
-				echo '</ol></nav>';
-			}
-		?>
-
-		<?= $this->Flash->render() ?>
-
-		<?= $this->fetch('content') ?>
-	
 	</div>
-	<footer class="d-print-none" style="padding-top: 20px; margin-top: 20px; border-top: 1px solid #e5e5e5;">
-		<p class="text-center text-muted"><?= __("TDTracStaff - the Theater time and job tracker") ?><br /><small>Site Administrator Contact: <a href="mailto:<?= $CONFIG['admin-email'] ?>"><?= $CONFIG['admin-name'] ?></a></small></p>
-		<ul class="text-center list-inline text-muted d-print-none">
-			<li class="list-inline-item"><?= __('Currently v0.0.0a1') ?></li>
-			<li class="list-inline-item"><a href="https://github.com/jtsage/TDTracStaff">GitHub</a></li>
-		</ul>
-	</footer>
-	<footer class="d-print-block d-none" style="padding-top: 20px; margin-top: 20px; border-top: 1px solid #e5e5e5;">
-		<p class="text-center text-muted">Printed on <?= date('Y-m-d H:i T') ?></p>
-	</footer>
 
 	
 	<div class="overlay loading"></div>

@@ -1,28 +1,32 @@
-<div class="users view large-10 medium-9 columns">
-	<h3><?= h($user->first) . " " . h($user->last) ?></h3>
-	<div class='btn-group btn-group-sm-vertical w-100 mb-3'>
-	<?= $this->Html->link(
-		$this->Pretty->iconUnpaid($user->username) . "View Payroll",
+<div class="card p-3 rounded border shadow-sm mb-2">
+	<div class='btn-group btn-group-sm-vertical w-100'>
+	<?= $this->HtmlExt->iconBtnlink(
+		"cash", "View Payroll",
 		['controller' => 'payrolls', 'action' => 'user', $user->id],
-		['escape' => false, 'class' => 'text-left text-md-center w-100 btn btn-outline-danger']
+		['class' => 'text-left text-md-center w-100 btn btn-outline-primary']
 	) ?>
-	<?= $this->Html->link(
-		$this->Pretty->iconEdit($user->username) . "Edit User",
+	<?= $this->HtmlExt->iconBtnlink(
+		"account-edit", "Edit User",
 		['action' => 'edit', $user->id],
-		['escape' => false, 'class' => 'text-left text-md-center w-100 btn btn-outline-dark']
+		['class' => 'text-left text-md-center w-100 btn btn-outline-success']
 	) ?>
-	<?= $this->Html->link(
-		$this->Pretty->iconLock($user->username) . "Change Password",
+	<?= $this->HtmlExt->iconBtnlink(
+		"account-key", "Change Password",
 		['action' => 'changepass', $user->id],
-		['escape' => false, 'class' => 'text-left text-md-center w-100 btn btn-outline-dark']
+		['class' => 'text-left text-md-center w-100 btn btn-outline-warning']
 	) ?>
-	<?= ( $WhoAmI ) ? $this->Html->link(
-		$this->Pretty->iconPerm($user->username) . "Change Titles",
+	<?= ( $WhoAmI ) ? $this->HtmlExt->iconBtnlink(
+		"account-star", "Change Titles",
 		['action' => 'roles', $user->id],
-		['escape' => false, 'class' => 'text-left text-md-center w-100 btn btn-outline-info']
+		['class' => 'text-left text-md-center w-100 btn btn-outline-purp']
 	) : "" ?>
 	</div>
-	<div class="row mb-3">
+</div>
+
+<div class="card p-3 rounded border shadow-sm">
+	<h3 class="text-dark"><?= h($user->first) . " " . h($user->last) ?></h3>
+	
+	<div class="row">
 		<div class="col-md-4">
 			<dl class="m-0 mb-2"><dt>Username</dt><dd class="m-0 ml-3"><?= $user->username ?></dd></dl>
 			<dl class="m-0 mb-2"><dt>Full Name</dt><dd class="m-0 ml-3"><?= $user->first . " " . $user->last ?></dd></dl>
@@ -34,20 +38,17 @@
 			<dl class="m-0 mb-2"><dt>Last Updated At</dt><dd class="m-0 ml-3"><?= $user->updated_at->i18nFormat("EEEE, MMMM d, YYYY @ h:mm a", $tz) ?></dd></dl>
 		</div>
 		<div class="col-md-4">
-			<dl class="m-0 mb-2"><dt>Active User?</dt><dd class="m-0 ml-3"><?= $this->Bool->prefYes($user->is_active) ?></dd></dl>
-			<dl class="m-0 mb-2"><dt>Expired Password?</dt><dd class="m-0 ml-3"><?= $this->Bool->prefNo($user->is_password_expired) ?></dd></dl>
-			<dl class="m-0 mb-2"><dt>E-Mail Verified?</dt><dd class="m-0 ml-3"><?= $this->Bool->prefYes($user->is_verified) ?></dd></dl>
-			<dl class="m-0 mb-2"><dt>Administrator?</dt><dd class="m-0 ml-3"><?= $this->Bool->prefNo($user->is_admin) ?></dd></dl>
+			<dl class="m-0 mb-2"><dt>Active User?</dt><dd class="m-0 ml-3"><?= $this->HtmlExt->badgeActive($user->is_active) ?></dd></dl>
+			<dl class="m-0 mb-2"><dt>Expired Password?</dt><dd class="m-0 ml-3"><?= $this->HtmlExt->badgePass($user->is_password_expired) ?></dd></dl>
+			<dl class="m-0 mb-2"><dt>Administrator?</dt><dd class="m-0 ml-3"><?= $this->HtmlExt->badgeAdmin($user->is_admin) ?></dd></dl>
 		</div>
 	</div>
 	
-	<h5>Training Profile</h5>
+	<h5 class="text-dark">Training Profile</h5>
 	<div class="container">
-		<ul class="list-group w-100">
-			<?php foreach ( $user->roles as $role ) : ?>
-				<li class="list-group-item"><?= $role->title ?> <small><em><?= $role->detail ?></em></small></li>
-			<?php endforeach; ?>
-		</ul>
+		<?php foreach ( $user->roles as $role ) : ?>
+			<div class="badge badge-primary"><?= $role->title ?></div>
+		<?php endforeach; ?>
 	</div>
 </div>
 

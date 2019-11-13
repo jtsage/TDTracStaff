@@ -16,7 +16,7 @@ class PrettyHelper extends Helper
 		return substr($value, 0, 3) . "." . substr($value, 3, 3) . "." . substr($value, 6, 4);
 	}
 	public function makeIcon($name, $icon, $text) {
-		return "<span class='sr-only'>{$text}: {$name}</span><i class='fa fa-lg fa-fw fa-{$icon}' data-toggle='tooltip' data-placement='top' title='' data-original-title='{$text}: {$name}'></i></span>";
+		return "<span class='sr-only'>{$text}: {$name}</span><i class='mdi mdi-{$icon}' data-toggle='tooltip' data-placement='top' title='' data-original-title='{$text}: {$name}'></i></span>";
 	}
 	public function iconSNeed($name)
 	{

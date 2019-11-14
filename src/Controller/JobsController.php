@@ -17,6 +17,13 @@ use Cake\Mailer\Email;
  */
 class JobsController extends AppController
 {
+	public $paginate = [
+		'limit' => 10,
+		'order' => [
+			'date_start' => 'DESC',
+			'name' => 'asc'
+		]
+	];
 	/*
 	 ooooo                   .o8                        
 	 `888'                  "888                        
@@ -49,11 +56,7 @@ class JobsController extends AppController
 				"UsersScheduled",
 				"UsersInterested"
 			])
-			->where($where)
-			->order([
-				"date_start" => "DESC",
-				"name" => "ASC"
-			]);
+			->where($where);
 
 		$jobs = $this->paginate($jobFind);
 
@@ -313,12 +316,6 @@ class JobsController extends AppController
 
 		$this->set(compact('allCats'));
 
-		$this->set('crumby', [
-			["/", __("Dashboard")],
-			["/jobs/", __("Jobs")],
-			[null, __("Add New Jobs")]
-		]);
-
 		$job = $this->Jobs->get($id);
 		if ($this->request->is(['patch', 'post', 'put'])) {
 			$job = $this->Jobs->patchEntity($job, $this->request->getData());
@@ -329,6 +326,14 @@ class JobsController extends AppController
 			}
 			$this->Flash->error(__('The job could not be saved. Please, try again.'));
 		}
+
+		$this->set('crumby', [
+			["/", __("Dashboard")],
+			["/jobs/", __("Jobs")],
+			["/jobs/view/" . $job->id, $job->name],
+			[null, __("Edit Job")]
+		]);
+
 		$this->set(compact('job'));
 	}
 
@@ -502,12 +507,17 @@ class JobsController extends AppController
 		$this->set("job", $job);
 		$this->set("interest", $interested);
 
-		$this->set('crumby', [
-			["/", __("Dashboard")],
-			["/jobs/", __("Jobs")],
-			["/jobs/view/" . $job->id, $job->name],
-			[null, "Assigned Staff"]
+		$this->viewBuilder()->setClassName('CakePdf.Pdf');
+		$this->viewBuilder()->setLayout('default');
+		$title = "Scheduled Job Staff - " . $job->name;
+		$this->set('pdfTitle', $title);
+		$this->viewBuilder()->options([
+			'pdfConfig' => [
+				'download' => false,
+				'title' => $title
+			]
 		]);
+		$this->response->header('Content-Disposition: inline;filename="' . preg_replace("/ /", "_", preg_replace("/ - /", "-", $title)) . ".pdf\"");
 	}
 
 
@@ -1022,7 +1032,7 @@ class JobsController extends AppController
 			if ( $job->is_open == 1 ) {
 				$job->is_open = 0;
 				$this->set('pillText', "Closed");
-				$this->set('pillClass', "primary");
+				$this->set('pillClass', "danger");
 				$this->set('responseString', $job->name . " is now closed");
 			} else {
 				$job->is_open = 1;
@@ -1038,7 +1048,7 @@ class JobsController extends AppController
 			if ( $job->is_active == 1 ) {
 				$job->is_active = 0;
 				$this->set('pillText', "In-Active");
-				$this->set('pillClass', "primary");
+				$this->set('pillClass', "danger");
 				$this->set('responseString', $job->name . " is now inactive");
 			} else {
 				$job->is_active = 1;

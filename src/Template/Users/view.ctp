@@ -24,28 +24,35 @@
 </div>
 
 <div class="card p-3 rounded border shadow-sm">
-	<h3 class="text-dark"><?= h($user->first) . " " . h($user->last) ?></h3>
 	
+	<h3 class="text-dark"><?= h($user->first) . " " . h($user->last) ?></h3>
 	<div class="row">
-		<div class="col-md-4">
-			<dl class="m-0 mb-2"><dt>Username</dt><dd class="m-0 ml-3"><?= $user->username ?></dd></dl>
-			<dl class="m-0 mb-2"><dt>Full Name</dt><dd class="m-0 ml-3"><?= $user->first . " " . $user->last ?></dd></dl>
-			<dl class="m-0 mb-2"><dt>Phone Number</dt><dd class="m-0 ml-3"><?= $user->phone ?></dd></dl>
+		<div class="col-md-2">
+			<?= $this->HtmlExt->gravatar($user->username,150) ?>
 		</div>
-		<div class="col-md-4">
-			<dl class="m-0 mb-2"><dt>Last Login At</dt><dd class="m-0 ml-3"><?= $user->last_login_at->i18nFormat("EEEE, MMMM d, YYYY @ h:mm a", $tz) ?></dd></dl>
-			<dl class="m-0 mb-2"><dt>User Added On</dt><dd class="m-0 ml-3"><?= $user->created_at->i18nFormat("EEEE, MMMM d, YYYY @ h:mm a", $tz) ?></dd></dl>
-			<dl class="m-0 mb-2"><dt>Last Updated At</dt><dd class="m-0 ml-3"><?= $user->updated_at->i18nFormat("EEEE, MMMM d, YYYY @ h:mm a", $tz) ?></dd></dl>
-		</div>
-		<div class="col-md-4">
-			<dl class="m-0 mb-2"><dt>Active User?</dt><dd class="m-0 ml-3"><?= $this->HtmlExt->badgeActive($user->is_active) ?></dd></dl>
-			<dl class="m-0 mb-2"><dt>Expired Password?</dt><dd class="m-0 ml-3"><?= $this->HtmlExt->badgePass($user->is_password_expired) ?></dd></dl>
-			<dl class="m-0 mb-2"><dt>Administrator?</dt><dd class="m-0 ml-3"><?= $this->HtmlExt->badgeAdmin($user->is_admin) ?></dd></dl>
+		<div class="col-md-10">
+			<div class="row">
+				<div class="col-md-4">
+					<dl class="m-0 mb-2"><dt>Username</dt><dd class="m-0 ml-3"><?= $user->username ?></dd></dl>
+					<dl class="m-0 mb-2"><dt>Full Name</dt><dd class="m-0 ml-3"><?= $user->first . " " . $user->last ?></dd></dl>
+					<dl class="m-0 mb-2"><dt>Phone Number</dt><dd class="m-0 ml-3"><?= $user->phone ?></dd></dl>
+				</div>
+				<div class="col-md-4">
+					<dl class="m-0 mb-2"><dt>Last Login At</dt><dd class="m-0 ml-3"><?= $user->last_login_at->i18nFormat("EEEE, MMMM d, YYYY @ h:mm a", $tz) ?></dd></dl>
+					<dl class="m-0 mb-2"><dt>User Added On</dt><dd class="m-0 ml-3"><?= $user->created_at->i18nFormat("EEEE, MMMM d, YYYY @ h:mm a", $tz) ?></dd></dl>
+					<dl class="m-0 mb-2"><dt>Last Updated At</dt><dd class="m-0 ml-3"><?= $user->updated_at->i18nFormat("EEEE, MMMM d, YYYY @ h:mm a", $tz) ?></dd></dl>
+				</div>
+				<div class="col-md-4">
+					<dl class="m-0 mb-2"><dt>Active User?</dt><dd class="m-0 ml-3"><?= $this->HtmlExt->badgeActive($user->is_active) ?></dd></dl>
+					<dl class="m-0 mb-2"><dt>Expired Password?</dt><dd class="m-0 ml-3"><?= $this->HtmlExt->badgePass($user->is_password_expired) ?></dd></dl>
+					<dl class="m-0 mb-2"><dt>Administrator?</dt><dd class="m-0 ml-3"><?= $this->HtmlExt->badgeAdmin($user->is_admin) ?></dd></dl>
+				</div>
+			</div>
 		</div>
 	</div>
 	
 	<h5 class="text-dark">Training Profile</h5>
-	<div class="container">
+	<div class="pl-3">
 		<?php foreach ( $user->roles as $role ) : ?>
 			<div class="badge badge-primary"><?= $role->title ?></div>
 		<?php endforeach; ?>

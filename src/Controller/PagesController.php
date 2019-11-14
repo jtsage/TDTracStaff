@@ -66,22 +66,22 @@ class PagesController extends AppController
 
     public function dash()
     {
-        $this->loadModel('Users');
+        // $this->loadModel('Users');
         
-        $user = $this->Users->get($this->Auth->user('id'), [
-            'contain' => [
-                'Bios' => [
-                   'Purposes'
-                ],
-                'Photos'
-            ]
-        ]);
+        // $user = $this->Users->get($this->Auth->user('id'), [
+        //     'contain' => [
+        //         'Bios' => [
+        //            'Purposes'
+        //         ],
+        //         'Photos'
+        //     ]
+        // ]);
 
-        $this->set('user', $user);
+        // $this->set('user', $user);
 
-        $this->set('crumby', [
-            [null, __("Dashboard")]
-        ]);
+        // $this->set('crumby', [
+        //     [null, __("Dashboard")]
+        // ]);
 
         $this->render('dashboard');
     }

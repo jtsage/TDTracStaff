@@ -7,7 +7,7 @@
 		?>
 		<input type="hidden" name="is_password_expired" value="0">
 	</fieldset>
-	<?= $this->Form->button($this->Pretty->iconSave("") . __('Set Password'), ["class" => "w-100 btn-lg btn-outline-success"]) ?>
+	<?= $this->Form->button($this->HtmlExt->icon("lock-question") . __('Set Password'), ["class" => "w-100 btn-lg btn-outline-success"]) ?>
 	<?= $this->Form->end() ?>
 </div>
 

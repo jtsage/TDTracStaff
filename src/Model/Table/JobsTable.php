@@ -85,9 +85,6 @@ class JobsTable extends Table
 				'Model.beforeSave' => [
 					'created_at' => 'new',
 					'updated_at' => 'always',
-				],
-				'Users.afterLogin' => [
-					'last_login_at' => 'always'
 				]
 			]
 		]);
@@ -116,11 +113,7 @@ class JobsTable extends Table
 			->where([
 				"is_open"   => 1,
 				"is_active" => 1,
-				"id IN"     => $options['limitList'] //$jobsRolesTable->find("mine", $options)
-			])
-			->order([
-				"date_start" => "DESC",
-				"name"       => "ASC"
+				"id IN"     => $options['limitList']
 			]);
 	}
 

@@ -56,9 +56,6 @@ class RolesTable extends Table
 				'Model.beforeSave' => [
 					'created_at' => 'new',
 					'updated_at' => 'always',
-				],
-				'Users.afterLogin' => [
-					'last_login_at' => 'always'
 				]
 			]
 		]);

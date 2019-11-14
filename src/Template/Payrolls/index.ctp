@@ -9,16 +9,20 @@
 		$table = [
 			array_filter([
 				( ( $multiUser ) ? [$currentUserNM, ['class' => 'align-middle']] : false ),
-				['Total Unpaid', ['colspan' => 2, 'class' => 'align-middle font-weight-bold']],
-				( ( $CONFIG['require-hours'] ) ? [" ", ['class' => 'd-none d-md-table-cell', 'colspan' => 2]] : false ),
+				['Total Unpaid', ['class' => 'align-middle font-weight-bold']],
+				[' ', ['class' => 'align-middle font-weight-bold']],
+				( ( $CONFIG['require-hours'] ) ? [" ", ['class' => 'd-none d-md-table-cell']] : false ),
+				( ( $CONFIG['require-hours'] ) ? [" ", ['class' => 'd-none d-md-table-cell']] : false ),
 				[number_format($userTotals[$currentUserID]["total_unpaid"],2), ['class' => 'font-weight-bold align-middle text-right']],
 				[" ", ['class' => "d-none d-md-table-cell"] ],
 				" "
 			]),
 			array_filter([
 				( ( $multiUser ) ? [$currentUserNM, ['class' => 'align-middle', 'style' => "border-bottom-color: #777;"]] : false ),
-				$tableRow2[] = ['Total', ['colspan' => 2, 'class' => 'align-middle font-weight-bold', 'style' => "border-bottom-color: #777;"]],
-				( ( $CONFIG['require-hours'] ) ? [" ", ['class' => 'd-none d-md-table-cell', 'colspan' => 2, 'style' => "border-bottom-color: #777;"]] : false ),
+				['Total', ['class' => 'align-middle font-weight-bold', 'style' => "border-bottom-color: #777;"]],
+				[' ', ['class' => 'align-middle font-weight-bold', 'style' => "border-bottom-color: #777;"]],
+				( ( $CONFIG['require-hours'] ) ? [" ", ['class' => 'd-none d-md-table-cell', 'style' => "border-bottom-color: #777;"]] : false ),
+				( ( $CONFIG['require-hours'] ) ? [" ", ['class' => 'd-none d-md-table-cell', 'style' => "border-bottom-color: #777;"]] : false ),
 				[number_format($userTotals[$currentUserID]["total_worked"],2), ['class' => 'font-weight-bold font-italic align-middle text-right', 'style' => "border-bottom-color: #777;"]],
 				[" ", ['class' => "d-none d-md-table-cell", 'style' => "border-bottom-color: #777;"] ],
 				[" ", ['style' => "border-bottom-color: #777;"] ]
@@ -33,8 +37,10 @@
 	}
 ?>
 
-<h3><?= $mainTitle ?></h3>
-<p><?= $subTitle ?></p>
+<div class="card p-3 rounded border shadow-sm mb-2">
+	<h3 class="text-dark mb-4"><?= $mainTitle ?></h3>
+	<p class="text-dark"><?= $subTitle ?></p>
+
 
 <?php
 	if ( $this->request->getParam('action') <> "index" && $this->request->getParam('action') <> "unpaid" ) {
@@ -44,27 +50,30 @@
 			array_pop($passed);
 			$linkie = array_merge($linkie, $passed);
 
-			echo $this->Html->link(
-				$this->Pretty->iconUnpaid("") . 'View All',
+			echo $this->HtmlExt->iconBtnLink(
+				"bookmark", 'View All',
 				$linkie,
-				['escape' => false, 'class' => 'btn btn-outline-dark w-100 mb-3']
+				['class' => 'btn btn-outline-dark w-100']
 			);
 		} else {
 			$linkie = ["action" => $this->request->getParam('action')];
 			$linkie = array_merge($linkie, $passed);
 			$linkie[] = "unpaid";
-			echo $this->Html->link(
-				$this->Pretty->iconUnpaid("") . 'View Unpaid',
+			echo $this->HtmlExt->iconBtnLink(
+				'bookmark-check', 'View Unpaid',
 				$linkie,
-				['escape' => false, 'class' => 'btn btn-outline-dark w-100 mb-3']
+				['class' => 'btn btn-outline-dark w-100']
 			);
 		}
 	}
 ?>
+</div>
 
 <?php if ( $payrolls->count() > 0 ) : ?>
+<div class="card rounded border shadow-sm mb-2">
 
-<table class="table table-bordered table-striped">
+<table id="export_table" class="table table-bordered table-striped mb-0">
+<caption class="d-none">TDTracStaff-Payroll</caption>
 	<thead>
 		<tr>
 			<?php if ( $multiUser ) : ?>
@@ -86,8 +95,12 @@
 	</thead>
 	<tbody>
 		<?php $currentUserID = ""; $currentUserNM = "" ?>
+		<?php $unpaidAll = []; ?>
 		<?php foreach ($payrolls as $payroll): ?>
 		<?php
+			if ( ! $payroll->is_paid ) {
+				$unpaidAll[] = $payroll->id;
+			}
 			if ( $userCounts ) {
 				if ( $currentUserID <> $payroll->user->id ) {
 					if ( $currentUserID != "" ) {
@@ -107,15 +120,14 @@
 		<tr>
 			<?php if ( $multiUser ) : ?>
 				<td class="align-middle"><a href="/users/view/<?= $payroll->user->id ?>" class="text-reset">
-				<span class="d-none d-md-inline"><?= $payroll->user->first ?></span>
+				<span class="d-none d-md-inline"><?= $payroll->user->first ?> </span>
 				<?= $payroll->user->last ?>
 				</a></td>
 			<?php endif; ?>
 			<td class="align-middle"><a href="/jobs/view/<?= $payroll->job->id ?>" class="text-reset"><?= $payroll->job->name ?></a></td>
 
 			<td class="align-middle text-right">
-				<span class="d-none d-md-inline"><?= $payroll->date_worked->format("Y-m-d") ?></span>
-				<span class="d-md-none"><?= $payroll->date_worked->format("m/d") ?></span>
+				<?= $payroll->date_worked->format('\<\s\p\a\n \c\l\a\s\s="\d\-\n\o\n\e \d\-\m\d\-\i\n\l\i\n\e\"\>Y-\<\/\s\p\a\n\>m-d') ?>
 			</td>
 
 			<?php if ( $CONFIG['require-hours'] ) : ?>
@@ -126,26 +138,32 @@
 			<td class="<?= ( ! $payroll->is_paid ) ? "font-weight-bold" : "" ?> hours-worked-col align-middle text-right">
 				<?= number_format($payroll->hours_worked, 2) ?>
 			</td>
-			<td class="is-paid-col d-none d-md-table-cell align-middle text-right"><?= $this->Bool->prefYes($payroll->is_paid) ?></td>
+			<td class="is-paid-col d-none d-md-table-cell align-middle text-right"><?= $this->htmlExt->badgePaid($payroll->is_paid) ?></td>
 			<td class="align-middle text-center py-0"><div class="btn-group btn-group-sm-vertical w-100">
-				<?= ( $WhoAmI && !$payroll->is_paid ) ? $this->Html->link(
-					$this->Pretty->iconMark($payroll->id) . 'Mark',
-					['action' => 'edit', $payroll->id],
+				<?= ( $WhoAmI && !$payroll->is_paid ) ? $this->HtmlExt->iconBtnLink(
+					"bookmark-plus", 'Mark',
+					"#",
 					[
 						'escape' => false,
 						'class' => 'w-100 btn btn-sm btn-outline-warning clickMark mark-' . $payroll->id,
+						'data-msg'     => "Are you sure you wish to mark the payroll '" . $payroll->date_worked->format("Y-m-d") . " - " . number_format($payroll->hours_worked, 2) . " hours' as paid?",
 						'data-payroll' => $payroll->id
 					]
 				) : "" ?>
-				<?= ( $WhoAmI ) ? $this->Html->link(
-					$this->Pretty->iconEdit($payroll->id) . 'Edit',
+				<?= ( $WhoAmI ) ? $this->HtmlExt->iconBtnLink(
+					"file-edit", 'Edit',
 					['action' => 'edit', $payroll->id],
-					['escape' => false, 'class' => 'w-100 btn btn-sm btn-outline-success']
+					['class' => 'w-100 btn btn-sm btn-outline-success']
 				) : "" ?>
-				<?= $this->Form->postLink(
-					$this->Pretty->iconDelete($payroll->id) . 'Remove',
-					['action' => 'delete', $payroll->id],
-					['escape' => false, 'class' => 'w-100 btn btn-sm btn-outline-primary', 'confirm' => 'Are you sure you want to delete payroll?']
+				<?= ( $payroll->is_paid ) ? "" : $this->HtmlExt->iconBtnLink(
+					"delete", "Remove",
+					"#",
+					[
+						'data-id'      => $payroll->id,
+						'data-msg'     => "Are you sure you wish to delete the payroll '" . $payroll->date_worked->format("Y-m-d") . " - " . number_format($payroll->hours_worked, 2) . " hours'?",
+						'data-control' => 'payrolls',
+						'class'        => "deleteBtn w-100 btn btn-sm btn-outline-danger"
+					]
 				) ?>
 			</div></td>
 		</tr>
@@ -163,21 +181,36 @@
 		?>
 	</tbody>
 </table>
+<button id="export" data-export="export" class="btn btn-outline-light text-dark btn-sm"><?= $this->HtmlExt->icon("cloud-download") ?> Download view as CSV</button>
+</div>
 
 <?php if ( $isPaged ) : ?>
-<div class="paginator">
-	<ul class="pagination">
-		<?= $this->Paginator->first('<< ' . __('first')) ?>
-		<?= $this->Paginator->prev('< ' . __('previous')) ?>
-		<?= $this->Paginator->numbers() ?>
-		<?= $this->Paginator->next(__('next') . ' >') ?>
-		<?= $this->Paginator->last(__('last') . ' >>') ?>
-	</ul>
-	<p><?= $this->Paginator->counter(['format' => __('Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} total')]) ?></p>
+<div class="card rounded border p-2 shadow-sm">
+	<div class="paginator">
+		<ul class="pagination justify-content-center mb-2">
+			<?= $this->Paginator->first('<< ' . __('first')) ?>
+			<?= $this->Paginator->prev('< ' . __('previous')) ?>
+			<?= $this->Paginator->numbers() ?>
+			<?= $this->Paginator->next(__('next') . ' >') ?>
+			<?= $this->Paginator->last(__('last') . ' >>') ?>
+		</ul>
+		<p class="text-center text-muted small m-0"><?= $this->Paginator->counter(['format' => __('Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} total')]) ?></p>
+	</div>
 </div>
 <?php endif; ?>
 
+<div class="card rounded border p-2 shadow-sm">
+	<?= $this->Form->create("", ["id" => "markAllForm", "url" => "/payrolls/markAll"]); ?>
+	<?php foreach ( $unpaidAll as $thisUnpaid ) {
+		echo $this->Form->hidden("unpaidid[]", ["value" => $thisUnpaid]);
+	}
+	?>
+	<?= $this->Form->button($this->HtmlExt->icon("bookmark-off") . __(' Mark Visible Unpaid as Paid'), ["type" => "button", "id" => "markAllBut", "class" => "w-100 btn-lg btn-outline-success"]) ?>
+	<?= $this->Form->end(); ?>
+
+</div>
+
 <?php else : ?>
-	<div class="alert alert-primary" role="alert">No qualifing payroll records found.</div>
+	<div class="alert alert-warning shadow-sm" role="alert">No qualifing payroll records found.</div>
 <?php endif; ?>
 

@@ -75,7 +75,7 @@ $user = $this->request->getSession()->read('Auth.User');
 			</div>
 
 			<ul class="list-unstyled components">
-				<li>
+				<li class="<?= ($this->request->getParam('controller') == "Pages" ? " active":"") ?>">
 					<a href="/"><?= $this->HtmlExt->icon("view-dashboard") ?> Dashboard</a>
 				</li>
 				<li class="<?= ($this->request->getParam('controller') == "Jobs" ? " active":"") ?>">
@@ -101,7 +101,12 @@ $user = $this->request->getSession()->read('Auth.User');
 
 							<li><a href="/payrolls/paydate/">Search by Paydate</a></li>
 							<li><a class="border-bottom border-dark" href="/payrolls/dates/">Search by Date</a></li>
+
+							<li><a href="/payrolls/by-user/">Search by User</a></li>
+							
 						<?php endif; ?>
+						<li><a class="border-bottom border-dark" href="/payrolls/by-job/">Search by Job</a></li>
+
 						<li><a href="/payrolls/mine/">My Hours</a></li>
 						<li><a class="border-bottom border-dark" href="/payrolls/mine/unpaid/">My Unpaid Hours</a></li>
 

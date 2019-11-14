@@ -4,8 +4,9 @@
  * @var \App\Model\Entity\Job $job
  */
 ?>
-<h3>Edit Existing Job</h3>
-<div class="jobs form large-9 medium-8 columns content">
+<div class="card p-3 rounded border shadow-sm mb-2">
+	<h3 class="text-dark mb-4">Edit Existing Job</h3>
+
 	<?= $this->Form->create($job) ?>
 	<fieldset>
 		<?php
@@ -14,34 +15,43 @@
 			echo $this->Form->control('category', ["label" => "Job Category", "help" => "Auto-completes with previously used categories for convenience.", "autocomplete" => "new-user-address"]);
 			echo $this->Form->control('location', ["label" => "Job Location", "help" => "Presents as a Google Maps link, address preferred"]);
 		?><div style="border-bottom: 1px dashed #ccc;" class="mt-4 mb-2"><h5>Job Dates</h5></div><?php
-			echo $this->Pretty->calPicker('date_start', 'Start Date', $job->date_start);
-			echo $this->Pretty->calPicker('date_end', 'End Date', $job->date_end);
+			echo $this->Datebox->calbox('date_start', ["label" => 'Start Date', 'help' => 'Start Date of the job']);
+			echo $this->Datebox->calbox('date_end', ["label" => 'End Date', 'help' => 'Ending Date of the job']);
 			echo $this->Form->control('time_string', ["label" => "Job Time(s)", "help" => "Freeform times for the job. Limit to 250 characters."]);
 		?><div style="border-bottom: 1px dashed #ccc;" class="mt-4 mb-2"><h5>Payroll Dates</h5></div><?php
-			echo $this->Pretty->calPicker('due_payroll_submitted', 'Payroll Due Date (from employees)', $job->due_payroll_submitted);
-			echo $this->Pretty->calPicker('due_payroll_paid', 'Payroll Check Date', $job->due_payroll_paid);
-		?><div style="border-bottom: 1px dashed #ccc;" class="mt-4 mb-2"><h5>Job Status</h5></div><?php
-			echo $this->Pretty->check('is_active', $job->is_active, [
-				'label-width' => '150',
-				'label-text' => __('Is Active'),
-				'on-text' => __('YES'),
-				'off-text' => __('NO'),
-				'on-color' => 'success',
-				'off-color' => 'danger'
-			]);
-			echo $this->Pretty->check('is_open', $job->is_open, [
-				'label-width' => '150',
-				'label-text' => __('Is Open'),
-				'on-text' => __('YES'),
-				'off-text' => __('NO'),
-				'on-color' => 'success',
-				'off-color' => 'danger'
-			]);
-		?><div style="border-bottom: 1px dashed #ccc;" class="mt-4 mb-2"><h5>Job Notes</h5></div><?php
-			echo $this->Form->control('notes', ["rows" => 20]);
+			echo $this->Datebox->calbox('due_payroll_submitted', ["label" => 'Payroll Due Date', 'help' => 'Last date that emloyees may submit hours for this job']);
+			echo $this->Datebox->calbox('due_payroll_paid', ["label" => 'Payroll Check Date', 'data-datebox-theme_cal_-date-high-rec' => 'warning', 'help' => 'Date that the checks will be disbursed for this job']);
+		?><div style="border-bottom: 1px dashed #ccc;" class="mt-4 mb-2"><h5>Job Status</h5></div>
+			<div class="row">
+				<div class="col-md-6">
+					<?= $this->Form->input('is_active', [
+						'data-toggle'   => "toggle",
+						'data-width'    => '100%',
+						'data-height'   => '36px',
+						'data-on'       => __('Active Job'),
+						'data-off'      => __('Inactive Job'),
+						'data-onstyle'  => 'success',
+						'data-offstyle' => 'danger',
+						'label'         => ""
+					]); ?>
+				</div><div class="col-md-6">
+					<?= $this->Form->input('is_open', [
+						'data-toggle'   => "toggle",
+						'data-width'    => '100%',
+						'data-height'   => '36px',
+						'data-on'       => __('Open Job'),
+						'data-off'      => __('Closed Job'),
+						'data-onstyle'  => 'success',
+						'data-offstyle' => 'danger',
+						'label'         => ""
+					]); ?>
+				</div>
+			</div>
+		<div style="border-bottom: 1px dashed #ccc;" class="mt-4 mb-2"><h5>Job Notes</h5></div><?php
+			echo $this->Form->control('notes', ["rows" => 10]);
 		?>
 	</fieldset>
-	<?= $this->Form->button($this->Pretty->iconSave("") . __('Save Job'), ["class" => "w-100 btn-lg btn-outline-success"]) ?>
+	<?= $this->Form->button($this->HtmlExt->icon("calendar-check") . __('Save Job'), ["class" => "w-100 btn-lg btn-outline-success"]) ?>
 	<?= $this->Form->end() ?>
 </div>
 

@@ -4,38 +4,40 @@
  * @var \App\Model\Entity\Payroll $payroll
  */
 ?>
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <ul class="side-nav">
-        <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Form->postLink(
-                __('Delete'),
-                ['action' => 'delete', $payroll->id],
-                ['confirm' => __('Are you sure you want to delete # {0}?', $payroll->id)]
-            )
-        ?></li>
-        <li><?= $this->Html->link(__('List Payrolls'), ['action' => 'index']) ?></li>
-        <li><?= $this->Html->link(__('List Users'), ['controller' => 'Users', 'action' => 'index']) ?></li>
-        <li><?= $this->Html->link(__('New User'), ['controller' => 'Users', 'action' => 'add']) ?></li>
-        <li><?= $this->Html->link(__('List Jobs'), ['controller' => 'Jobs', 'action' => 'index']) ?></li>
-        <li><?= $this->Html->link(__('New Job'), ['controller' => 'Jobs', 'action' => 'add']) ?></li>
-    </ul>
-</nav>
-<div class="payrolls form large-9 medium-8 columns content">
-    <?= $this->Form->create($payroll) ?>
-    <fieldset>
-        <legend><?= __('Edit Payroll') ?></legend>
-        <?php
-            echo $this->Form->control('date_worked');
-            echo $this->Form->control('time_start');
-            echo $this->Form->control('time_end');
-            echo $this->Form->control('hours_worked');
-            echo $this->Form->control('is_paid');
-            echo $this->Form->control('user_id', ['options' => $users]);
-            echo $this->Form->control('job_id', ['options' => $jobs]);
-            echo $this->Form->control('created_at');
-            echo $this->Form->control('updated_at');
-        ?>
-    </fieldset>
-    <?= $this->Form->button(__('Submit')) ?>
-    <?= $this->Form->end() ?>
+<div class="card p-3 rounded border shadow-sm mb-2">
+	<h3 class="text-dark mb-4">Edit Payroll</h3>
+
+	<?= $this->Form->create($payroll) ?>
+	<fieldset>
+		<legend><?= __('Edit Payroll') ?></legend>
+		<?php
+			echo $this->Form->control('user_id', ['readonly' => 'readonly', 'options' => $users]);
+			echo $this->Form->control('job_id', ['readonly' => 'readonly', 'options' => $jobs]);
+
+
+			echo $this->Datebox->calbox('date_worked', ["label" => 'Date Worked']);
+			
+			if ( $CONFIG['require-hours'] ) {
+				echo $this->Datebox->timebox('time_start', ["label" => "Start Time", "value" => "9:00"]);
+				echo $this->Datebox->timebox('time_end', ["label" => "End Time", "value" => "16:00"]);
+			} else {
+				echo $this->Form->control('hours_worked', ['help' => 'Enter the total number of hours worked as a decimal - i.e. 7.5', 'required' => 'required']);
+			}
+
+			echo $this->Form->input('is_paid', [
+				'data-toggle'   => "toggle",
+				'data-width'    => '100%',
+				'data-height'   => '36px',
+				'data-on'       => __('Has Been Paid'),
+				'data-off'      => __('Still Needs Paid'),
+				'data-onstyle'  => 'success',
+				'data-offstyle' => 'danger',
+				'label'         => ""
+			]);
+			
+
+		?>
+	</fieldset>
+	<?= $this->Form->button(__('Submit')) ?>
+	<?= $this->Form->end() ?>
 </div>

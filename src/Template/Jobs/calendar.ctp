@@ -1,12 +1,12 @@
 
-<h3>Calendar View</h3>
-
-<div class="btn-group w-100">
-	<a href="<?= $dateView['prevLink'] ?>" class="btn btn-outline-dark w-50"><?= $this->Pretty->iconPrev("") ?> Previous Month</a>
-	<a href="<?= $dateView['nextLink'] ?>" class="btn btn-outline-dark w-50">Next Month <?= $this->Pretty->iconNext("") ?> </a>
-</div>
-
-<table class="table table-bordered my-2 w-100">
+<div class="card rounded border shadow-sm mb-2">
+<table class="table table-bordered w-100 mb-0">
+<tr>
+	<td class="p-0" colspan="7"><div class="btn-group w-100">
+	<a href="<?= $dateView['prevLink'] ?>" class="btn btn-outline-light text-dark w-50 rounded-0"><?= $this->HtmlExt->icon("arrow-left-bold") ?> Previous Month</a>
+	<a href="<?= $dateView['nextLink'] ?>" class="btn btn-outline-light text-dark w-50 rounded-0">Next Month <?= $this->HtmlExt->icon("arrow-right-bold") ?> </a>
+	</div></td>
+</tr>
 <tr>
 	<td class="text-center p-1 p-md-3 m-0 h3" colspan="7"><strong><em><?= $calViewInfo->format("F Y") ?></em></strong></td>
 </tr>
@@ -45,10 +45,11 @@
 	</tr>
 <?php endfor; ?>
 </table>
+</div>
 
-<div>
-	<div class="w-100 rounded-pill p-1 mb-1 border border-success text-center text-success">You are scheduled <span class="d-md-none">on this day</span><span class="d-none d-md-inline">for this event</span></div>
-	<div class="w-100 rounded-pill p-1 mb-1 border border-warning text-center text-warning">You are available <span class="d-md-none">on this day</span><span class="d-none d-md-inline">for this event</span></div>
+<div class="card rounded border shadow-sm mb-2 p-3">
+	<div class="w-100 p-1 mb-1 border border-success text-center text-success">You are scheduled <span class="d-md-none">on this day</span><span class="d-none d-md-inline">for this event</span></div>
+	<div class="w-100 p-1 mb-1 border border-warning text-center text-warning">You are available <span class="d-md-none">on this day</span><span class="d-none d-md-inline">for this event</span></div>
 </div>
 
 <?= $this->Pretty->helpMeStart("Job Calendar"); ?>

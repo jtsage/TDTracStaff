@@ -9,34 +9,34 @@
 	<h3 class="text-dark mb-4">Job List<?= !empty($subtitle) ? " - " . $subtitle : "" ?></h3>
 
 	<?php if (empty($subtitle)) : ?>
-	<p>Full list of jobs. Regular users see open, active jobs (upcoming).  Administrators see the full history of jobs. Active jobs allow changes to needed or assigned staff. Inactive, Open jobs allow changes to payroll only.  Closed jobs provide historical data only. </p>
+	<p class="text-dark">Full list of jobs. Regular users see open, active jobs (upcoming).  Administrators see the full history of jobs. Active jobs allow changes to needed or assigned staff. Inactive, Open jobs allow changes to payroll only.  Closed jobs provide historical data only. </p>
 	<?php elseif ( !empty($subtext)) : ?>
-	<p><?= $subtext ?></p>
+	<p class="text-dark"><?= $subtext ?></p>
 	<?php endif; ?>
 
 	<?php if ( $WhoAmI && empty($subtitle) ) : ?>
-	<?= $this->Html->link(
-		$this->Pretty->iconAdd("") . 'Add New Job',
+	<?= $this->HtmlExt->iconBtnLink(
+		"calendar-plus", 'Add New Job',
 		['action' => 'add'],
-		['escape' => false, 'class' => 'btn btn-outline-success w-100 mb-3 btn-lg']
+		['class' => 'btn btn-outline-success w-100 mb-3 btn-lg']
 	) ?>
 	<?php endif; ?>
 
-	<div class="btn-group btn-group-sm-vertical w-100 mb-3">
-	<?= $this->Html->link(
-		$this->Pretty->iconView("") . 'View All Jobs ',
+	<div class="btn-group btn-group-md btn-group-sm-vertical w-100 mb-3">
+	<?= $this->HtmlExt->iconBtnLink(
+		"calendar-search", 'View All Jobs ',
 		['action' => 'index'],
-		['escape' => false, 'class' => 'w-100 btn btn-outline-dark']
+		['class' => 'w-100 btn btn-outline-primary']
 	) ?>
-	<?= $this->Html->link(
-		$this->Pretty->iconView("") . 'View Qualifying Jobs ',
+	<?= $this->HtmlExt->iconBtnLink(
+		"calendar-search", 'View My Qualifying Jobs ',
 		['action'=> 'myjobs'],
-		['escape' => false, 'class' => 'w-100 btn btn-outline-dark']
+		['class' => 'w-100 btn btn-outline-primary']
 	) ?>
-	<?= $this->Html->link(
-		$this->Pretty->iconView("") . 'View Scheduled Jobs',
+	<?= $this->HtmlExt->iconBtnLink(
+		"calendar-search", 'View My Scheduled Jobs',
 		['action' => 'mysched'],
-		['escape' => false, 'class' => 'w-100 btn btn-outline-dark']
+		['class' => 'w-100 btn btn-outline-primary']
 	) ?>
 	</div>
 </div>
@@ -58,11 +58,11 @@
 		$locHref = "https://www.google.com/maps/search/?api=1&query=";
 		$locHref .= urlencode($job->location);
 		$actStyle = [
-			( $job->is_active ) ? "success" : "primary",
+			( $job->is_active ) ? "success" : "danger",
 			( $job->is_active ) ? "Active" : "In-Active"
 		];
 		$openStyle = [
-			( $job->is_open ) ? "success" : "primary",
+			( $job->is_open ) ? "success" : "danger",
 			( $job->is_open ) ? "Open" : "Closed"
 		];
 
@@ -135,78 +135,83 @@
 						<dl class="m-0"><dt>Location</dt><dd class="m-0 ml-3"><a target="_blank" class="text-info" href="<?= $locHref ?>"><?= $job->location ?></a></dd></dl>
 					</div>
 					<div class="col-sm-12 col-md-6 border-bottom">
-						<dl class="m-0"><dt>Start Date</dt><dd class="m-0 ml-3"><?= $job->date_start->format("l, F j, Y") ?></dd></dl>
+						<dl class="m-0"><dt>Start Date</dt><dd class="<?= ($job->date_start->isToday()?"text-primary font-italic":"") ?> m-0 ml-3"><?= $job->date_start->format("l, F j, Y") ?></dd></dl>
 					</div>
 					<div class="col-sm-12 col-md-6 border-bottom">
-						<dl class="m-0"><dt>End Date</dt><dd class="m-0 ml-3"><?= $job->date_end->format("l, F j, Y") ?></dd></dl>
+						<dl class="m-0"><dt>End Date</dt><dd class="<?= ($job->date_end->isToday()?"text-primary font-italic":"") ?> m-0 ml-3"><?= $job->date_end->format("l, F j, Y") ?></dd></dl>
 					</div>
 					<div class="col-12 border-bottom">
 						<dl class="m-0"><dt>Time(s)</dt><dd class="m-0 ml-3"><?= $job->time_string ?></dd></dl>
 					</div>
 					<div class="col-sm-12 col-md-6 border-bottom">
-						<dl class="m-0"><dt>Payroll Due Date</dt><dd class="m-0 ml-3"><?= $job->due_payroll_submitted->format("l, F j, Y") ?></dd></dl>
+						<dl class="m-0"><dt>Payroll Due Date</dt><dd class="<?= ($job->due_payroll_submitted->isToday()?"text-primary font-italic":"") ?> m-0 ml-3"><?= $job->due_payroll_submitted->format("l, F j, Y") ?></dd></dl>
 					</div>
 					<div class="col-sm-12 col-md-6 border-bottom">
-						<dl class="m-0"><dt>Paycheck Date</dt><dd class="m-0 ml-3"><?= $job->due_payroll_paid->format("l, F j, Y") ?></dd></dl>
+						<dl class="m-0"><dt>Paycheck Date</dt><dd class="<?= ($job->due_payroll_paid->isToday()?"text-primary font-italic":"") ?> m-0 ml-3"><?= $job->due_payroll_paid->format("l, F j, Y") ?></dd></dl>
 					</div>
 					<div class="col-sm-12 col-md-6 border-bottom">
 						<dl class="m-0"><dt><?= ($WhoAmI)?"All":"Your" ?> Hours Total</dt><dd class="m-0 ml-3"><?= number_format($pay_Total, 2) ?></dd></dl>
 					</div>
 					<div class="col-sm-12 col-md-6 border-bottom">
-						<dl class="m-0"><dt><?= ($WhoAmI)?"All":"Your" ?> Hours Unpaid</dt><dd class="m-0 ml-3"><?= number_format($pay_Unpaid, 2) ?></dd></dl>
+						<dl class="m-0"><dt><?= ($WhoAmI)?"All":"Your" ?> Hours Unpaid</dt><dd class="<?= ($pay_Unpaid>0)?"text-warning":"text-success" ?> m-0 ml-3"><?= number_format($pay_Unpaid, 2) ?></dd></dl>
 					</div>
 				</div>
 			</div><div class="col-md-3">
 				<div class="btn-group-vertical w-100">
-				<?= $this->Html->link(
-					$this->Pretty->iconView($job->id) . 'View Detail',
+				<?= $this->HtmlExt->iconBtnLink(
+					"calendar-text", 'View Detail',
 					['action' => 'view', $job->id],
-					['escape' => false, 'class' => 'btn btn-sm text-left btn-outline-dark']
+					['class' => 'btn btn-md text-left btn-outline-primary']
 				) ?>
-				<?= $this->Html->link(
-					$this->Pretty->iconTUp($job->id) . 'My Availability',
+				<?= $this->HtmlExt->iconBtnLink(
+					"calendar-check", 'My Availability',
 					['action' => 'available', $job->id],
-					['escape' => false, 'class' => 'btn btn-sm text-left btn-outline-warning']
+					['class' => 'btn btn-md text-left btn-outline-info']
 				) ?>
-				<?= $this->Html->link(
-					$this->Pretty->iconUnpaid($job->id) . 'Add My Hours',
+				<?= $this->HtmlExt->iconBtnLink(
+					"account-cash", 'Add My Hours',
 					['controller' => 'payrolls', 'action' => 'add', $job->id],
-					['escape' => false, 'class' => 'btn btn-sm text-left btn-outline-warning']
+					['class' => 'btn btn-md text-left btn-outline-info']
 				) ?>
 				</div><div class="btn-group-vertical mt-1 w-100">
-				<?= $this->Html->link(
-					$this->Pretty->iconUnpaid($job->id) . 'View '. ($WhoAmI?"":"My ") .'Payroll',
+				<?= $this->HtmlExt->iconBtnLink(
+					"cash", 'View '. ($WhoAmI?"":"My ") .'Payroll',
 					['controller' => 'payrolls', 'action' => 'job', $job->id],
-					['escape' => false, 'class' => 'btn btn-sm text-left btn-outline-danger']
+					['class' => 'btn btn-md text-left btn-outline-warning']
 				) ?>
 				</div>
 				<?php if ($WhoAmI) : ?>
 				<div class="btn-group-vertical mt-1 w-100">
-				<?= $this->Html->link(
-					$this->Pretty->iconPrint($job->id) . 'Print Scheduled',
+				<?= $this->HtmlExt->iconBtnLink(
+					"printer", 'Print Scheduled',
 					['action' => 'print', $job->id],
-					['escape' => false, 'class' => 'btn btn-sm text-left btn-outline-dark']
+					['class' => 'btn btn-md text-left btn-outline-dark']
 				) ?>
-				<?= $this->Html->link(
-					$this->Pretty->iconSNeed($job->id) . 'Staff Needed (' . $total_Needed . ")",
+				<?= $this->HtmlExt->iconBtnLink(
+					"account-multiple-plus", 'Staff Needed <span class="badge badge-purp float-right mt-1">' . $total_Needed . "</span>",
 					['action' => 'staffNeed', $job->id],
-					['escape' => false, 'class' => 'btn btn-sm text-left btn-outline-info']
+					['class' => 'btn btn-md text-left btn-outline-purp']
 				) ?>
-				<?= $this->Html->link(
-					$this->Pretty->iconSAssign($job->id) . 'Staff Assigned (' . $total_Assigned . "/" . $total_Available .')',
+				<?= $this->HtmlExt->iconBtnLink(
+					"account-multiple-check", 'Staff Assigned <span class="badge badge-purp float-right mt-1">' . $total_Assigned . "/" . $total_Available .'</span>',
 					['action' => 'staffAssign', $job->id],
-					['escape' => false, 'class' => 'btn btn-sm text-left btn-outline-info']
+					['class' => 'btn btn-md text-left btn-outline-purp']
 				) ?>
 				</div><div class="btn-group-vertical mt-1 w-100">
-				<?= $this->Html->link(
-					$this->Pretty->iconEdit($job->id) . 'Edit',
+				<?= $this->HtmlExt->iconBtnLink(
+					"calendar-edit", 'Edit',
 					['action' => 'edit', $job->id],
-					['escape' => false, 'class' => 'btn btn-sm text-left btn-outline-success']
+					['class' => 'btn btn-md text-left btn-outline-success']
 				) ?>
-				<?= $this->Form->postLink(
-					$this->Pretty->iconDelete($job->id) . 'Remove',
-					['action' => 'delete', $job->id],
-					['escape' => false, 'class' => 'btn btn-sm text-left btn-outline-primary', 'confirm' => 'Are you sure you want to delete job (ALL!!)?']
+				<?= $this->HtmlExt->iconBtnLink(
+					"delete", "Remove",
+					"#",
+					[
+						'data-id'      => $job->id,
+						'data-msg'     => "Are you sure you wish to delete the job '" . $job->name . "'?",
+						'data-control' => 'jobs',
+						'class'        => "deleteBtn w-100 text-left btn btn-outline-danger btn-md"
+					]
 				) ?>
 				</div>
 				<?php endif; ?>

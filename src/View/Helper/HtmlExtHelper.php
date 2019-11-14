@@ -40,6 +40,12 @@ class HtmlExtHelper extends Helper
 	public function badgePair($values) {
 		return "<span class=\"w-100 badge badge-{$values[0]}\">{$values[1]}</span>";
 	}
+	public function badgePaid($value) {
+		return HtmlExtHelper::badgePair([
+			[ "warning", "NO" ],
+			[ "success", "yes"],
+		][($value)]);
+	}
 	public function badgePass($value) {
 		return HtmlExtHelper::badgePair([
 			[ "success", "Valid"],
@@ -64,6 +70,7 @@ class HtmlExtHelper extends Helper
 		return preg_replace("/-/", "&#8209;", $text);
 	}
 	
+
 
 	// public function money($name, $label, $value=null) {
 	// 	$returns  = '<div class="form-group required">';

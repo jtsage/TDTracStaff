@@ -661,15 +661,22 @@ class PayrollsController extends AppController
 			
 		$this->loadModel("UsersJobs");
 
+		$sched_jobs_list = $this->UsersJobs->find("mine", [
+			"userID"      =>  $this->Auth->user("id"),
+			"true_filter" => "is_scheduled"
+		]);
+
 		if ( !is_null($jobID) ) {
 			$job = $this->loadModel("Jobs")->get($jobID);
 
+			if ( !$this->CONFIG_DATA["allow-unscheduled-hours"] ) {
+				if ( !in_array($job->id, array_keys($sched_jobs_list->indexBy('job_id')->toArray()) ) ) {
+					$this->Flash->error(__('You are not scheduled for this show!'));
+					$this->redirect(['action' => 'index']);
+				}
+			}
 			$jobs = [ $job->id => $job->name ];
 		} else {
-			$sched_jobs_list = $this->UsersJobs->find("mine", [
-				"userID"      =>  $this->Auth->user("id"),
-				"true_filter" => "is_scheduled"
-			]);
 
 			$jobs_sch = $this->Payrolls->Jobs->find("activeOpenList", [
 				'keyField'   => 'id',
@@ -721,10 +728,22 @@ class PayrollsController extends AppController
 			$this->redirect(["action" => "index"]);
 		}
 		$payroll = $this->Payrolls->get($id, [
-			'contain' => []
+			'contain' => ["Users","Jobs"]
 		]);
 		if ($this->request->is(['patch', 'post', 'put'])) {
-			$payroll = $this->Payrolls->patchEntity($payroll, $this->request->getData());
+			$fixed_data = $this->request->getData();
+
+			if ( $this->CONFIG_DATA['require-hours'] ) {
+				$fixed_data['time_start']   = Chronos::createFromFormat('H:i', $this->request->getData('time_start'));
+				$fixed_data['time_end']     = Chronos::createFromFormat('H:i', $this->request->getData('time_end'));
+				$fixed_data['hours_worked'] = ($fixed_data['time_end']->diffInMinutes($fixed_data['time_start']) / 60);
+			} else {
+				$fixed_data['time_start'] = Chronos::createFromFormat('H:i', "0:00");
+				$fixed_data['time_end']   = Chronos::createFromFormat('H:i', "0:00");
+				$fixed_data['time_end']   = $fixed_data["time_end"]->addMinutes(intval($fixed_data["hours_worked"] * 60));
+			}
+
+			$payroll = $this->Payrolls->patchEntity($payroll, $fixed_data);
 			if ($this->Payrolls->save($payroll)) {
 				$this->Flash->success(__('The payroll has been saved.'));
 
@@ -732,8 +751,9 @@ class PayrollsController extends AppController
 			}
 			$this->Flash->error(__('The payroll could not be saved. Please, try again.'));
 		}
-		$users = $this->Payrolls->Users->find('list', ['limit' => 200]);
-		$jobs = $this->Payrolls->Jobs->find('list', ['limit' => 200]);
+		$users = [ $payroll->user->id => $payroll->user->last . ", " . $payroll->user->first ];
+		$jobs  = [ $payroll->job->id => $payroll->job->name ];
+		
 		$this->set(compact('payroll', 'users', 'jobs'));
 	}
 
@@ -752,6 +772,16 @@ class PayrollsController extends AppController
 	{
 		
 		$payroll = $this->Payrolls->get($id);
+
+		if ( $payroll->is_paid ) {
+			$this->Flash->error("Only unpaid entries may be deleted, sorry.");
+			$this->redirect(["action" => "index"]);
+		}
+		if ( !$this->Auth->user('is_admin') && $payroll->user_id <> $this->Auth->user("id")) {
+			$this->Flash->error("You may only delete your own entries.");
+			$this->redirect(["action" => "index"]);
+		}
+
 		if ($this->Payrolls->delete($payroll)) {
 			$this->Flash->success(__('The payroll has been deleted.'));
 		} else {
@@ -759,5 +789,143 @@ class PayrollsController extends AppController
 		}
 
 		return $this->redirect(['action' => 'index']);
+	}
+
+
+
+	/*
+	                                      oooo        ooooooooo.              o8o        .o8  
+	                                      `888        `888   `Y88.            `"'       "888  
+	 ooo. .oo.  .oo.    .oooo.   oooo d8b  888  oooo   888   .d88'  .oooo.   oooo   .oooo888  
+	 `888P"Y88bP"Y88b  `P  )88b  `888""8P  888 .8P'    888ooo88P'  `P  )88b  `888  d88' `888  
+	  888   888   888   .oP"888   888      888888.     888          .oP"888   888  888   888  
+	  888   888   888  d8(  888   888      888 `88b.   888         d8(  888   888  888   888  
+	 o888o o888o o888o `Y888""8o d888b    o888o o888o o888o        `Y888""8o o888o `Y8bod88P" 
+	*/
+	public function markPaid($id = null) {
+		$this->RequestHandler->renderAs($this, 'json');
+		$this->set('success', false);
+
+		if ( !$this->Auth->user('is_admin') ) {
+			$this->set('responseString', "You do not have access to do this!");
+			$this->set('_serialize', ['responseString', 'success']);
+			return;
+		}
+
+		if ( is_null($id) ) {
+			$this->set('responseString', "Invalid action!");
+			$this->set('_serialize', ['responseString', 'success']);
+			return;
+		}
+
+		$payroll = $this->Payrolls->get($id);
+
+		if ( ! $payroll ) {
+			$this->set('responseString', "Record not found!");
+			$this->set('_serialize', ['responseString', 'success']);
+			return;
+		}
+
+		$payroll->is_paid = 1;
+		$this->set('pillID', "mark-" . $payroll->id);
+
+		if ( $this->Payrolls->save($payroll) ) {
+			$this->set('success', true);
+			$this->set('responseString', "Worked");
+			$this->set('_serialize', ['responseString', 'success', 'pillID']);
+		} else {
+			$this->set('responseString', "Save failed!");
+			$this->set('_serialize', ['responseString', 'success']);
+		}
+	}
+
+
+
+	/*
+	                                      oooo              .o.       oooo  oooo  
+	                                      `888             .888.      `888  `888  
+	 ooo. .oo.  .oo.    .oooo.   oooo d8b  888  oooo      .8"888.      888   888  
+	 `888P"Y88bP"Y88b  `P  )88b  `888""8P  888 .8P'      .8' `888.     888   888  
+	  888   888   888   .oP"888   888      888888.      .88ooo8888.    888   888  
+	  888   888   888  d8(  888   888      888 `88b.   .8'     `888.   888   888  
+	 o888o o888o o888o `Y888""8o d888b    o888o o888o o88o     o8888o o888o o888o 
+	*/
+	function markAll() {
+		$this->request->allowMethod(['post', 'delete']);
+
+		if ( !$this->Auth->user('is_admin') ) {
+			$this->Flash->error("Sorry, you do not have access to this module.");
+			$this->redirect(["action" => "index"]);
+		}
+
+		$updateList = $this->request->getData('unpaidid');
+
+		if ( count($updateList) < 1 ) {
+			$this->Flash->error("No records found");
+			$this->redirect(["action" => "index"]);
+		}
+
+		$this->Payrolls->updateAll(
+			[  // fields
+				'is_paid' => 1,
+			],
+			[  // conditions
+				'id IN' => $updateList
+			]
+		);
+
+		$this->Flash->success("Records marked paid");
+		$this->redirect(["action" => "index"]);
+	}
+
+
+	/*
+	  .o8                   ooooo     ooo                             
+	 "888                   `888'     `8'                             
+	  888oooo.  oooo    ooo  888       8   .oooo.o  .ooooo.  oooo d8b 
+	  d88' `88b  `88.  .8'   888       8  d88(  "8 d88' `88b `888""8P 
+	  888   888   `88..8'    888       8  `"Y88b.  888ooo888  888     
+	  888   888    `888'     `88.    .8'  o.  )88b 888    .o  888     
+	  `Y8bod8P'     .8'        `YbodP'    8""888P' `Y8bod8P' d888b    
+	            .o..P'                                                
+	            `Y8P'                                                 
+	*/
+	function byUser() {
+		if ( !$this->Auth->user('is_admin') ) {
+			$this->redirect(["action" => "mine"]);
+		}
+
+		$this->loadModel("Users");
+		$users = $this->Users->find("all")->where(["is_active" => 1])->order(['last' => 'ASC','first' => 'asc']);
+
+		$this->set('lister', $users);
+		$this->set('action', 'user');
+		$this->set('title', "View Payroll By User");
+
+		$this->render("lister");
+	}
+
+
+
+	/*
+	  .o8                      oooo            .o8       
+	 "888                      `888           "888       
+	  888oooo.  oooo    ooo     888  .ooooo.   888oooo.  
+	  d88' `88b  `88.  .8'      888 d88' `88b  d88' `88b 
+	  888   888   `88..8'       888 888   888  888   888 
+	  888   888    `888'        888 888   888  888   888 
+	  `Y8bod8P'     .8'     .o. 88P `Y8bod8P'  `Y8bod8P' 
+	            .o..P'      `Y888P                       
+	            `Y8P'                                    
+	*/
+	function byJob() {
+		$this->loadModel("Jobs");
+		$jobs = $this->Jobs->find("all")->where(["is_open" => 1, "is_active" => 1])->order(['date_start' => 'DESC','name' => 'asc']);
+
+		$this->set('lister', $jobs);
+		$this->set('action', 'job');
+		$this->set('title', "View Payroll By Job");
+
+		$this->render("lister");
 	}
 }

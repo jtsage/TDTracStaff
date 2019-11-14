@@ -4,8 +4,9 @@
  * @var \App\Model\Entity\Job $job
  */
 ?>
-<h3>Add A Job</h3>
-<div class="jobs form large-9 medium-8 columns content">
+<div class="card p-3 rounded border shadow-sm mb-2">
+	<h3 class="text-dark mb-4">Add A Job</h3>
+
 	<?= $this->Form->create($job) ?>
 	<fieldset>
 		<?php
@@ -14,15 +15,17 @@
 			echo $this->Form->control('category', ["label" => "Job Category", "help" => "Auto-completes with previously used categories for convenience.", "autocomplete" => "new-user-address"]);
 			echo $this->Form->control('location', ["label" => "Job Location", "help" => "Presents as a Google Maps link, address preferred"]);
 		?><div style="border-bottom: 1px dashed #ccc;" class="mt-4 mb-2"><h5>Job Dates</h5></div><?php
-			echo $this->Pretty->calPicker('date_start', 'Start Date');
-			echo $this->Pretty->calPicker('date_end', 'End Date');
+			echo $this->Datebox->calbox('date_start', ["label" => 'Start Date', 'help' => 'Start Date of the job']);
+			echo $this->Datebox->calbox('date_end', ["label" => 'End Date', 'help' => 'Ending Date of the job']);
 			echo $this->Form->control('time_string', ["label" => "Job Time(s)", "help" => "Freeform times for the job. Limit to 250 characters."]);
 		?><div style="border-bottom: 1px dashed #ccc;" class="mt-4 mb-2"><h5>Payroll Dates</h5></div><?php
-			echo $this->Pretty->calPicker('due_payroll_submitted', 'Payroll Due Date (from employees)');
-			echo $this->Pretty->calPicker('due_payroll_paid', 'Payroll Check Date');
+			echo $this->Datebox->calbox('due_payroll_submitted', ["label" => 'Payroll Due Date', 'help' => 'Last date that emloyees may submit hours for this job']);
+			echo $this->Datebox->calbox('due_payroll_paid', ["label" => 'Payroll Check Date', 'data-datebox-theme_cal_-date-high-rec' => 'warning', 'help' => 'Date that the checks will be disbursed for this job']);
+		?><div style="border-bottom: 1px dashed #ccc;" class="mt-4 mb-2"><h5>Job Notes</h5></div><?php
+			echo $this->Form->control('notes', ["rows" => 20]);
 		?>
 	</fieldset>
-	<?= $this->Form->button($this->Pretty->iconAdd("") . __('Add Job'), ["class" => "w-100 btn-lg btn-outline-success"]) ?>
+	<?= $this->Form->button($this->HtmlExt->icon("calendar-plus") . __('Add New Job'), ["class" => "w-100 btn-lg btn-outline-success"]) ?>
 	<?= $this->Form->end() ?>
 </div>
 

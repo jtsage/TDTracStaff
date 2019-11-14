@@ -55,6 +55,10 @@ fieldset { margin-top: 20px; }
 	z-index: 2000;
 }
 
+.modal-backdrop.show {
+	opacity: .80;
+}
+
 @-webkit-keyframes rotation {
 	from {-webkit-transform: rotate(0deg);}
 	to {-webkit-transform: rotate(359deg);}
@@ -74,6 +78,13 @@ fieldset { margin-top: 20px; }
 
 
 @media (max-width: 768px) {
+	.btn-md, .btn-group-md>.btn {
+		padding: 0.25rem 0.5rem;
+		font-size: 0.875rem;
+		line-height: 1.4;
+		border-radius: 0.2rem;
+	}
+
 	.btn-group,
 	.btn-group-sm-vertical {
 		position: relative;
@@ -149,7 +160,7 @@ p {
 	font-size: 1.1em;
 	font-weight: 300;
 	line-height: 1.7em;
-	color: #999;
+	/* color: #999; */
 }
 
 /* a,

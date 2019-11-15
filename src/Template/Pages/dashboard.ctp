@@ -1,11 +1,14 @@
+<div class="d-md-none px-1 py-2">
+  <?= $this->HtmlExt->iconBtnLink(
+	  "account-cash",
+	  "Add Payroll Hours",
+	  ["controller" => "payrolls", "action" => "add"],
+	  ["class" => "btn btn-success btn-lg w-100 shadow-sm"]
+  ); ?>
+</div>
+
 <div class="card-deck d-none d-md-flex mb-4">
-	<div class="card p-2 bg-light m-2 shadow">
-		<div class="card-body bg-transparent text-center text-secondary">
-			<i class="mdi mdi-account-multiple"></i> Total Active Users
-		</div><div class="card-footer bg-transparent">
-			<div class="h1 text-primary text-right mb-0"><?= number_format($totUser) ?></div>
-		</div>
-	</div>
+	
 
 	<div class="card p-2 bg-light m-2 shadow">
 		<div class="card-body bg-transparent text-center text-secondary">
@@ -25,25 +28,25 @@
 
 	<div class="card p-2 bg-light m-2 shadow">
 		<div class="card-body bg-transparent text-center text-secondary">
-			<i class="mdi mdi-account-star"></i> Active Positions
+			<i class="mdi mdi-calendar-check"></i> Scheduled Jobs
 		</div><div class="card-footer bg-transparent">
-			<div class="h1 text-primary text-right mb-0"><?= number_format($availPos) ?></div>
+			<div class="h1 text-primary text-right mb-0"><?= number_format($mySched) ?></div>
 		</div>
 	</div>
 
 	<div class="card p-2 bg-light m-2 shadow">
 		<div class="card-body bg-transparent text-center text-secondary">
-			<i class="mdi mdi-worker"></i> Total Jobs
+			<i class="mdi mdi-calendar-star"></i> Need Response
 		</div><div class="card-footer bg-transparent">
-			<div class="h1 text-primary text-right mb-0"><?= number_format($jobCounts->total) ?></div>
+			<div class="h1 text-primary text-right mb-0"><?= number_format($myPoss-$mySched) ?></div>
 		</div>
 	</div>
 
 	<div class="card p-2 bg-light m-2 shadow">
 		<div class="card-body bg-transparent text-center text-secondary">
-			<i class="mdi mdi-account-star"></i> Total Positions
+			<i class="mdi mdi-account-cash"></i> Unpaid Hours
 		</div><div class="card-footer bg-transparent">
-			<div class="h1 text-primary text-right mb-0"><?= number_format($lifePos) ?></div>
+			<div class="h1 text-primary text-right mb-0"><?= number_format($myPay->total_unpaid,2) ?></div>
 		</div>
 	</div>
 </div>
@@ -53,24 +56,28 @@
 	<div class="card shadow">
 		<div class="card-header bg-transparent h2 text-primary">Your Unpaid Hours</div>
 		<div class="card-body">
-			<div class="mx-auto mb-2" style="width:300px">
-				<canvas id="myPayDonutC"></canvas>
+			<div class="mx-auto mb-2">
+				<canvas id="myPayDonutC" class="mx-auto"></canvas>
 			</div>
 			<table class="table table-sm w-100 mt-1 mb-1">
 				<tr>
-					<td class="w-25 table-danger text-right"><?= number_format($myPay->total_closed,2) ?></td>
+					<td class="w-25 text-right" style="background-color:rgba(220,220,220,0.5)"><?= number_format($myPay->total_closed,2) ?></td>
 					<td>Hours From Closed Jobs</td>
 				</tr>
 				<tr class="mt-1">
-					<td class="table-purp text-right"><?= number_format($myPay->total_open,2) ?></td>
+					<td class="text-right" style="background-color:rgba(151,187,205,0.5)"><?= number_format($myPay->total_open,2) ?></td>
 					<td>Hours From Open Jobs</td>
 				</tr>
 				<tr>
-					<td class="table-warning text-right"><?= number_format($myPay->total_active,2) ?></td>
+					<td class="text-right" style="background-color:rgba(82,154,190,0.5)"><?= number_format($myPay->total_active,2) ?></td>
 					<td>Hours From Active Jobs</td>
 				</tr>
 			</table>
-			<p class="text-info small mb-0">This shows how many unpaid hours you are owed, along with the 
+
+
+
+
+			<p class=" small mb-0">This shows how many unpaid hours you are owed, along with the 
 			job status.  Closed jobs should already have been paid to you.  Open jobs no longer accept 
 			new payroll items, and are likely to be disbursed soon.  Active jobs are still accepting 
 			hours.</p>
@@ -99,9 +106,9 @@
 							<?= number_format($myPay->total_active,2) ?>
 						],
 						backgroundColor: [
-							window.chartColor.red,
-							window.chartColor.purple,
-							window.chartColor.yellow
+							"rgba(220,220,220,0.5)",
+							"rgba(151,187,205,0.5)",
+							"rgba(82,154,190,0.5)"
 						],
 						label: 'UnPaid Hours'
 					}],
@@ -121,9 +128,12 @@
 						display: false,
 						text: 'Chart.js Doughnut Chart'
 					},
+					cutoutPercentage: 60,
+					aspectRatio: 3.5,
 					animation: {
-						animateScale: true,
-						animateRotate: true
+						duration: 0,
+						animateScale: false,
+						animateRotate: false
 					},
 					circumference : Math.PI,
 					rotation : -Math.PI,
@@ -150,7 +160,7 @@
 					<td>Jobs Awaiting Response</td>
 				</tr>
 			</table>
-			<p class="text-info small mb-0">This shows how many jobs you have indicated your 
+			<p class=" small mb-0">This shows how many jobs you have indicated your 
 			availability for.  It should be completely full, if not, please click the button below.</p>
 		</div>
 		<div class="card-footer bg-transparent">
@@ -186,7 +196,7 @@
 		var gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
 		gauge.maxValue = <?= $myPoss ?>; // set max gauge value
 		gauge.setMinValue(0);  // Prefer setter over gauge.minValue = 0
-		gauge.animationSpeed = 32; // set animation speed (32 is default value)
+		gauge.animationSpeed = 16; // set animation speed (32 is default value)
 		gauge.set(<?= $mySched ?>);// set actual value
 	</script>
 </div>

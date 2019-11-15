@@ -36,9 +36,9 @@ class Application extends BaseApplication
     {
         $this->addPlugin('CakePdf', ['bootstrap' => true]);
 
-        $this->addPlugin('Josegonzalez/Upload');
+        //$this->addPlugin('Josegonzalez/Upload');
 
-        $this->addPlugin('CsvView');
+        //$this->addPlugin('CsvView');
 
         $this->addPlugin('BootstrapUI');
 

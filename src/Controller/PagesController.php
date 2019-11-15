@@ -64,6 +64,14 @@ class PagesController extends AppController
 		}
 	}
 
+	public function pickdash() {
+		if ( ! $this->Auth->user('is_admin') ) {
+			$this->dash();
+		} else {
+			$this->admindash();
+		}
+	}
+
 	public function dash()
 	{
 		$this->loadModel('Users');
@@ -73,30 +81,8 @@ class PagesController extends AppController
 		$this->loadModel("UsersJobs");
 		$this->loadModel('UsersRoles');
 
-		$userCnt = $this->Users->findByIsActive(1);
-		$this->set("totUser", $userCnt->count());
-
 		$jobCounts = $this->Jobs->find("jobCounts");
 		$this->set('jobCounts', $jobCounts->first());
-
-
-		$openPosCount = $this->JobsRoles->find("all");
-		$openPosCount
-			->select([
-				"jobstot" => $openPosCount->func()->sum("number_needed")
-			])
-			->where([
-				"job_id IN" => $this->Jobs->find("all")->select(["id"])->where(["is_open" => 1])
-			]);
-
-		$lifePosCount = $this->JobsRoles->find("all");
-		$lifePosCount
-			->select([
-				"jobstot" => $lifePosCount->func()->sum("number_needed")
-			]);
-
-		$this->set("availPos", $openPosCount->first()->jobstot);
-		$this->set("lifePos", $lifePosCount->first()->jobstot);
 
 
 		$myPayroll = $this->Payrolls->find("payTotals", ["user" => $this->Auth->User("id")]);
@@ -123,5 +109,47 @@ class PagesController extends AppController
 		
 
 		$this->render('dashboard');
+	}
+
+	public function admindash()
+	{
+		$this->loadModel('Users');
+		$this->loadModel('Payrolls');
+		$this->loadModel('Jobs');
+		$this->loadModel("JobsRoles");
+		$this->loadModel("UsersJobs");
+		$this->loadModel('UsersRoles');
+
+		$userCnt = $this->Users->findByIsActive(1);
+		$this->set("totUser", $userCnt->count());
+
+		$jobCounts = $this->Jobs->find("jobCounts");
+		$this->set('jobCounts', $jobCounts->first());
+
+
+		$openPosCount = $this->JobsRoles->find("all");
+		$openPosCount
+			->select([
+				"jobstot" => $openPosCount->func()->sum("number_needed")
+			])
+			->where([
+				"job_id IN" => $this->Jobs->find("all")->select(["id"])->where(["is_open" => 1])
+			]);
+
+		$this->set("availPos", $openPosCount->first()->jobstot);
+		
+
+
+		$myPayroll = $this->Payrolls->find("payTotals");
+		$this->set("myPay", $myPayroll->first());
+
+		$jobPayTotal = $this->Payrolls->find("jobTotals")->order(['Jobs.date_start' => 'DESC', 'Jobs.name' => 'asc']);
+		$this->set("jobPayTotal", $jobPayTotal->toArray());
+
+		$userPayTotal = $this->Payrolls->find('userTotals')->order(["Users.last" => "ASC", "Users.first" => "ASC"]);
+		$this->set("userPayTotal", $userPayTotal);
+		
+
+		$this->render('admindashboard');
 	}
 }

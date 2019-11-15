@@ -88,8 +88,11 @@ class PayrollsTable extends Table
 		if ( !empty($options['job_id']) ) {
 			$query->where(["job_id" => $options['job_id']]);
 		}
-			
+		$query->contain(["Users"]);
+
 		return $query->select([
+			"Users.last",
+			"Users.first",
 			'user_id',
 			'total_worked' => $query->func()->sum('hours_worked'),
 			'total_unpaid' => $query->func()->sum($unPaidCase),
@@ -151,11 +154,13 @@ class PayrollsTable extends Table
 		$query->where(["is_paid" => 0]);
 		
 		return $query->select([
+			'total_unpaid' => $query->func()->sum("hours_worked"),
 			'total_closed' => $query->func()->sum($closedCase),
 			'total_active' => $query->func()->sum($openActCase),
 			'total_open' => $query->func()->sum($openInActCase)
 		]);
 	}
+	
 
 	/**
 	 * Default validation rules.

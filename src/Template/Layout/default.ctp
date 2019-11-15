@@ -39,16 +39,18 @@ $user = $this->request->getSession()->read('Auth.User');
 
 		<?php
 
-			 echo $this->fetch('meta');
-			 echo $this->fetch('css');
-			 echo $this->fetch('script');
+			echo $this->fetch('meta');
+			echo $this->fetch('css');
+			echo $this->fetch('script');
+		
+			echo $this->Html->css('https://cdn.materialdesignicons.com/4.5.95/css/materialdesignicons.min.css');
+			echo $this->Html->css('bootstrap.min.css');
+			echo $this->Html->css('bootstrap4-toggle.min.css');
 			
-			 echo $this->Html->css('https://cdn.materialdesignicons.com/4.5.95/css/materialdesignicons.min.css');
-			 echo $this->Html->css('bootstrap.min.css');
-			 echo $this->Html->css('bootstrap4-toggle.min.css');
-			 echo $this->Html->css('tdtracx');
-			 echo $this->Html->css('typeaheadjs.min.css');
-			 
+			echo $this->Html->css('typeaheadjs.min.css');
+			echo $this->Html->css('Chart.min.css');
+			echo $this->Html->css('tdtracx');
+			
 
 		?>
 		<?php
@@ -60,9 +62,11 @@ $user = $this->request->getSession()->read('Auth.User');
 
 			echo $this->Html->script('bootstrap.min.js');
 			echo $this->Html->script('bootbox.min.js');
-			echo $this->Html->script('validator.min');
 			echo $this->Html->script('jtsage-datebox.min.js');
+			echo $this->Html->script('Chart.min.js');
+			echo $this->Html->script("gauge.min.js");
 			echo $this->Html->script('tdtrac-staffer');
+			
 		?>
 
 	</head>
@@ -84,6 +88,7 @@ $user = $this->request->getSession()->read('Auth.User');
 						<?php if ($WhoAmI) : ?>
 							<li class="border-bottom border-dark"><a href="/jobs/">All Jobs</a></li>
 						<?php endif; ?>
+						<li><a href="/jobs/myrespond/">Jobs Awaiting Availability Response</a></li>
 						<li><a href="/jobs/myjobs/">My Qualified Jobs</a></li>
 						<li class="border-bottom border-dark"><a href="/jobs/mysched/">My Scheduled Jobs</a></li>
 						<li><a href="/jobs/calendar/">Calendar</a></li>

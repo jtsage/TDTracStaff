@@ -116,6 +116,25 @@ class JobsTable extends Table
 				"id IN"     => $options['limitList']
 			]);
 	}
+	public function findJobCounts(Query $query, array $options)
+	{
+		$openCase = $query->newExpr()
+			->addCase(
+				[ $query->newExpr()->add(['Jobs.is_open' => '1']) ],
+				[ 1, 0 ]
+			);
+		$activeCase = $query->newExpr()
+			->addCase(
+				[ $query->newExpr()->add(['Jobs.is_active' => 1]) ],
+				[ 1, 0 ]
+			);
+		
+		return $query->select([
+			'total_active' => $query->func()->sum($activeCase),
+			'total_open' => $query->func()->sum($openCase),
+			'total' => $query->func()->count('id')
+		]);
+	}
 
 	/**
 	 * Default validation rules.

@@ -14,6 +14,8 @@ $(document).ready(function() {
 		});
 	});
 
+	$('[role="alert"].error').addClass('alert alert-danger shadow-sm');
+
 	$( ".deleteBtn" ).on( "click", function () {
 		var thisEle = $(this).data();
 
@@ -220,6 +222,17 @@ $(function(){
 		$("#export_table").tableToCSV();
 	});
 });
+
+window.chartColor = {
+	"red"    : "#f1b8b8",
+	"green"  : "#9ad98c",
+	"yellow" : "#e9b77a",
+	"blue"   : "#9eb4cb",
+	"grey"   : "#dfe6e8",
+	"ltblue" : "#c6e2fc",
+	"purple" : "#b49ddf"
+};
+
 
 
 

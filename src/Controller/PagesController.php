@@ -29,60 +29,99 @@ use Cake\ORM\TableRegistry;
 class PagesController extends AppController
 {
 
-    /**
-     * Displays a view
-     *
-     * @return void|\Cake\Network\Response
-     * @throws \Cake\Network\Exception\NotFoundException When the view file could not
-     *   be found or \Cake\View\Exception\MissingTemplateException in debug mode.
-     */
-    public function display()
-    {
-        $path = func_get_args();
+	/**
+	 * Displays a view
+	 *
+	 * @return void|\Cake\Network\Response
+	 * @throws \Cake\Network\Exception\NotFoundException When the view file could not
+	 *   be found or \Cake\View\Exception\MissingTemplateException in debug mode.
+	 */
+	public function display()
+	{
+		$path = func_get_args();
 
-        $count = count($path);
-        if (!$count) {
-            return $this->redirect('/');
-        }
-        $page = $subpage = null;
+		$count = count($path);
+		if (!$count) {
+			return $this->redirect('/');
+		}
+		$page = $subpage = null;
 
-        if (!empty($path[0])) {
-            $page = $path[0];
-        }
-        if (!empty($path[1])) {
-            $subpage = $path[1];
-        }
-        $this->set(compact('page', 'subpage'));
+		if (!empty($path[0])) {
+			$page = $path[0];
+		}
+		if (!empty($path[1])) {
+			$subpage = $path[1];
+		}
+		$this->set(compact('page', 'subpage'));
 
-        try {
-            $this->render(implode('/', $path));
-        } catch (MissingTemplateException $e) {
-            if (Configure::read('debug')) {
-                throw $e;
-            }
-            throw new NotFoundException();
-        }
-    }
+		try {
+			$this->render(implode('/', $path));
+		} catch (MissingTemplateException $e) {
+			if (Configure::read('debug')) {
+				throw $e;
+			}
+			throw new NotFoundException();
+		}
+	}
 
-    public function dash()
-    {
-        // $this->loadModel('Users');
-        
-        // $user = $this->Users->get($this->Auth->user('id'), [
-        //     'contain' => [
-        //         'Bios' => [
-        //            'Purposes'
-        //         ],
-        //         'Photos'
-        //     ]
-        // ]);
+	public function dash()
+	{
+		$this->loadModel('Users');
+		$this->loadModel('Payrolls');
+		$this->loadModel('Jobs');
+		$this->loadModel("JobsRoles");
+		$this->loadModel("UsersJobs");
+		$this->loadModel('UsersRoles');
 
-        // $this->set('user', $user);
+		$userCnt = $this->Users->findByIsActive(1);
+		$this->set("totUser", $userCnt->count());
 
-        // $this->set('crumby', [
-        //     [null, __("Dashboard")]
-        // ]);
+		$jobCounts = $this->Jobs->find("jobCounts");
+		$this->set('jobCounts', $jobCounts->first());
 
-        $this->render('dashboard');
-    }
+
+		$openPosCount = $this->JobsRoles->find("all");
+		$openPosCount
+			->select([
+				"jobstot" => $openPosCount->func()->sum("number_needed")
+			])
+			->where([
+				"job_id IN" => $this->Jobs->find("all")->select(["id"])->where(["is_open" => 1])
+			]);
+
+		$lifePosCount = $this->JobsRoles->find("all");
+		$lifePosCount
+			->select([
+				"jobstot" => $lifePosCount->func()->sum("number_needed")
+			]);
+
+		$this->set("availPos", $openPosCount->first()->jobstot);
+		$this->set("lifePos", $lifePosCount->first()->jobstot);
+
+
+		$myPayroll = $this->Payrolls->find("payTotals", ["user" => $this->Auth->User("id")]);
+		$this->set("myPay", $myPayroll->first());
+
+		$myPossible = $this->JobsRoles->find("all")
+			->contain(["Jobs"])
+			->select(["job_id"])
+			->group(["job_id"])
+			->where([
+				"role_id IN" => $this->UsersRoles->find("all")->select(["role_id"])->where(["user_id" => $this->Auth->User("id")]),
+				"Jobs.is_active" => 1
+			]);
+		$this->set("myPoss", $myPossible->count());
+
+		$mySched = $this->UsersJobs->find("all")
+			->select(["job_id"])
+			->where([
+				"user_id" => $this->Auth->User("id"),
+			])
+			->group(["job_id"]);
+
+		$this->set("mySched", $mySched->count());
+		
+
+		$this->render('dashboard');
+	}
 }

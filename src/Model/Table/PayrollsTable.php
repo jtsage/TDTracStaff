@@ -124,6 +124,38 @@ class PayrollsTable extends Table
 			'total_paid' => $query->func()->sum($paidCase)
 		])->group(["job_id"]);
 	}
+	public function findPayTotals(Query $query, array $options)
+	{
+		$openInActCase = $query->newExpr()
+			->addCase(
+				[ $query->newExpr()->add(['Jobs.is_open' => '1', 'Jobs.is_active' => 0]) ],
+				[ new IdentifierExpression('hours_worked'), 0 ]
+			);
+		$openActCase = $query->newExpr()
+			->addCase(
+				[ $query->newExpr()->add(['Jobs.is_open' => 1, 'Jobs.is_active' => 1]) ],
+				[ new IdentifierExpression('hours_worked'), 0 ]
+			);
+		$closedCase = $query->newExpr()
+			->addCase(
+				[ $query->newExpr()->add(['Jobs.is_open' => 0]) ],
+				[ new IdentifierExpression('hours_worked'), 0 ]
+			);
+
+		$query->contain(["Jobs"]);
+
+		if ( array_key_exists("user", $options) ) {
+			$query->where(["user_id" => $options["user"]]);
+		}
+
+		$query->where(["is_paid" => 0]);
+		
+		return $query->select([
+			'total_closed' => $query->func()->sum($closedCase),
+			'total_active' => $query->func()->sum($openActCase),
+			'total_open' => $query->func()->sum($openInActCase)
+		]);
+	}
 
 	/**
 	 * Default validation rules.

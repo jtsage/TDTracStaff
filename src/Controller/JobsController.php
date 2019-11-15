@@ -146,6 +146,53 @@ class JobsController extends AppController
 		$this->render("index");
 	}
 
+	function myrespond()
+	{
+		$this->set('crumby', [
+			["/", __("Dashboard")],
+			["/jobs/", __("Jobs")],
+			[null, __("My Scheduled Jobs")]
+		]);
+
+		$this->loadModel('UsersJobs');
+		$this->loadModel('JobsRoles');
+		$this->loadModel('UsersRoles');
+
+		$mySched = $this->UsersJobs->find("all")
+			->select(["job_id"])
+			->where([
+				"user_id" => $this->Auth->User("id"),
+			])
+			->group(["job_id"]);
+
+		$myNoResp = $this->JobsRoles->find("all")
+			->contain(["Jobs"])
+			->select(["job_id"])
+			->group(["job_id"])
+			->where([
+				"role_id IN" => $this->UsersRoles->find("all")->select(["role_id"])->where(["user_id" => $this->Auth->User("id")]),
+				"Jobs.is_active" => 1,
+				"job_id NOT IN" => $mySched
+			]);
+		$this->set("myNoResp", $myNoResp->toArray());
+
+		$jobFind = $this->Jobs->find("detailSubset", [
+			"userID"    => $this->Auth->user("id"),
+			"limitList" => $myNoResp
+		]);
+	
+		$this->loadModel("Payrolls");
+		$this->set("myTotals", $this->Payrolls->find('jobTotals')->where(["user_id"=>$this->Auth->user("id")])->indexBy('job_id')->toArray());
+		$this->set("jobTotals", $this->Payrolls->find('jobTotals')->indexBy('job_id')->toArray());
+
+		$jobs = $this->paginate($jobFind);
+
+		$this->set("subtitle", "Awaiting Response");
+		$this->set("subtext", "This display shows those shows that you have not yet responded with your availability.");
+		$this->set(compact('jobs'));
+		$this->render("index");
+	}
+
 	/*
 	              o8o                             
 	              `"'                             

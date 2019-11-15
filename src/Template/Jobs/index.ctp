@@ -38,6 +38,11 @@
 		['action' => 'mysched'],
 		['class' => 'w-100 btn btn-outline-primary']
 	) ?>
+	<?= $this->HtmlExt->iconBtnLink(
+		"calendar-search", 'View Awaiting Response',
+		['action' => 'myrespond'],
+		['class' => 'w-100 btn btn-outline-primary']
+	) ?>
 	</div>
 </div>
 

@@ -95,6 +95,7 @@ $user = $this->request->getSession()->read('Auth.User');
 						<li><a href="/jobs/day/">Today</a></li>
 					</ul>
 				</li>
+				<li><a href="/payrolls/add/"><?= $this->HtmlExt->icon("alarm-plus") ?> <?= __("Add Payroll") ?></a></li>
 				<li class="<?= ($this->request->getParam('controller') == "Payrolls" ? " active":"") ?>">
 					<a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><?= $this->HtmlExt->icon("cash") ?> Payroll</a>
 					<ul class="collapse list-unstyled" id="pageSubmenu">

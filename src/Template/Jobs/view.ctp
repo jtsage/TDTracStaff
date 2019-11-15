@@ -200,6 +200,11 @@
 					['action' => 'staffAssign', $job->id],
 					['class' => 'text-left text-md-center w-100 btn btn-outline-info']
 				) ?>
+				<?= $this->HtmlExt->iconBtnLink(
+					"account-supervisor", 'Force Staff Assignments',
+					['action' => 'staffAssign', $job->id],
+					['class' => 'text-left text-md-center w-100 btn btn-outline-danger']
+				) ?>
 				</div>
 			<?php endif; ?>
 		</div>

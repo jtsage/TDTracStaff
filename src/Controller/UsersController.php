@@ -57,7 +57,7 @@ class UsersController extends AppController
 			[null, "User List"]
 		]);
 
-		$this->set('users', $this->paginate($this->Users));
+		$this->set('users', $this->paginate($this->Users, ["contain" => [ "Roles" => ['sort' => ['Roles.sort_order' => 'ASC']]]]));
 		$this->set('_serialize', ['users']);
 
 

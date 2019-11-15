@@ -712,6 +712,88 @@ class PayrollsController extends AppController
 	}
 
 
+
+	/*
+	                 .o8        .o8  oooooooooooo                                        
+	                "888       "888  `888'     `8                                        
+	  .oooo.    .oooo888   .oooo888   888          .ooooo.  oooo d8b  .ooooo.   .ooooo.  
+	 `P  )88b  d88' `888  d88' `888   888oooo8    d88' `88b `888""8P d88' `"Y8 d88' `88b 
+	  .oP"888  888   888  888   888   888    "    888   888  888     888       888ooo888 
+	 d8(  888  888   888  888   888   888         888   888  888     888   .o8 888    .o 
+	 `Y888""8o `Y8bod88P" `Y8bod88P" o888o        `Y8bod8P' d888b    `Y8bod8P' `Y8bod8P' 
+	*/
+	public function addForce($jobID = null)
+	{
+		if ( !$this->Auth->user('is_admin') ) {
+			$this->Flash->error("Sorry, you do not have access to this module.");
+			$this->redirect(["action" => "add"]);
+		}
+
+		$this->set('crumby', [
+			["/", __("Dashboard")],
+			["/payrolls/", __("Hours")],
+			[null, "Forcibly Add Hours"]
+		]);
+
+		$payroll = $this->Payrolls->newEntity();
+		if ($this->request->is('post')) {
+
+			$fixed_data = array_merge($this->request->getData(), [
+				'is_paid' => 0
+			]);
+
+			if ( $this->CONFIG_DATA['require-hours'] ) {
+				$fixed_data['time_start']   = Chronos::createFromFormat('H:i', $this->request->getData('time_start'));
+				$fixed_data['time_end']     = Chronos::createFromFormat('H:i', $this->request->getData('time_end'));
+				$fixed_data['hours_worked'] = ($fixed_data['time_end']->diffInMinutes($fixed_data['time_start']) / 60);
+			} else {
+				$fixed_data['time_start'] = Chronos::createFromFormat('H:i', "0:00");
+				$fixed_data['time_end']   = Chronos::createFromFormat('H:i', "0:00");
+				$fixed_data['time_end']   = $fixed_data["time_end"]->addMinutes(intval($fixed_data["hours_worked"] * 60));
+			}
+
+			$payroll = $this->Payrolls->patchEntity($payroll, $fixed_data);
+			if ($this->Payrolls->save($payroll)) {
+				$this->Flash->success(__('The payroll has been saved.'));
+
+				return $this->redirect(['action' => 'index']);
+			}
+			$this->Flash->error(__('The payroll could not be saved. Please, try again.'));
+		}
+
+		$this->loadModel("Users");
+		$users = $this->Users->find('list', [
+				'keyField' => 'id',
+				'valueField' => function ($row) {
+					return $row['last'] . ', ' . $row['first'];
+				}
+			])
+			->where([ "is_active" => 1 ])
+			->order([ "last" => "ASC", "first" => "ASC" ]);
+
+		if ( !is_null($jobID) ) {
+			$job = $this->loadModel("Jobs")->get($jobID);
+
+			$jobs = [ $job->id => $job->name ];
+		} else {
+
+			$jobs_sch = $this->Payrolls->Jobs->find("activeOpenList", [
+				'keyField'   => 'id',
+				'valueField' => 'name'
+			]);
+
+			$jobs = $jobs_sch->toArray();
+		}
+		
+		if ( count($jobs) < 1 ) {
+			$this->Flash->error(__('Unable to find any jobs'));
+			return $this->redirect(['controller' => 'jobs', 'action' => 'index']);
+		}
+
+		$this->set(compact('payroll', 'users', 'jobs'));
+		
+	}
+
 	/*
 	                 .o8   o8o      .   
 	                "888   `"'    .o8   

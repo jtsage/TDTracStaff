@@ -148,6 +148,20 @@ class PagesController extends AppController
 
 		$userPayTotal = $this->Payrolls->find('userTotals')->order(["Users.last" => "ASC", "Users.first" => "ASC"]);
 		$this->set("userPayTotal", $userPayTotal);
+
+		$jobFind = $this->Jobs->find("all")
+			->contain([
+				"Roles" => [
+					'sort' => ['Roles.sort_order' => 'ASC']
+				],
+				"UsersScheduled",
+				"UsersInterested"
+			])
+			->where(["is_active" => 1])
+			->order(['Jobs.date_start' => 'DESC', 'Jobs.name' => 'asc']);
+
+		$jobs = $this->paginate($jobFind);
+		$this->set("jobsObj", $jobs);
 		
 
 		$this->render('admindashboard');

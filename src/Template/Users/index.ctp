@@ -23,9 +23,14 @@
 </thead>
 <tbody>
 <?php foreach ($users as $user) {
+	$roleDiv = "<div class='d-none d-md-block' style='margin-left: 65px'>";
+	foreach ( $user->roles as $role ) {
+		$roleDiv .= '<div class="badge badge-primary">' . $role->title . '</div> ';
+	}
+	$roleDiv .= "</div>";
 	echo $this->Html->tableCells([
 		[
-			[ $this->HtmlExt->gravatar($user->username,65) . "<br />" . h($user->last) . ", " .  h($user->first), ["class" => "align-middle text-dark text-center"] ],
+			[ $this->HtmlExt->gravatar($user->username,65,"d-block d-md-inline mx-auto mx-md-0") . " <strong>" . h($user->last) . ", " .  h($user->first) . "</strong>" . $roleDiv, ["class" => "align-middle text-dark text-center text-md-left"] ],
 			[ $this->HtmlExt->hyphenNBR($user->phone) . "<br>" . $user->username, ["class" => "align-middle d-none d-md-table-cell"] ],
 			[ $this->HtmlExt->badgeActive($user->is_active) . "<br>" . $this->HtmlExt->badgeAdmin($user->is_admin) , ["class" => "align-middle d-none d-md-table-cell"] ],
 			[ $user->last_login_at->i18nFormat(null, $tz), ["class" => "align-middle d-none d-md-table-cell"] ],

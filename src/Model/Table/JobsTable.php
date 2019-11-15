@@ -6,6 +6,7 @@ use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 use Cake\ORM\TableRegistry;
+use Cake\ORM\Locator\TableLocator;
 
 /**
  * Jobs Model
@@ -116,6 +117,7 @@ class JobsTable extends Table
 				"id IN"     => $options['limitList']
 			]);
 	}
+
 	public function findJobCounts(Query $query, array $options)
 	{
 		$openCase = $query->newExpr()

@@ -510,6 +510,63 @@ class JobsController extends AppController
 		]);
 	}
 
+	/*
+	  .o88o.                                              .o.                          o8o                         
+	  888 `"                                             .888.                         `"'                         
+	 o888oo   .ooooo.  oooo d8b  .ooooo.   .ooooo.      .8"888.      .oooo.o  .oooo.o oooo   .oooooooo ooo. .oo.   
+	  888    d88' `88b `888""8P d88' `"Y8 d88' `88b    .8' `888.    d88(  "8 d88(  "8 `888  888' `88b  `888P"Y88b  
+	  888    888   888  888     888       888ooo888   .88ooo8888.   `"Y88b.  `"Y88b.   888  888   888   888   888  
+	  888    888   888  888     888   .o8 888    .o  .8'     `888.  o.  )88b o.  )88b  888  `88bod8P'   888   888  
+	 o888o   `Y8bod8P' d888b    `Y8bod8P' `Y8bod8P' o88o     o8888o 8""888P' 8""888P' o888o `8oooooo.  o888o o888o 
+	                                                                                        d"     YD              
+	                                                                                        "Y88888P'              
+	*/
+	function forceStaffAssign( $id = null )
+	{
+		if ( !$this->Auth->user('is_admin') ) {
+			$this->Flash->error("Sorry, you do not have access to this module.");
+			$this->redirect(["action" => "index"]);
+		}
+		
+		$job = $this->Jobs->get($id, [
+			'contain' => [ 
+				"Roles" => [
+					'sort' => ['Roles.sort_order' => 'ASC']
+				]
+			]
+		]);
+
+		$this->loadModel("UsersJobs");
+		$this->loadModel("UsersRoles");
+
+		$allRoles = $this->UsersRoles->find("all")
+			->contain(["Users" => ["fields" => ["id", "is_active", "last", "first"]]])
+			->where(["Users.is_active" => 1])
+			->order(["Users.last" => "ASC", "Users.first" => "ASC"]);
+
+		$this->set("userRoles", $allRoles);
+
+		$interested = $this->UsersJobs->find("all")
+			->contain(["Users"])
+			->order([
+				"Users.last"  => "ASC",
+				"Users.first" => "ASC"
+			])
+			->where([
+				"job_id"       => $id
+			]);
+
+		$this->set("job", $job);
+		$this->set("interest", $interested);
+
+		$this->set('crumby', [
+			["/", __("Dashboard")],
+			["/jobs/", __("Jobs")],
+			["/jobs/view/" . $job->id, $job->name],
+			[null, "FORCE Assigned Staff"]
+		]);
+	}
+
 
 
 	/*
@@ -578,7 +635,7 @@ class JobsController extends AppController
 	 o.  )88b 888   .o8  888   888  888    .o 888   888  oo     .d8P 888    .o   888 . 
 	 8""888P' `Y8bod8P' o888o o888o `Y8bod8P' `Y8bod88P" 8""88888P'  `Y8bod8P'   "888" 
 	*/
-	function schedSet ($intId = null, $value = null )
+	function schedSet ($intId = null, $value = null, $redir = 0 )
 	{
 		if ( is_null($intId) || is_null($value) ) {
 			$this->Flash->error(__('Invalid Action'));
@@ -600,7 +657,7 @@ class JobsController extends AppController
 		} else {
 			$this->Flash->error(__('Something went wrong. Please, try again.'));
 		}
-		$this->redirect(['action' => 'staffAssign', $jobRec->job_id]);
+		$this->redirect(['action' => (($redir)?'forceStaffAssign':'staffAssign'), $jobRec->job_id]);
 	}
 
 
@@ -638,6 +695,41 @@ class JobsController extends AppController
 			$this->Flash->error(__('Something went wrong. Please, try again.'));
 		}
 		$this->redirect(['action' => 'available', $jobId]);
+	}
+
+
+
+	/*
+	  .o88o.                                         .oooooo..o               .   
+	  888 `"                                        d8P'    `Y8             .o8   
+	 o888oo   .ooooo.  oooo d8b  .ooooo.   .ooooo.  Y88bo.       .ooooo.  .o888oo 
+	  888    d88' `88b `888""8P d88' `"Y8 d88' `88b  `"Y8888o.  d88' `88b   888   
+	  888    888   888  888     888       888ooo888      `"Y88b 888ooo888   888   
+	  888    888   888  888     888   .o8 888    .o oo     .d8P 888    .o   888 . 
+	 o888o   `Y8bod8P' d888b    `Y8bod8P' `Y8bod8P' 8""88888P'  `Y8bod8P'   "888" 
+	*/
+	function forceSchedSet($jobId = null, $roleId = null, $userId = null, $sched = 0) {
+		if ( is_null($jobId) || is_null($userId) || is_null($roleId) ) {
+			$this->Flash->error(__('Invalid Action'));
+			$this->redirect(['action' => 'available', $jobId]);
+		}
+
+		$this->loadModel("UsersJobs");
+
+		$jobRec = $this->UsersJobs->newEntity();
+
+		$jobRec->user_id      = $userId;
+		$jobRec->role_id      = $roleId;
+		$jobRec->job_id       = $jobId;
+		$jobRec->is_available = 1;
+		$jobRec->is_scheduled = $sched;
+
+		if ($this->UsersJobs->save($jobRec)) {
+			$this->Flash->success(__('Schedule Updated.'));
+		} else {
+			$this->Flash->error(__('Something went wrong. Please, try again.'));
+		}
+		$this->redirect(['action' => 'forceStaffAssign', $jobId]);
 	}
 
 

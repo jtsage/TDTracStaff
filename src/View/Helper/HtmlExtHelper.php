@@ -21,8 +21,8 @@ class HtmlExtHelper extends Helper
 		}
 	}
 
-	public function gravatar($username, $size = 80) {
-		return "<img class=\"rounded-circle border border-dark\" src=\"https://www.gravatar.com/avatar/" . md5( strtolower( trim( $username ) ) ) . "?s=" . $size . "\">";
+	public function gravatar($username, $size = 80, $xtra_class = "") {
+		return "<img class=\"rounded-circle border border-dark " . $xtra_class . "\" src=\"https://www.gravatar.com/avatar/" . md5( strtolower( trim( $username ) ) ) . "?s=" . $size . "&d=robohash\">";
 	}
 
 	public function iconBtnLink($icon, $text, $link, $options = []) {

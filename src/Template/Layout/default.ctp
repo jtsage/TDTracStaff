@@ -99,9 +99,11 @@ $user = $this->request->getSession()->read('Auth.User');
 				<li class="<?= ($this->request->getParam('controller') == "Payrolls" ? " active":"") ?>">
 					<a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><?= $this->HtmlExt->icon("cash") ?> Payroll</a>
 					<ul class="collapse list-unstyled" id="pageSubmenu">
-						<li><a class="border-bottom border-dark" href="/payrolls/add/">Add Hours</a></li>
-
+						<li><a class="<?= (!$WhoAmI)?"border-bottom":"" ?> border-dark" href="/payrolls/add/">Add Hours</a></li>
+						
 						<?php if ($WhoAmI) : ?>
+							<li><a class="border-bottom border-dark" href="/payrolls/add-force/">Force Add Hours</a></li>
+
 							<li><a href="/payrolls/">All Hours</a></li>
 							<li><a class="border-bottom border-dark" href="/payrolls/unpaid">All Unpaid Hours</a></li>
 

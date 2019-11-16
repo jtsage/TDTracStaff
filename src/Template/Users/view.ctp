@@ -57,6 +57,9 @@
 			<div class="badge badge-primary"><?= $role->title ?></div>
 		<?php endforeach; ?>
 	</div>
+
+	<h5 class="text-dark mt-3 mb-1">iCalendar (ics) Link</h5>
+	<div class="pl-3 text-info"><?= $CONFIG['server-name'] ?>/ical/user/<?= $user->id ?></div>
 </div>
 
 <?= $this->Pretty->helpMeStart("User View"); ?>

@@ -205,7 +205,7 @@
 </div>
 
 
-<div class="card shadow">
+<div class="card shadow mb-2">
 	<div class="card-header bg-transparent h2 text-primary">Staffing Requirements By Job</div>
 	<div class="card-body">
 		<div class="text-center">
@@ -292,6 +292,14 @@
 
 	};
 </script>
+
+<div class="card shadow mb-2">
+	<div class="card-header bg-transparent h2 text-primary">iCalendar (ics) Links</div>
+	<div class="card-body">
+		<p><strong>Event per Job: </strong><span class="text-info"><?= $CONFIG['server-name'] ?>/ical/jobs</span></p>
+		<p><strong>Event per Scheduled Employee: </strong><span class="text-info"><?= $CONFIG['server-name'] ?>/ical/users</span></p>
+	</div>
+</div>
 
 
 <?= $this->Pretty->helpMeStart("Dashboard"); ?>

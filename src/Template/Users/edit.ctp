@@ -44,6 +44,16 @@
 				'data-offstyle' => 'success',
 				'label'         => ""
 			]);
+			echo $this->Form->input('is_budget', [
+				'data-toggle'   => "toggle",
+				'data-width'    => '100%',
+				'data-height'   => '36px',
+				'data-on'       => __('Budget User'),
+				'data-off'      => __('Non-Budget User'),
+				'data-onstyle'  => 'warning',
+				'data-offstyle' => 'success',
+				'label'         => ""
+			]);
 		?>
 		</div></div>
 	</fieldset>

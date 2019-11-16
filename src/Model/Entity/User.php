@@ -40,6 +40,7 @@ class User extends Entity
         'last' => true,
         'print_name' => true,
         'is_active' => true,
+        'is_budget' => true,
         'is_password_expired' => true,
         'is_admin' => true,
         'is_verified' => true,

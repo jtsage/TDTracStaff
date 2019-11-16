@@ -125,6 +125,7 @@ $user = $this->request->getSession()->read('Auth.User');
 						<li><a href="/payrolls/mydates/">My Hours by Date</a></li>
 					</ul>
 				</li>
+				<?= ($BudgetAmI) ? "<li class='" . ($this->request->getParam('controller') == "Budgets" ? "active":"") . "'><a href=\"/budgets/\">{$this->HtmlExt->icon("credit-card")} Budgets</a></li>" : "" ?>
 
 				<?= ($WhoAmI) ? "<li class='" . ($this->request->getParam('controller') == "Roles" ? "active":"") . "'><a href=\"/roles/\">{$this->HtmlExt->icon("account-star")} Worker Titles</a></li>" : "" ?>
 
@@ -138,8 +139,7 @@ $user = $this->request->getSession()->read('Auth.User');
 
 			<ul class="list-unstyled CTAs">
 				<li>
-					<a class="article" onClick="javascript:$('#helpMeModal').modal(); return false;" href="#">Online Help</a></li>
-					
+					<a class="article" onClick="javascript:$('#helpMeModal').modal(); return false;" href="#">Online Help</a>
 				</li>
 			</ul>
 		</nav>
@@ -208,7 +208,7 @@ $user = $this->request->getSession()->read('Auth.User');
 	<div class="overlay loading"></div>
 	<div class="spinner loading"></div>
 	
-	<script type="text/javascript">
+	<script>
 	$(document).ready(function () {
 		$('#due_payroll_paid-dbox').datebox({
 			highDatesRec    : <?= $CONFIG["paydates-fixed"] ?>,

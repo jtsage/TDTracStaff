@@ -637,6 +637,12 @@ class PayrollsController extends AppController
 				'is_paid' => 0,
 				'user_id' => $this->Auth->user("id")
 			]);
+			$job = $this->loadModel("Jobs")->get($fixed_data['job_id']);
+
+			if ( !$job->has_payroll ) {
+				$this->Flash->error(__('Sorry, this job does not allow payroll to be tracked.'));
+				$this->redirect(['controller' => 'jobs', 'action' => 'view', $job->id]);
+			}
 
 			if ( $this->CONFIG_DATA['require-hours'] ) {
 				$fixed_data['time_start']   = Chronos::createFromFormat('H:i', $this->request->getData('time_start'));
@@ -669,10 +675,14 @@ class PayrollsController extends AppController
 		if ( !is_null($jobID) ) {
 			$job = $this->loadModel("Jobs")->get($jobID);
 
+			if ( !$job->has_payroll ) {
+				$this->Flash->error(__('Sorry, this job does not allow payroll to be tracked.'));
+				$this->redirect(['controller' => 'jobs', 'action' => 'view', $job->id]);
+			}
 			if ( !$this->CONFIG_DATA["allow-unscheduled-hours"] ) {
 				if ( !in_array($job->id, array_keys($sched_jobs_list->indexBy('job_id')->toArray()) ) ) {
-					$this->Flash->error(__('You are not scheduled for this show!'));
-					$this->redirect(['action' => 'index']);
+					$this->Flash->error(__('You are not scheduled for this job!'));
+					$this->redirect(['controller' => 'jobs', 'action' => 'view', $job->id]);
 				}
 			}
 			$jobs = [ $job->id => $job->name ];

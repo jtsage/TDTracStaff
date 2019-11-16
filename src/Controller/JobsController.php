@@ -371,6 +371,9 @@ class JobsController extends AppController
 			[null, $job1->name]
 		]);
 
+		$budgeTotal = $this->loadModel("Budgets")->find("totalList");
+		$this->set("budgeTotal", $budgeTotal->toArray());
+
 		$this->set('yourStat', $yourStat->first());
 		$this->set('job', $job1);
 	}

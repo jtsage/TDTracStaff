@@ -40,7 +40,7 @@
 	</div>
 </div>
 
-<div class="card-deck d-none d-md-flex mb-4">
+<div class="card-deck mb-1 mb-md-4">
 	<div class="card shadow">
 		<div class="card-header bg-transparent h2 text-primary">Hours By Job</div>
 		<div class="card-body">
@@ -72,16 +72,16 @@
 		}
 	?>
 		
-	<script type="text/javascript">
+	<script>
 		var barChartData = {
 		labels: <?= json_encode($barLabel) ?>,
 		datasets: [{
-			label: 'Paid Hours',
+			label: 'Paid',
 			backgroundColor: "rgba(220,220,220,0.5)",
 			barThickness : 10,
 			data: <?= json_encode( $dataPaid ) ?>
 		}, {
-			label: 'Un-Paid Hours',
+			label: 'Un-Paid',
 			barThickness : 10,
 			backgroundColor: "rgba(82,154,190,0.5)",
 			data: <?= json_encode( $dataUnpaid ) ?>
@@ -118,10 +118,14 @@
 				}
 			},
 			responsive: true,
-			aspectRatio: 3,
+			aspectRatio: 2,
 			scales: {
 				xAxes: [{
 					stacked: true,
+					//type: "logarithmic",
+					ticks: {
+						beginAtZero: true
+					},
 				}],
 				yAxes: [{
 					stacked: true
@@ -132,15 +136,12 @@
 	</script>
 
 	
-	<div class="card shadow mb-2">
+	<div class="card shadow">
 		<div class="card-header bg-transparent h2 text-primary">Unpaid Hours by Employee</div>
 		<div class="card-body">
 			<div class="text-center">
 				<canvas id="unpaidUserC"></canvas>
 			</div>
-			<table class="table table-sm w-100 mt-1 mb-1">
-				
-			</table>
 			<p class="small mb-0">This shows those employees that currently have unpaid hours in the system.</p>
 		</div>
 		<div class="card-footer bg-transparent">
@@ -164,7 +165,7 @@
 			}
 		}
 	?>
-	<script type="text/javascript">
+	<script>
 		var config = {
 				data: {
 					datasets: [{
@@ -176,7 +177,7 @@
 				},
 				options: {
 					responsive: true,
-					aspectRatio: 3,
+					aspectRatio: 2,
 					legend: {
 						position: 'right',
 					},
@@ -197,15 +198,14 @@
 				}
 			};
 
-			$(document).ready(function() {
-				var upC = document.getElementById('unpaidUserC');
-				window.myPolarArea = Chart.PolarArea(upC, config);
-			});
+			var upC = document.getElementById('unpaidUserC');
+			window.myPolarArea = Chart.PolarArea(upC, config);
+			
 	</script>
 </div>
 
-
-<div class="card shadow mb-2">
+<div class="card-deck mb-1 mb-md-4">
+<div class="card shadow">
 	<div class="card-header bg-transparent h2 text-primary">Staffing Requirements By Job</div>
 	<div class="card-body">
 		<div class="text-center">
@@ -214,7 +214,7 @@
 		<table class="table table-sm w-100 mt-1 mb-1">
 			
 		</table>
-		<p class="small mb-0">This shows and overview of availability and scheduling data for active jobs in the system.</p>
+		<p class="small mb-0">This shows an overview of availability and scheduling data for active jobs in the system.</p>
 	</div>
 	<div class="card-footer bg-transparent">
 		<?= $this->HtmlExt->iconBtnLink(
@@ -246,19 +246,19 @@
 	}
 ?>
 
-<script type="text/javascript">
+<script>
 	var barChartData = {
 		labels: <?= json_encode( $workers_Label ) ?>,
 		datasets: [{
-			label: 'Employees Needed',
+			label: 'Needed',
 			backgroundColor: "rgba(220,220,220,0.5)",
 			data: <?= json_encode( $workers_Needed ) ?>
 		}, {
-			label: 'Employees Available',
+			label: 'Available',
 			backgroundColor: "rgba(151,187,205,0.5)",
 			data: <?= json_encode( $workers_Avail ) ?>
 		}, {
-			label: 'Employees Scheduled',
+			label: 'Scheduled',
 			backgroundColor: "rgba(82,154,190,0.5)",
 			data: <?= json_encode( $workers_Sched ) ?>
 		}]
@@ -271,8 +271,12 @@
 			type: 'bar',
 			data: barChartData,
 			options: {
-				aspectRatio: 3,
+				aspectRatio: 2,
 				responsive: true,
+				tooltips: {
+					mode: 'index',
+					intersect: true
+				},
 				legend: {
 					position: 'top',
 				},
@@ -281,6 +285,11 @@
 					text: 'Chart.js Bar Chart'
 				},
 				scales: {
+					xAxes: [{
+						ticks: {
+							display: false //this will remove only the label
+						}
+					}],
 					yAxes: [{
 						ticks: {
 							beginAtZero: true
@@ -292,6 +301,122 @@
 
 	};
 </script>
+
+<div class="card shadow">
+	<div class="card-header bg-transparent h2 text-primary">Job Cost Estimator</div>
+	<div class="card-body">
+		<div class="text-center">
+			<canvas id="jcostChart"></canvas>
+		</div>
+		<table class="table table-sm w-100 mt-1 mb-1">
+			
+		</table>
+		<p class="small mb-0">This shows an overview payroll hours and budget amounts in the system.</p>
+	</div>
+	<div class="card-footer bg-transparent">
+		<?= $this->HtmlExt->iconBtnLink(
+			"worker",
+			"Job List",
+			["controller" => "Jobs", "action" => "index"],
+			["class" => "btn w-100 btn-primary"]
+		); ?>
+	</div>
+</div>
+
+<?php
+	$jobCostList = [
+		"label"  => [],
+		"hours"  => [],
+		"budget" => []
+	];
+
+	foreach ( $jobsObj as $thisJob ) {
+		$thisCostList = [
+			"name"   => $thisJob->name,
+			"hours"  => (array_key_exists($thisJob->id, $jobPayTotalArr) ? $jobPayTotalArr[$thisJob->id]->total_worked : 0 ),
+			"budget" => (array_key_exists($thisJob->id, $budgeTotal) ? $budgeTotal[$thisJob->id] : 0 )
+		];
+		if ( $thisCostList["hours"] > 0 || $thisCostList["budget"] > 0 ) {
+			$jobCostList["label"][]  = $thisCostList["name"];
+			$jobCostList["hours"][]  = $thisCostList["hours"];
+			$jobCostList["budget"][] = $thisCostList["budget"];
+		}
+	}
+?>
+
+<script>
+	var chartData = {
+			labels: <?= json_encode($jobCostList["label"]) ?>,
+			datasets: [{
+				type: 'bar',
+				label: 'Hours',
+				backgroundColor: "rgba(151,187,205,0.5)",
+				fill: false,
+				data: <?= json_encode($jobCostList["hours"]) ?>,
+				yAxisID: "y-axis-1"
+			}, {
+				type: 'line',
+				label: 'Budget $',
+				borderColor: "rgba(205,151,187,0.5)",
+				borderWidth: 2,
+				fill: false,
+				data: <?= json_encode($jobCostList["budget"]) ?>,
+				yAxisID: "y-axis-2"
+			}]
+
+		};
+		$(document).ready( function() {
+			var ctx = document.getElementById('jcostChart').getContext('2d');
+			window.myMixedChart = new Chart(ctx, {
+				type: 'bar',
+				data: chartData,
+				options: {
+					responsive: true,
+					aspectRatio: 2,
+					title: {
+						display: false,
+						text: 'Chart.js Combo Bar Line Chart'
+					},
+					tooltips: {
+						mode: 'index',
+						intersect: true
+					},
+					scales: {
+						xAxes: [{
+							ticks: {
+								display: false //this will remove only the label
+							}
+						}],
+						yAxes: [{
+							type: "linear", // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+							display: true,
+							position: "left",
+							id: "y-axis-1",
+							ticks: {
+								beginAtZero: true
+							}
+						}, {
+							type: "linear", // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+							display: true,
+							position: "right",
+							id: "y-axis-2",
+
+							// grid line settings
+							gridLines: {
+								drawOnChartArea: false, // only want the grid lines for one axis to show up
+							},
+							ticks: {
+								beginAtZero: true
+							}
+						}],
+					}
+				}
+			});
+		});
+</script>
+</div>
+
+
 
 <div class="card shadow mb-2">
 	<div class="card-header bg-transparent h2 text-primary">iCalendar (ics) Links</div>

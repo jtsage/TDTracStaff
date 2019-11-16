@@ -94,14 +94,18 @@ class PagesController extends AppController
 			->group(["job_id"])
 			->where([
 				"role_id IN" => $this->UsersRoles->find("all")->select(["role_id"])->where(["user_id" => $this->Auth->User("id")]),
-				"Jobs.is_active" => 1
+				"Jobs.is_active" => 1,
+				"Jobs.is_open" => 1
 			]);
 		$this->set("myPoss", $myPossible->count());
 
 		$mySched = $this->UsersJobs->find("all")
 			->select(["job_id"])
+			->contain(["Jobs"])
 			->where([
 				"user_id" => $this->Auth->User("id"),
+				"Jobs.is_active" => 1,
+				"Jobs.is_open" => 1
 			])
 			->group(["job_id"]);
 
@@ -145,6 +149,10 @@ class PagesController extends AppController
 
 		$jobPayTotal = $this->Payrolls->find("jobTotals")->order(['Jobs.date_start' => 'DESC', 'Jobs.name' => 'asc']);
 		$this->set("jobPayTotal", $jobPayTotal->toArray());
+		$this->set("jobPayTotalArr", $jobPayTotal->indexBy("job_id")->toArray());
+
+		$budgeTotal = $this->loadModel("Budgets")->find("totalList");
+		$this->set("budgeTotal", $budgeTotal->toArray());
 
 		$userPayTotal = $this->Payrolls->find('userTotals')->order(["Users.last" => "ASC", "Users.first" => "ASC"]);
 		$this->set("userPayTotal", $userPayTotal);

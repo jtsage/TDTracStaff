@@ -21,7 +21,33 @@
 		?><div style="border-bottom: 1px dashed #ccc;" class="mt-4 mb-2"><h5>Payroll Dates</h5></div><?php
 			echo $this->Datebox->calbox('due_payroll_submitted', ["label" => 'Payroll Due Date', 'help' => 'Last date that emloyees may submit hours for this job']);
 			echo $this->Datebox->calbox('due_payroll_paid', ["label" => 'Payroll Check Date', 'data-datebox-theme_cal_-date-high-rec' => 'warning', 'help' => 'Date that the checks will be disbursed for this job']);
-		?><div style="border-bottom: 1px dashed #ccc;" class="mt-4 mb-2"><h5>Job Notes</h5></div><?php
+		?><div style="border-bottom: 1px dashed #ccc;" class="mt-4 mb-2"><h5>Job Status</h5></div>
+			<div class="row">
+				<div class="col-md-6">
+					<?= $this->Form->input('has_payroll', [
+						'data-toggle'   => "toggle",
+						'data-width'    => '100%',
+						'data-height'   => '36px',
+						'data-on'       => __('Job has associated Payroll'),
+						'data-off'      => __('Job does not accept Payroll'),
+						'data-onstyle'  => 'success',
+						'data-offstyle' => 'warning',
+						'label'         => ""
+					]); ?>
+				</div><div class="col-md-6">
+					<?= $this->Form->input('has_budget', [
+						'data-toggle'   => "toggle",
+						'data-width'    => '100%',
+						'data-height'   => '36px',
+						'data-on'       => __('Job has associated Budget'),
+						'data-off'      => __('Job does not accept Budget'),
+						'data-onstyle'  => 'success',
+						'data-offstyle' => 'warning',
+						'label'         => ""
+					]); ?>
+				</div>
+			</div>
+		<div style="border-bottom: 1px dashed #ccc;" class="mt-4 mb-2"><h5>Job Notes</h5></div><?php
 			echo $this->Form->control('notes', ["rows" => 20]);
 		?>
 	</fieldset>
@@ -129,4 +155,7 @@
 <?= $this->Pretty->helpMeFld("Payroll Due Date", "The last date payroll can be submitted for this job"); ?>
 <?= $this->Pretty->helpMeFld("Payroll Check Date", "Date checks will be cut for this job - standard pay dates are highlighted"); ?>
 
+<p class="mt-2">Payroll disabled jobs still allow staffing.  They are typically used for special "substitute" or "child job" cases where you want the payroll added to a "master" job. By default, all jobs allow payroll records.</p>
+
+<p>Budget enabled jobs allow adding budget items to be added for that job.  By default, jobs do not have an associated budget</p>
 <?= $this->Pretty->helpMeEnd(); ?>

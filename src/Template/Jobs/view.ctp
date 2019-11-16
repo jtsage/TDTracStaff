@@ -86,10 +86,12 @@
 ?>
 
 <div class="card rounded border shadow-sm mb-2 px-3 pt-3">
-	<h3 class="text-dark mb-4"><?= $job->category . ": " . $job->name ?>
+	<div class="text-dark mb-4"><span class="h3"><?= $job->category . ": " . $job->name ?></span>
+		<?= ( $job->has_budget ) ? "<span class=\"float-right badge ml-1 badge-warning\">Budgeted</span>" : "" ?>
+		<?= ( !$job->has_payroll ) ? "<span class=\"float-right badge ml-1 badge-warning\">No Payroll</span>" : "" ?>
 		<span class="float-right badge ml-1 badge-<?= $actStyle[0] ?>"><?= $actStyle[1] ?></span>
 		<span class="float-right badge ml-1 badge-<?= $openStyle[0] ?>"><?= $openStyle[1] ?></span>
-	</h4>
+</div>
 
 	<?php if ($WhoAmI) : ?>
 		<?= $this->HtmlExt->iconBtnLink(
@@ -132,16 +134,16 @@
 					['action' => 'available', $job->id],
 					['class' => 'text-left text-md-center w-100 btn btn-outline-info']
 				) ?>
-				<?= $this->HtmlExt->iconBtnLink(
+				<?= ($job->has_payroll) ? $this->HtmlExt->iconBtnLink(
 					"account-cash", 'Add My Hours',
 					['controller' => 'payrolls', 'action' => 'add', $job->id],
 					['class' => 'text-left text-md-center w-100 btn btn-outline-info']
-				) ?>
-				<?= $this->HtmlExt->iconBtnLink(
+				) : "" ?>
+				<?= ($job->has_payroll) ? $this->HtmlExt->iconBtnLink(
 					"cash", 'View My Payroll',
 					['controller' => 'payrolls', 'action' => 'myjob', $job->id],
 					['class' => 'text-left text-md-center btn w-100 btn-outline-warning']
-				) ?>
+				) : "" ?>
 			</div>
 		</div>
 		<div class="col-12 border-bottom">
@@ -177,89 +179,97 @@
 <div class="card rounded border shadow-sm mb-2 px-3 pt-3">
 	<div class="row">
 		<div class="col-12 p-0 text-dark text-center"><h5 class="p-0 m-0 mb-2">Staffing Information</h5></div>
-		<div class="col-12 border-bottom py-0 m-0">
-			<?php if ($WhoAmI) : ?>
-				<div class="btn-group btn-group-sm-vertical w-100 mb-2">
+	</div><div class="row">
+		<div class="<?= (!$WhoAmI)?"col-12":"col-md-9" ?> p-0">
+			<div class="col-12 border-bottom">
+				<dl class="m-0">
+					<dt>Staffing Required</dt>
+					<dd class="m-0 ml-3">
+						<strong><?= $count_Needed ?></strong> -
+						<?= $this->Pretty->joinAnd($names_Needed); ?>
+					</dd>
+				</dl>
+			</div>
+			<div class="col-12 border-bottom">
+				<dl class="m-0">
+					<dt>Staffing Assigned</dt>
+					<dd class="m-0 ml-3">
+						<strong><?= $count_Assigned ?></strong> -
+						<?= $this->Pretty->joinAnd($names_Assigned); ?>
+					</dd>
+				</dl>
+			</div>
+			<?php if ( $WhoAmI ) : ?>
+				<div class="col-12 border-bottom">
+					<dl class="m-0">
+						<dt>Staffing Available</dt>
+						<dd class="m-0 ml-3">
+							<strong><?= $count_Available ?></strong> -
+							<?= $this->Pretty->joinAnd($names_Available); ?>
+						</dd>
+					</dl>
+				</div>
+				<div class="col-12 mt-1">
+					<div class="border progress mb-md-2" title="<?= $count_Assigned ?> staff assigned to <?= $count_Needed ?> positions">
+						<div class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: <?= $percent_Done ?>%" aria-valuenow="<?= $percent_Done ?>" aria-valuemin="0" aria-valuemax="100"><?= $percent_Done ?>% Staffed</div>
+					</div>
+					<div class="text-muted text-center mb-2 d-md-none"><?= $count_Assigned ?> staff assigned to <?= $count_Needed ?> positions</div>
+				</div>
+			<?php endif; ?>
+		</div>
+		<?php if ($WhoAmI) : ?>
+			<div class="col-md-3 border-bottom py-0 m-0">
+				<div class="btn-group-vertical w-100 mb-2">
 				<?= $this->HtmlExt->iconBtnLink(
 					"printer", 'Print Scheduled',
 					['action' => 'print', $job->id],
-					['class' => 'text-left text-md-center w-100 btn btn-outline-dark']
+					['class' => 'text-left w-100 btn btn-outline-dark']
 				) ?>
 				<?= $this->HtmlExt->iconBtnLink(
 					"account-multiple-plus", 'Set Staff Needed',
 					['action' => 'staffNeed', $job->id],
-					['class' => 'text-left text-md-center w-100 btn btn-outline-info']
+					['class' => 'text-left w-100 btn btn-outline-info']
 				) ?>
 				<?= $this->HtmlExt->iconBtnLink(
 					"email", 'E-Mail Needs',
 					"#",
 					[
 						'data-jobid' => $job->id,
-						'class' => 'emailNeedBtn text-left text-md-center w-100 btn btn-outline-danger'
+						'class' => 'emailNeedBtn text-left w-100 btn btn-outline-warning'
 					]
 				) ?>
 				<?= $this->HtmlExt->iconBtnLink(
 					"account-multiple-check", 'Assign Staff',
 					['action' => 'staffAssign', $job->id],
-					['class' => 'text-left text-md-center w-100 btn btn-outline-info']
+					['class' => 'text-left w-100 btn btn-outline-info']
 				) ?>
 				<?= $this->HtmlExt->iconBtnLink(
-					"account-supervisor", 'Force Staff Assignments',
+					"account-supervisor", 'Force Staff',
 					['action' => 'forceStaffAssign', $job->id],
-					['class' => 'text-left text-md-center w-100 btn btn-outline-danger']
+					['class' => 'text-left w-100 btn btn-outline-danger']
 				) ?>
 				</div>
-			<?php endif; ?>
-		</div>
-		<div class="col-12 border-bottom">
-			<dl class="m-0">
-				<dt>Staffing Required</dt>
-				<dd class="m-0 ml-3">
-					<strong><?= $count_Needed ?></strong> -
-					<?= $this->Pretty->joinAnd($names_Needed); ?>
-				</dd>
-			</dl>
-		</div>
-		<div class="col-12 border-bottom">
-			<dl class="m-0">
-				<dt>Staffing Assigned</dt>
-				<dd class="m-0 ml-3">
-					<strong><?= $count_Assigned ?></strong> -
-					<?= $this->Pretty->joinAnd($names_Assigned); ?>
-				</dd>
-			</dl>
-		</div>
-		<?php if ( $WhoAmI ) : ?>
-			<div class="col-12 border-bottom">
-				<dl class="m-0">
-					<dt>Staffing Available</dt>
-					<dd class="m-0 ml-3">
-						<strong><?= $count_Available ?></strong> -
-						<?= $this->Pretty->joinAnd($names_Available); ?>
-					</dd>
-				</dl>
-			</div>
-			<div class="col-12 mt-1">
-				<div class="border progress mb-md-2" title="<?= $count_Assigned ?> staff assigned to <?= $count_Needed ?> positions">
-					<div class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: <?= $percent_Done ?>%" aria-valuenow="<?= $percent_Done ?>" aria-valuemin="0" aria-valuemax="100"><?= $percent_Done ?>% Staffed</div>
-				</div>
-				<div class="text-muted text-center mb-2 d-md-none"><?= $count_Assigned ?> staff assigned to <?= $count_Needed ?> positions</div>
 			</div>
 		<?php endif; ?>
 	</div>
 </div>
 
-<?php if ( $WhoAmI ) : ?>
+<?php if ( $WhoAmI && $job->has_payroll ) : ?>
 	<div class="card rounded border shadow-sm mb-2 px-3 pt-3">
 		<div class="row">
 			<div class="col-12 p-0 text-dark text-center "><h5 class="p-0 m-0 mb-2">Payroll Information</h5></div>
-			<div class="col-12 border-bottom pb-2">
+			<div class="col-12 border-bottom pb-2"><div class="btn-group btn-group-sm-vertical w-100">
 				<?= $this->HtmlExt->iconBtnLink(
 					"cash", 'View All Payroll',
 					['controller' => 'payrolls', 'action' => 'job', $job->id],
-					['class' => 'btn w-100 btn-outline-warning']
+					['class' => 'btn w-100 text-left text-md-center btn-outline-warning']
 				) ?>
-			</div>
+				<?= $this->HtmlExt->iconBtnLink(
+					"account-cash", 'Force Add Payroll',
+					['controller' => 'payrolls', 'action' => 'addForce', $job->id],
+					['class' => 'btn w-100 text-left text-md-center btn-outline-danger']
+				) ?>
+			</div></div>
 			<?php
 				$jobTot = (!is_null($jobTotals) ? $jobTotals->total_worked :0);
 				$jobUpd = (!is_null($jobTotals) ? $jobTotals->total_unpaid :0);
@@ -275,6 +285,42 @@
 			<div class="col-12 mt-1">
 				<div class="border progress mb-md-2" title="<?= number_format($jobPad,2) ?> paid hours of <?= number_format($jobTot,2) ?> total">
 					<div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: <?= $jobPrc ?>%" aria-valuenow="<?= $jobPrc ?>" aria-valuemin="0" aria-valuemax="100"><?= $jobPrc ?>% Total Hours Paid</div>
+				</div>
+			</div>
+		</div>
+	</div>
+<?php endif; ?>
+
+<?php if ( $BudgetAmI && $job->has_budget ) : ?>
+	<div class="card rounded border shadow-sm mb-2 px-3 pt-3">
+		<div class="row">
+			<div class="col-12 p-0 text-dark text-center "><h5 class="p-0 m-0 mb-2">Budget Information</h5></div>
+			<div class="col-12 border-bottom pb-2"><div class="btn-group btn-group-sm-vertical w-100">
+				<?= $this->HtmlExt->iconBtnLink(
+					"credit-card-clock", 'View Budget',
+					['controller' => 'budgets', 'action' => 'view', $job->id],
+					['class' => 'btn w-100 text-left text-md-center btn-outline-warning']
+				) ?>
+				<?= $this->HtmlExt->iconBtnLink(
+					"credit-card-plus", 'Add Budget Item',
+					['controller' => 'budgets', 'action' => 'add', $job->id],
+					['class' => 'btn w-100 text-left text-md-center btn-outline-success']
+				) ?>
+			</div></div>
+			<?php 
+				$budAloc  = array_key_exists($job->id, $budgeTotal) ? $budgeTotal[$job->id] : 0;
+				$budAllow = $job->has_budget_total;
+				$budPerc  = ( $job->has_budget_total == 0 ) ? 0 : intval(($budgeTotal[$job->id] / $job->has_budget_total) * 100);
+			?>
+			<div class="col-sm-12 col-md-6 border-bottom">
+				<dl class="m-0"><dt>Budget Allocated</dt><dd class="<?= ( $budAloc > $budAllow ) ? "text-danger" : "text-success" ?> m-0 ml-3">$<?= number_format($budAloc, 2) ?></dd></dl>
+			</div>
+			<div class="col-sm-12 col-md-6 border-bottom">
+				<dl class="m-0"><dt>Budget Allowed</dt><dd class="m-0 ml-3">$<?= number_format($budAllow, 2) ?></dd></dl>
+			</div>
+			<div class="col-12 mt-1">
+				<div class="border progress mb-md-2" title="$<?= number_format($budAloc,2) ?> used of $<?= number_format($budAllow,2) ?> total">
+					<div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: <?= $budPerc ?>%" aria-valuenow="<?= $budPerc ?>" aria-valuemin="0" aria-valuemax="100"><?= $budPerc ?>% Budget Allocated</div>
 				</div>
 			</div>
 		</div>

@@ -22,7 +22,7 @@ class HtmlExtHelper extends Helper
 	}
 
 	public function gravatar($username, $size = 80, $xtra_class = "") {
-		return "<img class=\"rounded-circle border border-dark " . $xtra_class . "\" src=\"https://www.gravatar.com/avatar/" . md5( strtolower( trim( $username ) ) ) . "?s=" . $size . "&d=robohash\">";
+		return "<img alt=\"Gravatar Picture\" class=\"rounded-circle border border-dark " . $xtra_class . "\" src=\"https://www.gravatar.com/avatar/" . md5( strtolower( trim( $username ) ) ) . "?s=" . $size . "&d=robohash\">";
 	}
 
 	public function iconBtnLink($icon, $text, $link, $options = []) {
@@ -39,6 +39,12 @@ class HtmlExtHelper extends Helper
 
 	public function badgePair($values) {
 		return "<span class=\"w-100 badge badge-{$values[0]}\">{$values[1]}</span>";
+	}
+	public function badgeBudget($value) {
+		return HtmlExtHelper::badgePair([
+			[ "success", "Non-Budget"],
+			[ "warning", "Budget" ]
+		][($value)]);
 	}
 	public function badgePaid($value) {
 		return HtmlExtHelper::badgePair([

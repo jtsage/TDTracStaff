@@ -46,7 +46,31 @@
 						'label'         => ""
 					]); ?>
 				</div>
+				<div class="col-md-6">
+					<?= $this->Form->input('has_payroll', [
+						'data-toggle'   => "toggle",
+						'data-width'    => '100%',
+						'data-height'   => '36px',
+						'data-on'       => __('Job has associated Payroll'),
+						'data-off'      => __('Job does not accept Payroll'),
+						'data-onstyle'  => 'success',
+						'data-offstyle' => 'warning',
+						'label'         => ""
+					]); ?>
+				</div><div class="col-md-6">
+					<?= $this->Form->input('has_budget', [
+						'data-toggle'   => "toggle",
+						'data-width'    => '100%',
+						'data-height'   => '36px',
+						'data-on'       => __('Job has associated Budget'),
+						'data-off'      => __('Job does not accept Budget'),
+						'data-onstyle'  => 'success',
+						'data-offstyle' => 'warning',
+						'label'         => ""
+					]); ?>
+				</div>
 			</div>
+			<?= $this->Form->control('has_budget_total', ["prepend" => "$", "label" => "Total Allowed Budget"]); ?>
 		<div style="border-bottom: 1px dashed #ccc;" class="mt-4 mb-2"><h5>Job Notes</h5></div><?php
 			echo $this->Form->control('notes', ["rows" => 10]);
 		?>
@@ -152,4 +176,7 @@
 <?= $this->Pretty->helpMeFld("is Active", "Active jobs are those jobs that are accepting staff availability information, staff assignment information, and payroll information. Active jobs have not yet been paid out in most cases. Jobs should typically be marked inactive when their paychecks are disbursed"); ?>
 <?= $this->Pretty->helpMeFld("is Open", "Open jobs are those jobs that still appear in a regular users list - for instance, and inactive but still open job provides a way for an employee to track what they are due on a future paycheck.  Jobs should be typically be marked as closed a pay period after their paychecks are disbursed"); ?>
 
+<p class="mt-2">Payroll disabled jobs still allow staffing.  They are typically used for special "substitute" or "child job" cases where you want the payroll added to a "master" job. By default, all jobs allow payroll records.</p>
+
+<p>Budget enabled jobs allow adding budget items to be added for that job.  By default, jobs do not have an associated budget</p>
 <?= $this->Pretty->helpMeEnd(); ?>

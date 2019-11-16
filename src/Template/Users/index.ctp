@@ -13,11 +13,11 @@
 <table class="table table-striped w-100 table-bordered mb-0">
 <thead>
 	<?= $this->Html->tableHeaders([
-		$this->Paginator->sort('last', __("Full Name")),
-		[ "Phone / E-Mail" => ["class" => "d-none d-md-table-cell"] ],
-		[ $this->Paginator->sort('is_active', __("Active")) . " / " . $this->Paginator->sort('is_admin', __("Admin"), ['direction' => 'desc']) => ["class" => "d-none d-md-table-cell"] ],
-		[ $this->Paginator->sort('last_login_at', __("Last Login"), ['direction' => 'desc']) => ["class" => "d-none d-md-table-cell"] ],
-		[__('Actions') => ['class' => 'text-center', 'style' => 'min-width: 150px;']]
+		[ $this->Paginator->sort('last', __("Full Name")) => ["class" => "align-middle"] ],
+		[ "Phone / E-Mail" => ["class" => "d-none d-md-table-cell align-middle "] ],
+		[ $this->Paginator->sort('is_active', __("Active")) . "<br>" . $this->Paginator->sort('is_budget', __("Budget")) . "<br>" . $this->Paginator->sort('is_admin', __("Admin"), ['direction' => 'desc']) => ["class" => "align-middle d-none d-md-table-cell"] ],
+		[ $this->Paginator->sort('last_login_at', __("Last Login"), ['direction' => 'desc']) => ["class" => "align-middle d-none d-md-table-cell"] ],
+		[__('Actions') => ['class' => 'text-center align-middle ', 'style' => 'min-width: 150px;']]
 	]); ?>
 
 </thead>
@@ -32,7 +32,7 @@
 		[
 			[ $this->HtmlExt->gravatar($user->username,65,"d-block d-md-inline mx-auto mx-md-0") . " <strong>" . h($user->last) . ", " .  h($user->first) . "</strong>" . $roleDiv, ["class" => "align-middle text-dark text-center text-md-left"] ],
 			[ $this->HtmlExt->hyphenNBR($user->phone) . "<br>" . $user->username, ["class" => "align-middle d-none d-md-table-cell"] ],
-			[ $this->HtmlExt->badgeActive($user->is_active) . "<br>" . $this->HtmlExt->badgeAdmin($user->is_admin) , ["class" => "align-middle d-none d-md-table-cell"] ],
+			[ $this->HtmlExt->badgeActive($user->is_active) . "<br>" . $this->HtmlExt->badgeBudget($user->is_budget) . "<br>" . $this->HtmlExt->badgeAdmin($user->is_admin) , ["class" => "align-middle d-none d-md-table-cell"] ],
 			[ $user->last_login_at->i18nFormat(null, $tz), ["class" => "align-middle d-none d-md-table-cell"] ],
 			[  
 				'<div class="btn-group-vertical w-100" role="group">' .

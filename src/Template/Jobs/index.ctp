@@ -173,17 +173,22 @@
 					['action' => 'available', $job->id],
 					['class' => 'btn btn-md text-left btn-outline-info']
 				) ?>
-				<?= $this->HtmlExt->iconBtnLink(
+				<?= ( $job->has_payroll ) ? $this->HtmlExt->iconBtnLink(
 					"account-cash", 'Add My Hours',
 					['controller' => 'payrolls', 'action' => 'add', $job->id],
 					['class' => 'btn btn-md text-left btn-outline-info']
-				) ?>
+				) : "" ?>
 				</div><div class="btn-group-vertical mt-1 w-100">
-				<?= $this->HtmlExt->iconBtnLink(
+				<?= ( $job->has_payroll ) ? $this->HtmlExt->iconBtnLink(
 					"cash", 'View '. ($WhoAmI?"":"My ") .'Payroll',
 					['controller' => 'payrolls', 'action' => 'job', $job->id],
 					['class' => 'btn btn-md text-left btn-outline-warning']
-				) ?>
+				) : "" ?>
+				<?= ($BudgetAmI && $job->has_budget ) ? $this->HtmlExt->iconBtnLink(
+					"credit-card-clock", 'View Budget',
+					['controller' => 'budgets', 'action' => 'view', $job->id],
+					['class' => 'btn btn-md text-left btn-outline-warning']
+				) : "" ?>
 				</div>
 				<?php if ($WhoAmI) : ?>
 				<div class="btn-group-vertical mt-1 w-100">

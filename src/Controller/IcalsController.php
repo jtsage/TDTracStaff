@@ -4,9 +4,7 @@ namespace App\Controller;
 use App\Controller\AppController;
 use Cake\ORM\Query;
 use Cake\I18n\Date;
-use Cake\Chronos\ChronosInterface;
-use Cake\Chronos\Chronos;
-use Cake\Mailer\Email;
+use Sabre\VObject;
 
 /**
  * Jobs Controller
@@ -46,7 +44,7 @@ class IcalsController extends AppController
 			foreach ( $job->roles as $role ) {
 				$thisKahuna['DESCRIPTION'] .= ' * ' . $role->title . '(' . $role->_joinData->number_needed . ')\n';
 			}
-			$thisKahuna['DESCRIPTION'] .= '\n\nStaffing:\n';
+			$thisKahuna['DESCRIPTION'] .= '\nStaffing:\n';
 			$userlist = [];
 			foreach ( $job->users_sch as $user ) {
 				$userlist[$user->id] = $user->first . " " . $user->last;
@@ -54,7 +52,7 @@ class IcalsController extends AppController
 			foreach ( $userlist as $id => $name ) {
 				$thisKahuna['DESCRIPTION'] .= ' * ' . $name . '\n';
 			}
-			$thisKahuna['DESCRIPTION'] .= '\n\Notes:\n';
+			$thisKahuna['DESCRIPTION'] .= '\nNotes:\n';
 			$thisKahuna['DESCRIPTION'] .= preg_replace("/\r\n/", "\\n", $job->notes);
 
 
@@ -76,7 +74,27 @@ class IcalsController extends AppController
 			}
 		}
 
-		$this->set(compact('jobs', 'bigKahuna'));
-		$this->render("blank");
+
+		$vcalendar = new VObject\Component\VCalendar();
+
+		foreach ( $bigKahuna as $thisEvt ) {
+			$vEvt = $vcalendar->add('VEVENT');
+
+			$dtstart = $vEvt->add('DTSTART', $thisEvt['DTSTART']);
+			$dtstart['VALUE'] = 'DATE';
+
+			$vEvt->add('UID', $thisEvt['UID']);
+			$vEvt->add('SUMMARY', $thisEvt['SUMMARY']);
+			$vEvt->add('LOCATION', $thisEvt['LOCATION']);
+			$vEvt->add('DESCRIPTION', preg_replace("/\\\\n/", "\n", $thisEvt['DESCRIPTION']));
+		}
+
+		$this->set('ical', $vcalendar->serialize());
+
+		$this->response->type('ics');
+
+		//$this->set(compact('jobs', 'bigKahuna'));
+		$this->viewBuilder()->setLayout('ics');
+		$this->render("ics");
 	}
 }

@@ -192,8 +192,11 @@
 				) ?>
 				<?= $this->HtmlExt->iconBtnLink(
 					"email", 'E-Mail Needs',
-					['action' => 'email', $job->id],
-					['class' => 'loadingClick text-left text-md-center w-100 btn btn-outline-danger']
+					"#",
+					[
+						'data-jobid' => $job->id,
+						'class' => 'emailNeedBtn text-left text-md-center w-100 btn btn-outline-danger'
+					]
 				) ?>
 				<?= $this->HtmlExt->iconBtnLink(
 					"account-multiple-check", 'Assign Staff',
@@ -202,7 +205,7 @@
 				) ?>
 				<?= $this->HtmlExt->iconBtnLink(
 					"account-supervisor", 'Force Staff Assignments',
-					['action' => 'staffAssign', $job->id],
+					['action' => 'forceStaffAssign', $job->id],
 					['class' => 'text-left text-md-center w-100 btn btn-outline-danger']
 				) ?>
 				</div>

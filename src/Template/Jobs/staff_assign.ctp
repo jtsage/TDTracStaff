@@ -68,8 +68,12 @@
 						) ?>
 						<?= $this->HtmlExt->iconBtnLink(
 							"email", 'Notify<span class="d-none d-md-inline"> of decision</span>',
-							['action' => 'notify', $person->id],
-							['class' => 'btn w-100 text-left text-md-center btn-outline-danger loadingClick']
+							"#",
+							[
+								'data-recID' => $person->id,
+								'data-username' => $person->user->first . " " . $person->user->last,
+								'class' => 'btn w-100 text-left text-md-center btn-outline-danger emailNotifyBtn'
+							]
 						) ?>
 					</div></td>
 				</tr> 

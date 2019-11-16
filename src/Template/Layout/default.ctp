@@ -75,7 +75,7 @@ $user = $this->request->getSession()->read('Auth.User');
 		<!-- Sidebar  -->
 		<nav id="sidebar">
 			<div class="sidebar-header">
-				<h3 class="mb-0 pb-0 text-white">TDTrac<span style="color:#C3593C">Staff</span</h3>
+				<h3 class="mb-0 pb-0 text-white">TDTrac<span style="color:#C3593C">Staff</span></h3>
 			</div>
 
 			<ul class="list-unstyled components">
@@ -85,12 +85,15 @@ $user = $this->request->getSession()->read('Auth.User');
 				<li class="<?= ($this->request->getParam('controller') == "Jobs" ? " active":"") ?>">
 					<a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><?= $this->HtmlExt->icon("worker") ?> Jobs</a>
 					<ul class="collapse list-unstyled" id="homeSubmenu">
-						<?php if ($WhoAmI) : ?>
-							<li class="border-bottom border-dark"><a href="/jobs/">All Jobs</a></li>
-						<?php endif; ?>
-						<li><a href="/jobs/myrespond/">Jobs Awaiting Availability Response</a></li>
+						<li class="border-bottom border-dark"><a href="/jobs/">Open Jobs</a></li>
+						<li><a href="/jobs/myrespond/">Awaiting Response</a></li>
 						<li><a href="/jobs/myjobs/">My Qualified Jobs</a></li>
 						<li class="border-bottom border-dark"><a href="/jobs/mysched/">My Scheduled Jobs</a></li>
+						<?php if ($WhoAmI) : ?>
+							<li><a href="/jobs/short/">All Jobs, Concise</a></li>
+							<li><a href="/jobs/inact/">Open and Inactive Jobs</a></li>
+							<li class="border-bottom border-dark"><a href="/jobs/closed/">Closed Jobs</a></li>
+						<?php endif; ?>
 						<li><a href="/jobs/calendar/">Calendar</a></li>
 						<li><a href="/jobs/day/">Today</a></li>
 					</ul>

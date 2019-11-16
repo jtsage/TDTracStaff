@@ -77,7 +77,8 @@ class DateboxHelper extends FormHelper
 			"data-datebox-linked-field-format"  => "%H:%M",
 			"data-datebox-override-time-format" => 12,
 			"data-datebox-override-time-output" => "%-I:%M %p",
-			"data-datebox-minute-step"          => 15
+			"data-datebox-minute-step"          => 15,
+			"data-datebox-theme_close-btn"      => '["check","primary"]'
 		];
 
 		if ( !is_null($setValue) ) { 

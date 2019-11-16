@@ -204,7 +204,7 @@
 				) ?>
 				<?= $this->HtmlExt->iconBtnLink(
 					"account-supervisor", 'Force Staff Assignments',
-					['action' => 'staffAssign', $job->id],
+					['action' => 'forceStaffAssign', $job->id],
 					['class' => 'btn btn-md text-left btn-outline-danger']
 				) ?>
 				</div><div class="btn-group-vertical mt-1 w-100">

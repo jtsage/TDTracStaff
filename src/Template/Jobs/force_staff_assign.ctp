@@ -96,8 +96,12 @@
 						<?php endif; ?>
 						<?= $this->HtmlExt->iconBtnLink(
 							"email", 'Notify<span class="d-none d-md-inline"> of decision</span>',
-							['action' => 'notify', $person->id],
-							['class' => 'btn w-100 text-left text-md-center btn-outline-danger loadingClick']
+							"#",
+							[
+								'data-recID' => $record_id,
+								'data-username' => (!is_null($record_id)?$person->user->first . " " . $person->user->last:"DO NOT USE!"),
+								'class' => 'btn w-100 text-left text-md-center btn-outline-danger emailNotifyBtn'
+							]
 						) ?>
 					</div></td>
 				</tr> 

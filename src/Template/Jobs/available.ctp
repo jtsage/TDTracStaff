@@ -102,12 +102,12 @@
 					<?= $this->HtmlExt->iconBtnLink(
 						"thumb-up", '<span class="d-none d-md-inline">Interested</span><span class="d-md-none">Yes</span>',
 						['action' => 'change-avail', $job->id, $roleNeeded->id, 1],
-						['class' => 'btn w-100 text-left text-md-center btn-outline-'.($sched?'dark disabled':"success")]
+						['class' => 'btn w-100 text-left text-md-center btn'.(!$avail?"-outline":"").'-'.($sched?'dark disabled':"success")]
 					) ?>
 					<?= $this->HtmlExt->iconBtnLink(
 						"thumb-down", '<span class="d-none d-md-inline">Un-Available</span><span class="d-md-none">No</span>',
 						['action' => 'change-avail', $job->id, $roleNeeded->id, 0],
-						['class' => 'btn w-100 text-left text-md-center btn-outline-'.($sched?'dark disabled':"danger")]
+						['class' => 'btn w-100 text-left text-md-center btn'.($avail?"-outline":"").'-'.($sched?'dark disabled':"danger")]
 					) ?>
 				<?php endif; ?>
 			</div></td>

@@ -140,6 +140,55 @@ $(document).ready(function() {
 			});
 		return false;
 	});
+	$(".emailNeedBtn").on('click', function() {
+		var jobID    = $(this).data("jobid"),
+			
+			ajaxUrl  = location.protocol + "//" + location.host + "/jobs/email/" + jobID + "/";
+
+			this.blur();
+
+			bootbox.confirm({ 
+				message: 'Are you sure you wish to e-mail all qualified employees about this job?  This process may take a minute, please be patient.',
+				centerVertical : true,
+				callback: function(result) { 
+					if ( result ) {
+						$(".loading").each(function() {
+							$(this).removeClass("loading");
+						});
+						$(".btn").each(function() {
+							$(this).addClass("disabled");
+						})
+						window.location.href = ajaxUrl;
+					}
+				}
+			});
+		return false;
+	});
+	$(".emailNotifyBtn").on('click', function() {
+		var recID    = $(this).data("recid"),
+			username = $(this).data("username"),
+			
+			ajaxUrl  = location.protocol + "//" + location.host + "/jobs/notify/" + recID + "/";
+
+			this.blur();
+
+			bootbox.confirm({ 
+				message: 'Are you sure you wish to e-mail ' + username + ' that scheduling information for this job is complete?',
+				centerVertical : true,
+				callback: function(result) { 
+					if ( result ) {
+						$(".loading").each(function() {
+							$(this).removeClass("loading");
+						});
+						$(".btn").each(function() {
+							$(this).addClass("disabled");
+						})
+						window.location.href = ajaxUrl;
+					}
+				}
+			});
+		return false;
+	});
 });
 
 function linker(obby, nextDatebox) {

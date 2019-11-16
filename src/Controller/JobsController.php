@@ -20,8 +20,10 @@ class JobsController extends AppController
 	public $paginate = [
 		'limit' => 10,
 		'order' => [
+			'is_open'    => 'DESC',
+			'is_active'  => 'DESC',
 			'date_start' => 'DESC',
-			'name' => 'asc'
+			'name'       => 'asc'
 		]
 	];
 	/*
@@ -38,15 +40,8 @@ class JobsController extends AppController
 		$this->set('crumby', [
 			["/", __("Dashboard")],
 			["/jobs/", __("Jobs")],
-			[null, __("All Jobs")]
+			[null, __("Open Jobs")]
 		]);
-
-		// If not admin, hide non-open jobs from Job view.
-		$where = [];
-
-		if ( !$this->Auth->user('is_admin') ) {
-			$where = ["is_open" => 1 ];
-		}
 
 		$jobFind = $this->Jobs->find("all")
 			->contain([
@@ -56,7 +51,7 @@ class JobsController extends AppController
 				"UsersScheduled",
 				"UsersInterested"
 			])
-			->where($where);
+			->where(["is_open" => 1 ]);
 
 		$jobs = $this->paginate($jobFind);
 
@@ -66,6 +61,136 @@ class JobsController extends AppController
 		$this->set("jobTotals", $this->Payrolls->find('jobTotals')->indexBy('job_id')->toArray());
 
 		$this->set(compact('jobs'));
+	}
+
+
+
+	/*
+	          oooo                               .   
+	          `888                             .o8   
+	  .oooo.o  888 .oo.    .ooooo.  oooo d8b .o888oo 
+	 d88(  "8  888P"Y88b  d88' `88b `888""8P   888   
+	 `"Y88b.   888   888  888   888  888       888   
+	 o.  )88b  888   888  888   888  888       888 . 
+	 8""888P' o888o o888o `Y8bod8P' d888b      "888" 
+	*/
+	public function short()
+	{
+		if ( !$this->Auth->user('is_admin') ) {
+			$this->Flash->error("Sorry, you do not have access to this module.");
+			$this->redirect(["action" => "index"]);
+		}
+		$this->set('crumby', [
+			["/", __("Dashboard")],
+			["/jobs/", __("Jobs")],
+			[null, __("All Jobs")]
+		]);
+
+		$jobFind = $this->Jobs->find("all")
+			->order([
+				'is_open'    => 'DESC',
+				'is_active'  => 'DESC',
+				'date_start' => 'DESC',
+				'name'       => 'asc'
+			]);
+
+		$jobs = $jobFind;
+
+		
+
+		$this->set(compact('jobs'));
+	}
+
+
+
+	/*
+	  o8o                                      .   
+	  `"'                                    .o8   
+	 oooo  ooo. .oo.    .oooo.    .ooooo.  .o888oo 
+	 `888  `888P"Y88b  `P  )88b  d88' `"Y8   888   
+	  888   888   888   .oP"888  888         888   
+	  888   888   888  d8(  888  888   .o8   888 . 
+	 o888o o888o o888o `Y888""8o `Y8bod8P'   "888" 
+	*/
+	public function inact()
+	{
+		if ( !$this->Auth->user('is_admin') ) {
+			$this->Flash->error("Sorry, you do not have access to this module.");
+			$this->redirect(["action" => "index"]);
+		}
+		$this->set('crumby', [
+			["/", __("Dashboard")],
+			["/jobs/", __("Jobs")],
+			[null, __("Closed Jobs")]
+		]);
+
+		$jobFind = $this->Jobs->find("all")
+			->contain([
+				"Roles" => [
+					'sort' => ['Roles.sort_order' => 'ASC']
+				],
+				"UsersScheduled",
+				"UsersInterested"
+			])
+			->where(["is_open" => 1, "is_active" => 0 ]);
+
+		$jobs = $this->paginate($jobFind);
+
+		$this->loadModel("Payrolls");
+
+		$this->set("myTotals", $this->Payrolls->find('jobTotals')->where(["user_id"=>$this->Auth->user("id")])->indexBy('job_id')->toArray());
+		$this->set("jobTotals", $this->Payrolls->find('jobTotals')->indexBy('job_id')->toArray());
+
+		$this->set("subtitle", "Open and Inactive");
+		$this->set("subtext", "This display shows those only inactive, but still open jobs");
+		$this->set(compact('jobs'));
+		$this->render("index");
+	}
+
+
+
+	/*
+	           oooo                                     .o8  
+	           `888                                    "888  
+	  .ooooo.   888   .ooooo.   .oooo.o  .ooooo.   .oooo888  
+	 d88' `"Y8  888  d88' `88b d88(  "8 d88' `88b d88' `888  
+	 888        888  888   888 `"Y88b.  888ooo888 888   888  
+	 888   .o8  888  888   888 o.  )88b 888    .o 888   888  
+	 `Y8bod8P' o888o `Y8bod8P' 8""888P' `Y8bod8P' `Y8bod88P" 
+	*/
+	public function closed()
+	{
+		if ( !$this->Auth->user('is_admin') ) {
+			$this->Flash->error("Sorry, you do not have access to this module.");
+			$this->redirect(["action" => "index"]);
+		}
+		$this->set('crumby', [
+			["/", __("Dashboard")],
+			["/jobs/", __("Jobs")],
+			[null, __("Closed Jobs")]
+		]);
+
+		$jobFind = $this->Jobs->find("all")
+			->contain([
+				"Roles" => [
+					'sort' => ['Roles.sort_order' => 'ASC']
+				],
+				"UsersScheduled",
+				"UsersInterested"
+			])
+			->where(["is_open" => 0 ]);
+
+		$jobs = $this->paginate($jobFind);
+
+		$this->loadModel("Payrolls");
+
+		$this->set("myTotals", $this->Payrolls->find('jobTotals')->where(["user_id"=>$this->Auth->user("id")])->indexBy('job_id')->toArray());
+		$this->set("jobTotals", $this->Payrolls->find('jobTotals')->indexBy('job_id')->toArray());
+
+		$this->set("subtitle", "Closed");
+		$this->set("subtext", "This display shows those only closed jobs");
+		$this->set(compact('jobs'));
+		$this->render("index");
 	}
 
 
@@ -101,23 +226,23 @@ class JobsController extends AppController
 		$jobs = $this->paginate($jobFind);
 
 		$this->set("subtitle", "Qualified For");
-		$this->set("subtext", "This display shows those shows that you have the required training for - please make sure to indicate your availability if you have not already.");
+		$this->set("subtext", "This display shows those jobs that you have the required training for - please make sure to indicate your availability if you have not already.");
 		$this->set(compact('jobs'));
 		$this->render("index");
 	}
 
 
-/*
-                                                  oooo                        .o8  
-                                                  `888                       "888  
- ooo. .oo.  .oo.   oooo    ooo  .oooo.o  .ooooo.   888 .oo.    .ooooo.   .oooo888  
- `888P"Y88bP"Y88b   `88.  .8'  d88(  "8 d88' `"Y8  888P"Y88b  d88' `88b d88' `888  
-  888   888   888    `88..8'   `"Y88b.  888        888   888  888ooo888 888   888  
-  888   888   888     `888'    o.  )88b 888   .o8  888   888  888    .o 888   888  
- o888o o888o o888o     .8'     8""888P' `Y8bod8P' o888o o888o `Y8bod8P' `Y8bod88P" 
-                   .o..P'                                                          
-                   `Y8P'                                                           
-*/
+	/*
+	                                                  oooo                        .o8  
+	                                                  `888                       "888  
+	 ooo. .oo.  .oo.   oooo    ooo  .oooo.o  .ooooo.   888 .oo.    .ooooo.   .oooo888  
+	 `888P"Y88bP"Y88b   `88.  .8'  d88(  "8 d88' `"Y8  888P"Y88b  d88' `88b d88' `888  
+	  888   888   888    `88..8'   `"Y88b.  888        888   888  888ooo888 888   888  
+	  888   888   888     `888'    o.  )88b 888   .o8  888   888  888    .o 888   888  
+	 o888o o888o o888o     .8'     8""888P' `Y8bod8P' o888o o888o `Y8bod8P' `Y8bod88P" 
+	                   .o..P'                                                          
+	                   `Y8P'                                                           
+	*/
 	public function mysched()
 	{
 		$this->set('crumby', [
@@ -141,11 +266,21 @@ class JobsController extends AppController
 		$jobs = $this->paginate($jobFind);
 
 		$this->set("subtitle", "Scheduled For");
-		$this->set("subtext", "This display shows those shows that you have been scheduled to work, as approved by the administrator(s).");
+		$this->set("subtext", "This display shows those jobs that you have been scheduled to work, as approved by the administrator(s).");
 		$this->set(compact('jobs'));
 		$this->render("index");
 	}
 
+
+	/*
+	 ooo. .oo.  .oo.   oooo    ooo oooo d8b  .ooooo.   .oooo.o oo.ooooo.  
+	 `888P"Y88bP"Y88b   `88.  .8'  `888""8P d88' `88b d88(  "8  888' `88b 
+	  888   888   888    `88..8'    888     888ooo888 `"Y88b.   888   888 
+	  888   888   888     `888'     888     888    .o o.  )88b  888   888 
+	 o888o o888o o888o     .8'     d888b    `Y8bod8P' 8""888P'  888bod8P' 
+	                   .o..P'                                   888       
+	                   `Y8P'                                   o888o      
+	*/
 	function myrespond()
 	{
 		$this->set('crumby', [
@@ -318,10 +453,15 @@ class JobsController extends AppController
 			$this->redirect(["action" => "index"]);
 		}
 		$allCats = $this->Jobs->find()
+			->distinct(['category'])
 			->select(['category'])
 			->order(["category" => "ASC"]);
+		$allLoc = $this->Jobs->find()
+			->distinct(['location'])
+			->select(['location'])
+			->order(["location" => "ASC"]);
 
-		$this->set(compact('allCats'));
+		$this->set(compact('allCats','allLoc'));
 
 		$this->set('crumby', [
 			["/", __("Dashboard")],
@@ -358,10 +498,15 @@ class JobsController extends AppController
 			$this->redirect(["action" => "index"]);
 		}
 		$allCats = $this->Jobs->find()
+			->distinct(['category'])
 			->select(['category'])
 			->order(["category" => "ASC"]);
+		$allLoc = $this->Jobs->find()
+			->distinct(['location'])
+			->select(['location'])
+			->order(["location" => "ASC"]);
 
-		$this->set(compact('allCats'));
+		$this->set(compact('allCats','allLoc'));
 
 		$job = $this->Jobs->get($id);
 		if ($this->request->is(['patch', 'post', 'put'])) {

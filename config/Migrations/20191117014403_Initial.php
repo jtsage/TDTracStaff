@@ -625,78 +625,23 @@ class Initial extends AbstractMigration
             )
             ->update();
 
-        // inserting multiple rows
-        $rows = [
-            [
-                'id' => '1ca73059-c52c-49da-9092-f95de208cc80',
-                'title' => 'Driver',
-                'detail' => 'Certified to drive trucking to, from, and at events',
-                'sort_order' => '600'
-            ],
-            [
-                'id' => '1f07d7fa-ccca-4e5f-b483-f1d98e8dabca',
-                'title' => 'Stagehand',
-                'detail' => 'On site stagehand',
-                'sort_order' => '400'
-            ],
-            [
-                'id' => '2a736f3e-6ea6-4bdf-a057-9f3e67e6ead6',
-                'title' => 'Event Tech I - Video',
-                'detail' => 'On site video technician',
-                'sort_order' => '203'
-            ],
-            [
-                'id' => '31d12ee5-06c4-4fe6-bd08-df1d8d1224cc',
-                'title' => 'Help Desk',
-                'detail' => 'Offsite Help',
-                'sort_order' => '1'
-            ],
-            [
-                'id' => '3b9e9712-69c1-4286-a961-ff2dd880ef17',
-                'title' => 'Field Lead',
-                'detail' => 'In charge of all on-site aspects, main contact person on-site',
-                'sort_order' => '100'
-            ],
-            [
-                'id' => '4d6e852f-5376-41a1-bde0-31796f715af1',
-                'title' => 'Shop Lead',
-                'detail' => 'In charge of all pre-site aspects, main contact person at shop',
-                'sort_order' => '101'
-            ],
-            [
-                'id' => '996a29c5-d028-47bd-8810-14b6dc37b116',
-                'title' => 'Intern',
-                'detail' => 'On or Off site technician in training',
-                'sort_order' => '900'
-            ],
-            [
-                'id' => 'b6e30746-59d8-42b2-a34b-01b2f285e3d8',
-                'title' => 'Event Tech I - Audio',
-                'detail' => 'On site audio technician',
-                'sort_order' => '201'
-            ],
-            [
-                'id' => 'ba3a5166-cf4b-46cd-aadd-53b5d6bf1010',
-                'title' => 'Event Tech I - Lighting',
-                'detail' => 'On site lighting technician',
-                'sort_order' => '202'
-            ],
-            [
-                'id' => 'c777160b-0625-4f68-ae3c-c3e7804c5626',
-                'title' => 'Utility',
-                'detail' => 'On site utility worker',
-                'sort_order' => '500'
-            ],
-            [
-                'id' => 'ce184f8b-4606-4401-aaf7-b3c42fd02697',
-                'title' => 'Event Tech II',
-                'detail' => 'On site technician',
-                'sort_order' => '300'
-            ]
-        ];
-
-        // this is a handy shortcut
-        $this->insert('roles', $rows);
+        $app_configs = array(
+            array('id' => '07ed25e3-240c-4ca2-ab4b-4a45f142c2b3','key_name' => 'server-name','value_short' => 'FQDN, with protocal of the server name','value_long' => 'https://hearcorp.tdtrac.com'),
+            array('id' => '1066f6f6-bb33-430f-9e08-561e33d7d6f8','key_name' => 'job-new-email','value_short' => 'Sent when a job is newly added to the database and needs staff to indicate availability','value_long' => 'Good day!\n\nYou are receiving the e-mail due to the fact that a new job has been added to {{long-name}}\'s TDTracStaff instance.  Job staffing requirements have been added, and based on your training profile, you qualify for one or more of the open positions.  Please follow the link below to indicate your availability as soon as possible.  You will be notified if you are selected to be scheduled for this job.\n\n * __Job Name__: [[name]]\n * __Job Description__: [[detail]]\n * __Job Location__: [[location]]\n\nThis job runs from _[[date_start_string]]_ through _[[date_end_string]]_.  The time(s) of the event are _[[time_string]]_.  If scheduled, payroll hours will be due no later than _[[due_payroll_submitted_string]]_, with paychecks cut on _[[due_payroll_paid_string]]_.\n\n<div>\n@@@{{server-name}}/jobs/available/[[id]]|Set your availability@@@\n</div>\n\nThank you for your time today!\n\n_~{{admin-name}}_\n<{{admin-email}}>'),
+            array('id' => '11782b20-8c91-4f83-bd45-2feef5c8fdf2','key_name' => 'job-old-email','value_short' => 'Sent when a job is NOT newly added to the database and either STILL needs staff to indicate availability, or staffing needs have changed','value_long' => 'Good day!\n\nYou are receiving the e-mail due to the fact that a job that has been added to {{long-name}}\'s TDTracStaff instance still requires staffing, or the staffing requirements have recently changed. Based on your training profile, you qualify for one or more of the open positions. Please follow the link below to indicate your availability as soon as possible. Our apologies if you have already indicated your availability, this is a limitation of the current system. You will be notified if you are selected to be scheduled for this job.\n\n* __Job Name__: [[name]]\n* __Job Description__: [[detail]]\n* __Job Location__: [[location]]\n\nThis job runs from _[[date_start_string]]_ through _[[date_end_string]]_. The time(s) of the event are _[[time_string]]_. If scheduled, payroll hours will be due no later than _[[due_payroll_submitted_string]]_, with paychecks cut on _[[due_payroll_paid_string]]_.\n\n<div>\n@@@{{server-name}}/jobs/available/[[id]]|Set your availability@@@\n</div>\n\nThank you for your time today!\n\n_~{{admin-name}}_\n<{{admin-email}}>'),
+            array('id' => '21873149-f8d7-4bb7-9192-ad212ff1be5e','key_name' => 'welcome-email','value_short' => 'The welcome E-Mail','value_long' => 'Good day!\n\nWelcome to {{long-name}}\'s digital time sheet and staffing system.  The e-mail below contains your temporary password, username, and login link.\n\nYou have been assigned a temporary password, please change it the first time you log in!\n\nAddress:  {{server-name}}\nUsername: {{username}}\nPassword: {{password}}\n\nThanks,\n\n{{admin-name}}\n{{admin-email}}'),
+            array('id' => '46596a40-576d-4319-803e-cdb3a880dbfd','key_name' => 'require-hours','value_short' => 'Require hours worked, rather than just a total - must be 0 (use a total), or 1 (use start and end times)','value_long' => '1'),
+            array('id' => '67dc9387-52bd-4ced-a377-957f0b043617','key_name' => 'notify-email','value_short' => 'Email sent when you have scheduled 1 or more staff members.','value_long' => 'Good day!\n\nYou are receiving the e-mail due to the fact that a job has been staffed in {{long-name}}\'s TDTracStaff instance. Please visit the link below to check if you have been selected to be scheduled for this job.\n\n* __Job Name__: [[name]]\n* __Job Description__: [[detail]]\n* __Job Location__: [[location]]\n\nThis job runs from _[[date_start_string]]_ through _[[date_end_string]]_. The time(s) of the event are _[[time_string]]_. If scheduled, payroll hours will be due no later than _[[due_payroll_submitted_string]]_, with paychecks cut on _[[due_payroll_paid_string]]_.\n\n<div>\n@@@{{server-name}}/jobs/view/[[id]]|View your schedule@@@\n</div>\n\nThank you for your time today!\n\n_~{{admin-name}}_\n<{{admin-email}}>'),
+            array('id' => '7aebba45-57b5-4a5e-a788-004f4ffb043c','key_name' => 'paydates-period','value_short' => 'Set of period paydate, in the format [ "2019-09-11", 14 ] (start, period) or false','value_long' => 'false'),
+            array('id' => '8b37c74a-3973-4864-bf96-3ec0059967c1','key_name' => 'admin-name','value_short' => 'The administrator\'s Name','value_long' => 'Example Admin'),
+            array('id' => '9d0a4cdf-91db-4079-ad20-b350a51424cd','key_name' => 'long-name','value_short' => 'Long name of the system, usually a company name','value_long' => 'Example Company'),
+            array('id' => 'cec8b70f-a89a-42d0-9940-2f2d58102f5f','key_name' => 'mailing-address','value_short' => 'Mailing Address of the company - used in E-Mails.','value_long' => '123 Fake Street, Pittsburgh, PA 15201'),
+            array('id' => 'dca46886-6cf7-41b7-8e9e-a1c350a0c79f','key_name' => 'paydates-fixed','value_short' => 'Set of fixed paydate, in the fixed format: [ [-1,-1,15], [-1,-1,30] ] (15th and 30th) or false','value_long' => '[ [-1,-1,15], [-1,-1,30] ]'),
+            array('id' => 'e79b33e7-5cad-4171-bc84-83cad71a0d0e','key_name' => 'admin-email','value_short' => 'The administrator\'s E-Mail Address','value_long' => 'jtsage@gmail.com'),
+            array('id' => 'fc43931f-37b7-459c-8cc0-dd362e3b2ae5','key_name' => 'allow-unscheduled-hours','value_short' => 'Allow adding hours to jobs the user is not scheduled for. (0 /1)','value_long' => '1'),
+            array('id' => 'fe35a641-5ce3-47f6-90fe-14dca4cdb0ab','key_name' => 'short-name','value_short' => 'Short name of the Site, usually Initials','value_long' => 'EC')
+        );
+        $this->insert('app_configs', $app_configs);
     }
 
     public function down()

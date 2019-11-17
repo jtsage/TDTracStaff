@@ -21,66 +21,16 @@ class TddemoShell extends Shell
 		$parser = parent::getOptionParser();
 		$parser
 			->setDescription('A small set of utilities to streamline the TDTracStaff demo')
-			->addSubcommand('adduser', [
-				'help' => 'Add a user',
+			->addSubcommand('addProdRoles', [
+				'help' => 'Add Production Roles',
 				'parser' => [
-					'description' => 'Add a user to the current system',
-					'arguments' => [
-						'UserName' => [ 'help' => 'The e-mail address of the user', 'required' => true ],
-						'NewPassword' => [ 'help' => 'The new password for the user', 'required' => true ],
-						'FirstName' => [ 'help' => 'The first name of the user', 'required' => true ],
-						'LastName' => [ 'help' => 'The last name of the user', 'required' => true ]
-					],
-					'options' => [
-						'isAdmin' => [ 'short' => 'a', 'boolean' => true, 'help' => 'This user is an admin', 'default' => false ],
-						'isBudget' => [ 'short' => 'b', 'boolean' => true, 'help' => 'This user keeps a budget', 'default' => false ]
-					]
+					'description' => 'Add production roles to list of trainable roles.',
 				]
 			])
-			->addSubcommand('resetpass', [
-				'help' => 'Reset a user password',
+			->addSubcommand('addTeachRoles', [
+				'help' => 'Add Instructor Roles',
 				'parser' => [
-					'description' => 'Reset a user\'s password',
-					'arguments' => [
-						'UserName' => [ 'help' => 'The e-mail address of the user', 'required' => true ],
-						'NewPassword' => [ 'help' => 'The new password for the user', 'required' => true ]
-					]
-				]
-			])
-			->addSubcommand('unban', [
-				'help' => 'Make a user active',
-				'parser' => [
-					'description' => 'Mark a user as active, allowing login',
-					'arguments' => [
-						'UserName' => [ 'help' => 'The e-mail address of the user', 'required' => true ],
-					]
-				]
-			])
-			->addSubcommand('ban', [
-				'help' => 'Make a user inactive',
-				'parser' => [
-					'description' => 'Mark a user as inactive, preventing login',
-					'arguments' => [
-						'UserName' => [ 'help' => 'The e-mail address of the user', 'required' => true ],
-					]
-				]
-			])
-			->addSubcommand('budget', [
-				'help' => 'Toggle a user\'s budget status',
-				'parser' => [
-					'description' => 'Mark a user as budget user, or remove it',
-					'arguments' => [
-						'UserName' => [ 'help' => 'The e-mail address of the user', 'required' => true ],
-					]
-				]
-			])
-			->addSubcommand('admin', [
-				'help' => 'Toggle a user\'s admin status',
-				'parser' => [
-					'description' => 'Mark a user as administrator, or remove it',
-					'arguments' => [
-						'UserName' => [ 'help' => 'The e-mail address of the user', 'required' => true ],
-					]
+					'description' => 'Add instructor roles to list of trainable roles',
 				]
 			]);
 		return $parser;
@@ -95,117 +45,42 @@ class TddemoShell extends Shell
 		return $this->out($this->getOptionParser()->help());
 	}
 
-	public function resetpass($user, $pass)
-	{
-		$this->loadModel('Users');
+	public function addProdRoles() {
+		$this->loadModel("Roles");
 
-		if ( $thisUser = $this->Users->findByUsername($user)->first() ) {
-			$this->out('Changing password for: ' . $thisUser->first . " " . $thisUser->last);
-			$thisUser->password = $pass;
-			if ( $this->Users->save($thisUser) ) {
-				$this->out('New password saved');
-			} else {
-				$this->out('Unable to update password');
-			}
-		} else {
-			$this->err('User not found');
-		}
+		$rows = [
+			[ 'title' => 'Driver', 'detail' => 'Certified to drive trucking to, from, and at events', 'sort_order' => '600' ],
+			[ 'title' => 'Stagehand', 'detail' => 'On site stagehand', 'sort_order' => '400' ],
+			[ 'title' => 'Event Tech I - Video', 'detail' => 'On site video technician', 'sort_order' => '203' ],
+			[ 'title' => 'Help Desk', 'detail' => 'Offsite Help', 'sort_order' => '1' ],
+			[ 'title' => 'Field Lead', 'detail' => 'In charge of all on-site aspects, main contact person on-site', 'sort_order' => '100' ],
+			[ 'title' => 'Shop Lead', 'detail' => 'In charge of all pre-site aspects, main contact person at shop', 'sort_order' => '101' ],
+			[ 'title' => 'Intern', 'detail' => 'On or Off site technician in training', 'sort_order' => '900' ],
+			[ 'title' => 'Event Tech I - Audio', 'detail' => 'On site audio technician', 'sort_order' => '201' ],
+			[ 'title' => 'Event Tech I - Lighting', 'detail' => 'On site lighting technician', 'sort_order' => '202' ],
+			[ 'title' => 'Utility', 'detail' => 'On site utility worker', 'sort_order' => '500' ],
+			[ 'title' => 'Event Tech II', 'detail' => 'On site technician', 'sort_order' => '300' ]
+		];
+		
+		$entities = $this->Roles->newEntities($rows);
+		$result = $this->Roles->saveMany($entities);
 	}
 
-	public function unban($user)
-	{
-		$this->loadModel('Users');
+	public function addTeachRoles() {
+		$this->loadModel("Roles");
 
-		if ( $thisUser = $this->Users->findByUsername($user)->first() ) {
-			$this->out('Setting user active: ' . $thisUser->first . " " . $thisUser->last);
-			$thisUser->is_active = 1;
-			if ( $this->Users->save($thisUser) ) {
-				$this->out('User now active');
-			} else {
-				$this->out('Unable to update user');
-			}
-		} else {
-			$this->err('User not found');
-		}
-	}
-
-	public function ban($user)
-	{
-		$this->loadModel('Users');
-
-		if ( $thisUser = $this->Users->findByUsername($user)->first() ) {
-			$this->out('Setting user inactive: ' . $thisUser->first . " " . $thisUser->last);
-			$thisUser->is_active = 0;
-			if ( $this->Users->save($thisUser) ) {
-				$this->out('User now inactive');
-			} else {
-				$this->out('Unable to update user');
-			}
-		} else {
-			$this->err('User not found');
-		}
-	}
-	public function admin($user)
-	{
-		$this->loadModel('Users');
-
-		if ( $thisUser = $this->Users->findByUsername($user)->first() ) {
-			if ( $thisUser->is_admin ) {
-				$this->out('Removing admin flag: ' . $thisUser->first . " " . $thisUser->last);
-				$thisUser->is_admin = 0;
-			} else {
-				$this->out('Adding admin flag: ' . $thisUser->first . " " . $thisUser->last);
-				$thisUser->is_admin = 1;
-			}
-			if ( $this->Users->save($thisUser) ) {
-				$this->out('Saved.');
-			} else {
-				$this->out('Unable to update user');
-			}
-		} else {
-			$this->err('User not found');
-		}
-	}
-	public function budget($user)
-	{
-		$this->loadModel('Users');
-
-		if ( $thisUser = $this->Users->findByUsername($user)->first() ) {
-			if ( $thisUser->is_budget ) {
-				$this->out('Removing budget flag: ' . $thisUser->first . " " . $thisUser->last);
-				$thisUser->is_budget = 0;
-			} else {
-				$this->out('Adding budget flag: ' . $thisUser->first . " " . $thisUser->last);
-				$thisUser->is_budget = 1;
-			}
-			if ( $this->Users->save($thisUser) ) {
-				$this->out('Saved.');
-			} else {
-				$this->out('Unable to update user');
-			}
-		} else {
-			$this->err('User not found');
-		}
-	}
-
-	public function adduser($user, $pass, $first, $last) {
-		$this->loadModel('Users');
-
-		$thisUser = $this->Users->newEntity([
-			'username'    => $user,
-			'password'    => $pass,
-			'first'       => $first,
-			'last'        => $last,
-			'is_verified' => 1,
-			'is_admin'    => ($this->params['isAdmin'] ? 1:0 ),
-			'is_budget'   => ($this->params['isBudget'] ? 1:0 ),
-		]);
-
-		if ( $this->Users->save($thisUser) ) {
-			$this->out('Added user: ' . $thisUser->first . " " . $thisUser->last);
-		} else {
-			$this->err('Unable to add user');
-		}
+		$rows = [
+			[ 'title' => 'Ballet Instructor', 'detail' => 'Cover for Ballet Classes', 'sort_order' => '701' ],
+			[ 'title' => 'Tap Instructor', 'detail' => 'Cover for Tap Classes', 'sort_order' => '702' ],
+			[ 'title' => 'Jazz Instructor', 'detail' => 'Cover for Jazz Classes', 'sort_order' => '703' ],
+			[ 'title' => 'Accompanist', 'detail' => 'Can play for students / professionals', 'sort_order' => '801' ],
+			[ 'title' => 'MT Instructor', 'detail' => 'Cover for Acting, Voice, MTW classes', 'sort_order' => '704' ],
+			[ 'title' => 'Tech Instructor', 'detail' => 'Cover for technical work', 'sort_order' => '802' ],
+			[ 'title' => 'Stage Management', 'detail' => 'Cover for stage management duties', 'sort_order' => '803' ]
+		];
+		
+		$entities = $this->Roles->newEntities($rows);
+		$result = $this->Roles->saveMany($entities);
 	}
 
 

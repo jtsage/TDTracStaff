@@ -13,6 +13,7 @@
         "friendsofcake/bootstrap-ui": "dev-develop",
         "friendsofcake/cakepdf": "^3.5",
         "friendsofcake/cakephp-csvview": "^3.3",
+        "fzaninotto/faker": "^1.9",
         "gourmet/email": "^3.1",
         "gourmet/whoops": "^1.1",
         "ivanamat/cakephp3-markdown": "^1.1",

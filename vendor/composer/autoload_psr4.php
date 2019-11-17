@@ -52,6 +52,7 @@ return array(
     'Gourmet\\Whoops\\' => array($vendorDir . '/gourmet/whoops/src'),
     'Gourmet\\Email\\' => array($vendorDir . '/gourmet/email/src'),
     'FontLib\\' => array($vendorDir . '/phenx/php-font-lib/src/FontLib'),
+    'Faker\\' => array($vendorDir . '/fzaninotto/faker/src/Faker'),
     'Dompdf\\' => array($vendorDir . '/dompdf/dompdf/src'),
     'Doctrine\\Instantiator\\' => array($vendorDir . '/doctrine/instantiator/src/Doctrine/Instantiator'),
     'DeepCopy\\' => array($vendorDir . '/myclabs/deep-copy/src/DeepCopy'),

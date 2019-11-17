@@ -114,6 +114,7 @@ class ComposerStaticInite673dc35686ce819fb2df780aa5bbcee
         'F' => 
         array (
             'FontLib\\' => 8,
+            'Faker\\' => 6,
         ),
         'D' => 
         array (
@@ -338,6 +339,10 @@ class ComposerStaticInite673dc35686ce819fb2df780aa5bbcee
         'FontLib\\' => 
         array (
             0 => __DIR__ . '/..' . '/phenx/php-font-lib/src/FontLib',
+        ),
+        'Faker\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/fzaninotto/faker/src/Faker',
         ),
         'Dompdf\\' => 
         array (

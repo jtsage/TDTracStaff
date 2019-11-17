@@ -75,7 +75,7 @@ $user = $this->request->getSession()->read('Auth.User');
 		<!-- Sidebar  -->
 		<nav id="sidebar">
 			<div class="sidebar-header">
-				<h3 class="mb-0 pb-0 text-white">TDTrac<span style="color:#C3593C">Staff</span></h3>
+				<h3 class="mb-0 pb-0 text-white">TDTrac<span style="color:#C3593C">Staff</span><span style="color:#ea975b"><?= $CONFIG["short-name"] ?></span></h3>
 			</div>
 
 			<ul class="list-unstyled components">

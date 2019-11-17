@@ -1,3 +1,5 @@
+<div class="card p-3 rounded border shadow-sm">
+
 <?php
 use Cake\Core\Configure;
 use Cake\Error\Debugger;
@@ -35,3 +37,4 @@ endif;
     <strong><?= __d('cake', 'Error') ?>: </strong>
     <?= h($message) ?>
 </p>
+</div>

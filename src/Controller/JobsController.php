@@ -315,6 +315,7 @@ class JobsController extends AppController
 			"userID"    => $this->Auth->user("id"),
 			"limitList" => $myNoResp
 		]);
+		
 	
 		$this->loadModel("Payrolls");
 		$this->set("myTotals", $this->Payrolls->find('jobTotals')->where(["user_id"=>$this->Auth->user("id")])->indexBy('job_id')->toArray());
@@ -350,6 +351,11 @@ class JobsController extends AppController
 			->where([
 				"id" => $id
 			]);
+
+		if ( $job->count() < 1 ) {
+			$this->Flash->error("Job not found");
+			return $this->redirect(["action" => "index"]);
+		}
 
 		$job1 = $job->first();
 		$this->loadModel("UsersJobs");

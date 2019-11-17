@@ -1,3 +1,5 @@
+<div class="card p-3 rounded border shadow-sm">
+
 <?php
 use Cake\Core\Configure;
 
@@ -28,11 +30,12 @@ if (Configure::read('debug')):
     $this->end();
 endif;
 ?>
-<h2><?= h($message) ?></h2>
-<p class="error">
+<h2 class="text-dark"><?= h($message) ?></h2>
+<p class="text-dark">
     <strong><?= __d('cake', 'Error') ?>: </strong>
     <?= sprintf(
         __d('cake', 'The requested address %s was not found on this server.'),
         "<strong>'{$url}'</strong>"
     ) ?>
 </p>
+</div>

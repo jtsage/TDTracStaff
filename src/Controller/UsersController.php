@@ -601,7 +601,7 @@ class UsersController extends AppController
 	{
 		if ( !$this->Auth->user('is_admin') ) {
 			$this->Flash->error("Sorry, you do not have access to this module.");
-			$this->redirect(["action" => "index"]);
+			return $this->redirect(["action" => "index"]);
 		}
 		if ( !$this->request->is(['patch','post','put'])) {
 			$user = $this->Users->get($id);
@@ -646,7 +646,7 @@ class UsersController extends AppController
 			$entities = $this->UsersRoles->newEntities($inserts);
 			$result   = $this->UsersRoles->saveMany($entities);
 			$this->Flash->success("Staff training updated");
-			$this->redirect(["action" => "view", $id]);
+			return $this->redirect(["action" => "view", $id]);
 		}
 	}
 

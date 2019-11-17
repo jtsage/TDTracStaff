@@ -25,7 +25,7 @@ class RolesController extends AppController
 	{
 		if ( !$this->Auth->user('is_admin') ) {
 			$this->Flash->error("Sorry, you do not have access to this module.");
-			$this->redirect(["controller" => "jobs", "action" => "index"]);
+			return $this->redirect(["controller" => "jobs", "action" => "index"]);
 		}
 		$roles = $this->Roles->find("all")
 			->order(['sort_order' => 'ASC']);
@@ -52,7 +52,7 @@ class RolesController extends AppController
 	{
 		if ( !$this->Auth->user('is_admin') ) {
 			$this->Flash->error("Sorry, you do not have access to this module.");
-			$this->redirect(["controller" => "jobs", "action" => "index"]);
+			return $this->redirect(["controller" => "jobs", "action" => "index"]);
 		}
 
 		$role = $this->Roles->get($id, [
@@ -82,7 +82,7 @@ class RolesController extends AppController
 	{
 		if ( !$this->Auth->user('is_admin') ) {
 			$this->Flash->error("Sorry, you do not have access to this module.");
-			$this->redirect(["controller" => "jobs", "action" => "index"]);
+			return $this->redirect(["controller" => "jobs", "action" => "index"]);
 		}
 		$this->set('crumby', [
 			["/", __("Dashboard")],
@@ -116,7 +116,7 @@ class RolesController extends AppController
 	{
 		if ( !$this->Auth->user('is_admin') ) {
 			$this->Flash->error("Sorry, you do not have access to this module.");
-			$this->redirect(["controller" => "jobs", "action" => "index"]);
+			return $this->redirect(["controller" => "jobs", "action" => "index"]);
 		}
 		
 		$role = $this->Roles->get($id, [
@@ -157,7 +157,7 @@ class RolesController extends AppController
 	{
 		if ( !$this->Auth->user('is_admin') ) {
 			$this->Flash->error("Sorry, you do not have access to this module.");
-			$this->redirect(["controller" => "jobs", "action" => "index"]);
+			return $this->redirect(["controller" => "jobs", "action" => "index"]);
 		}
 		
 		$role = $this->Roles->get($id);

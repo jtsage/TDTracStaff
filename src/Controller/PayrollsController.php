@@ -26,7 +26,7 @@ class PayrollsController extends AppController
 	public function index()
 	{
 		if ( !$this->Auth->user('is_admin') ) {
-			$this->redirect(["action" => "mine"]);
+			return $this->redirect(["action" => "mine"]);
 		}
 
 		$this->set('crumby', [
@@ -66,7 +66,7 @@ class PayrollsController extends AppController
 	public function unpaid()
 	{
 		if ( !$this->Auth->user('is_admin') ) {
-			$this->redirect(["action" => "mine", "unpaid"]);
+			return $this->redirect(["action" => "mine", "unpaid"]);
 		}
 
 		$this->set('crumby', [
@@ -153,7 +153,7 @@ class PayrollsController extends AppController
 	public function user($userID, $unpaid = null)
 	{
 		if ( !$this->Auth->user('is_admin') ) {
-			$this->redirect(["action" => "mine"]);
+			return $this->redirect(["action" => "mine"]);
 		}
 
 		$user = $this->loadModel("Users")->get($userID);
@@ -211,7 +211,7 @@ class PayrollsController extends AppController
 	public function job($jobID, $unpaid = null)
 	{
 		if ( !$this->Auth->user('is_admin') ) {
-			$this->redirect(["action" => "myjob", $jobID, $unpaid]);
+			return $this->redirect(["action" => "myjob", $jobID, $unpaid]);
 		}
 
 		$job = $this->loadModel("Jobs")->get($jobID);
@@ -324,7 +324,7 @@ class PayrollsController extends AppController
 	public function paydate($date = null, $unpaid = null)
 	{
 		if ( !$this->Auth->user('is_admin') ) {
-			$this->redirect(["action" => "mypaydate"]);
+			return $this->redirect(["action" => "mypaydate", $date, $unpaid]);
 		}
 
 		if ( is_null($date) ) {
@@ -399,7 +399,7 @@ class PayrollsController extends AppController
 	public function dates($start = null, $end = null, $unpaid = null)
 	{
 		if ( !$this->Auth->user('is_admin') ) {
-			$this->redirect(["action" => "mydates"]);
+			return $this->redirect(["action" => "mydates", $start, $end, $unpaid]);
 		}
 
 		if ( is_null($start) || is_null($end) ) {
@@ -641,7 +641,7 @@ class PayrollsController extends AppController
 
 			if ( !$job->has_payroll ) {
 				$this->Flash->error(__('Sorry, this job does not allow payroll to be tracked.'));
-				$this->redirect(['controller' => 'jobs', 'action' => 'view', $job->id]);
+				return $this->redirect(['controller' => 'jobs', 'action' => 'view', $job->id]);
 			}
 
 			if ( $this->CONFIG_DATA['require-hours'] ) {
@@ -677,12 +677,12 @@ class PayrollsController extends AppController
 
 			if ( !$job->has_payroll ) {
 				$this->Flash->error(__('Sorry, this job does not allow payroll to be tracked.'));
-				$this->redirect(['controller' => 'jobs', 'action' => 'view', $job->id]);
+				return $this->redirect(['controller' => 'jobs', 'action' => 'view', $job->id]);
 			}
 			if ( !$this->CONFIG_DATA["allow-unscheduled-hours"] ) {
 				if ( !in_array($job->id, array_keys($sched_jobs_list->indexBy('job_id')->toArray()) ) ) {
 					$this->Flash->error(__('You are not scheduled for this job!'));
-					$this->redirect(['controller' => 'jobs', 'action' => 'view', $job->id]);
+					return $this->redirect(['controller' => 'jobs', 'action' => 'view', $job->id]);
 				}
 			}
 			$jobs = [ $job->id => $job->name ];
@@ -736,7 +736,7 @@ class PayrollsController extends AppController
 	{
 		if ( !$this->Auth->user('is_admin') ) {
 			$this->Flash->error("Sorry, you do not have access to this module.");
-			$this->redirect(["action" => "add"]);
+			return $this->redirect(["action" => "add"]);
 		}
 
 		$this->set('crumby', [
@@ -817,7 +817,7 @@ class PayrollsController extends AppController
 	{
 		if ( !$this->Auth->user('is_admin') ) {
 			$this->Flash->error("Sorry, you do not have access to this module.");
-			$this->redirect(["action" => "index"]);
+			return $this->redirect(["action" => "index"]);
 		}
 		$payroll = $this->Payrolls->get($id, [
 			'contain' => ["Users","Jobs"]
@@ -867,11 +867,11 @@ class PayrollsController extends AppController
 
 		if ( $payroll->is_paid ) {
 			$this->Flash->error("Only unpaid entries may be deleted, sorry.");
-			$this->redirect(["action" => "index"]);
+			return $this->redirect(["action" => "index"]);
 		}
 		if ( !$this->Auth->user('is_admin') && $payroll->user_id <> $this->Auth->user("id")) {
 			$this->Flash->error("You may only delete your own entries.");
-			$this->redirect(["action" => "index"]);
+			return $this->redirect(["action" => "index"]);
 		}
 
 		if ($this->Payrolls->delete($payroll)) {
@@ -947,14 +947,14 @@ class PayrollsController extends AppController
 
 		if ( !$this->Auth->user('is_admin') ) {
 			$this->Flash->error("Sorry, you do not have access to this module.");
-			$this->redirect(["action" => "index"]);
+			return $this->redirect(["action" => "index"]);
 		}
 
 		$updateList = $this->request->getData('unpaidid');
 
 		if ( count($updateList) < 1 ) {
 			$this->Flash->error("No records found");
-			$this->redirect(["action" => "index"]);
+			return $this->redirect(["action" => "index"]);
 		}
 
 		$this->Payrolls->updateAll(
@@ -967,7 +967,7 @@ class PayrollsController extends AppController
 		);
 
 		$this->Flash->success("Records marked paid");
-		$this->redirect(["action" => "index"]);
+		return $this->redirect(["action" => "index"]);
 	}
 
 
@@ -984,7 +984,7 @@ class PayrollsController extends AppController
 	*/
 	function byUser() {
 		if ( !$this->Auth->user('is_admin') ) {
-			$this->redirect(["action" => "mine"]);
+			return $this->redirect(["action" => "mine"]);
 		}
 
 		$this->loadModel("Users");

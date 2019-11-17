@@ -177,7 +177,7 @@ class BudgetsController extends AppController
 
 		$budget = $this->Budgets->get($id);
 
-		if ( !$this->Auth->user('is_admin') && $budget->userid <> $this->Auth->user("id") ) {
+		if ( !$this->Auth->user('is_admin') && $budget->user_id <> $this->Auth->user("id") ) {
 			$this->Flash->error("Sorry, non-administators may only delete their own entries.");
 			return $this->redirect(["action" => "view", $budget->job_id]);
 		}

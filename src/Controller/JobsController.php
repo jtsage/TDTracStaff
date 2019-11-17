@@ -78,7 +78,7 @@ class JobsController extends AppController
 	{
 		if ( !$this->Auth->user('is_admin') ) {
 			$this->Flash->error("Sorry, you do not have access to this module.");
-			$this->redirect(["action" => "index"]);
+			return $this->redirect(["action" => "index"]);
 		}
 		$this->set('crumby', [
 			["/", __("Dashboard")],
@@ -116,7 +116,7 @@ class JobsController extends AppController
 	{
 		if ( !$this->Auth->user('is_admin') ) {
 			$this->Flash->error("Sorry, you do not have access to this module.");
-			$this->redirect(["action" => "index"]);
+			return $this->redirect(["action" => "index"]);
 		}
 		$this->set('crumby', [
 			["/", __("Dashboard")],
@@ -162,7 +162,7 @@ class JobsController extends AppController
 	{
 		if ( !$this->Auth->user('is_admin') ) {
 			$this->Flash->error("Sorry, you do not have access to this module.");
-			$this->redirect(["action" => "index"]);
+			return $this->redirect(["action" => "index"]);
 		}
 		$this->set('crumby', [
 			["/", __("Dashboard")],
@@ -394,7 +394,7 @@ class JobsController extends AppController
 	{
 		if ( !$this->Auth->user('is_admin') ) {
 			$this->Flash->error("Sorry, you do not have access to this module.");
-			$this->redirect(["action" => "index"]);
+			return $this->redirect(["action" => "index"]);
 		}
 		if ( !$this->request->is(['patch','post','put'])) {
 			$job = $this->Jobs->get($id);
@@ -436,7 +436,7 @@ class JobsController extends AppController
 			$entities = $this->JobsRoles->newEntities($inserts);
 			$results = $this->JobsRoles->saveMany($entities);
 			$this->Flash->success("Staff requirements updated");
-			$this->redirect(["action" => "view", $id]);
+			return $this->redirect(["action" => "view", $id]);
 		}
 	}
 
@@ -453,7 +453,7 @@ class JobsController extends AppController
 	{
 		if ( !$this->Auth->user('is_admin') ) {
 			$this->Flash->error("Sorry, you do not have access to this module.");
-			$this->redirect(["action" => "index"]);
+			return $this->redirect(["action" => "index"]);
 		}
 		$allCats = $this->Jobs->find()
 			->distinct(['category'])
@@ -498,7 +498,7 @@ class JobsController extends AppController
 	{
 		if ( !$this->Auth->user('is_admin') ) {
 			$this->Flash->error("Sorry, you do not have access to this module.");
-			$this->redirect(["action" => "index"]);
+			return $this->redirect(["action" => "index"]);
 		}
 		$allCats = $this->Jobs->find()
 			->distinct(['category'])
@@ -546,7 +546,7 @@ class JobsController extends AppController
 	{
 		if ( !$this->Auth->user('is_admin') ) {
 			$this->Flash->error("Sorry, you do not have access to this module.");
-			$this->redirect(["action" => "index"]);
+			return $this->redirect(["action" => "index"]);
 		}
 		
 		$job = $this->Jobs->get($id);
@@ -623,7 +623,7 @@ class JobsController extends AppController
 	{
 		if ( !$this->Auth->user('is_admin') ) {
 			$this->Flash->error("Sorry, you do not have access to this module.");
-			$this->redirect(["action" => "index"]);
+			return $this->redirect(["action" => "index"]);
 		}
 		
 		$job = $this->Jobs->get($id, [
@@ -673,7 +673,7 @@ class JobsController extends AppController
 	{
 		if ( !$this->Auth->user('is_admin') ) {
 			$this->Flash->error("Sorry, you do not have access to this module.");
-			$this->redirect(["action" => "index"]);
+			return $this->redirect(["action" => "index"]);
 		}
 		
 		$job = $this->Jobs->get($id, [
@@ -732,7 +732,7 @@ class JobsController extends AppController
 	{
 		if ( !$this->Auth->user('is_admin') ) {
 			$this->Flash->error("Sorry, you do not have access to this module.");
-			$this->redirect(["action" => "index"]);
+			return $this->redirect(["action" => "index"]);
 		}
 		
 		$job = $this->Jobs->get($id, [
@@ -787,11 +787,11 @@ class JobsController extends AppController
 	{
 		if ( is_null($intId) || is_null($value) ) {
 			$this->Flash->error(__('Invalid Action'));
-			$this->redirect(['action' => 'index']);
+			return $this->redirect(['action' => 'index']);
 		}
 		if ( !$this->Auth->user('is_admin') ) {
 			$this->Flash->error("Sorry, you do not have access to this module.");
-			$this->redirect(["action" => "index"]);
+			return $this->redirect(["action" => "index"]);
 		}
 
 		$this->loadModel("UsersJobs");
@@ -805,7 +805,7 @@ class JobsController extends AppController
 		} else {
 			$this->Flash->error(__('Something went wrong. Please, try again.'));
 		}
-		$this->redirect(['action' => (($redir)?'forceStaffAssign':'staffAssign'), $jobRec->job_id]);
+		return $this->redirect(['action' => (($redir)?'forceStaffAssign':'staffAssign'), $jobRec->job_id]);
 	}
 
 
@@ -822,11 +822,11 @@ class JobsController extends AppController
 	function newAvail($jobId = null, $roleId = null, $avail = null) {
 		if ( is_null($jobId) ) {
 			$this->Flash->error(__('Invalid Action'));
-			$this->redirect(['action' => 'myjobs']);
+			return $this->redirect(['action' => 'myjobs']);
 		}
 		if ( is_null($avail) || is_null($roleId) ) {
 			$this->Flash->error(__('Invalid Action'));
-			$this->redirect(['action' => 'available', $jobId]);
+			return $this->redirect(['action' => 'available', $jobId]);
 		}
 		$this->loadModel("UsersJobs");
 
@@ -842,7 +842,7 @@ class JobsController extends AppController
 		} else {
 			$this->Flash->error(__('Something went wrong. Please, try again.'));
 		}
-		$this->redirect(['action' => 'available', $jobId]);
+		return $this->redirect(['action' => 'available', $jobId]);
 	}
 
 
@@ -859,7 +859,7 @@ class JobsController extends AppController
 	function forceSchedSet($jobId = null, $roleId = null, $userId = null, $sched = 0) {
 		if ( is_null($jobId) || is_null($userId) || is_null($roleId) ) {
 			$this->Flash->error(__('Invalid Action'));
-			$this->redirect(['action' => 'available', $jobId]);
+			return $this->redirect(['action' => 'available', $jobId]);
 		}
 
 		$this->loadModel("UsersJobs");
@@ -877,7 +877,7 @@ class JobsController extends AppController
 		} else {
 			$this->Flash->error(__('Something went wrong. Please, try again.'));
 		}
-		$this->redirect(['action' => 'forceStaffAssign', $jobId]);
+		return $this->redirect(['action' => 'forceStaffAssign', $jobId]);
 	}
 
 
@@ -896,11 +896,11 @@ class JobsController extends AppController
 	function changeAvail($jobId = null, $roleId = null, $avail = null) {
 		if ( is_null($jobId) ) {
 			$this->Flash->error(__('Invalid Action'));
-			$this->redirect(['action' => 'myjobs']);
+			return $this->redirect(['action' => 'myjobs']);
 		}
 		if ( is_null($avail) || is_null($roleId) ) {
 			$this->Flash->error(__('Invalid Action'));
-			$this->redirect(['action' => 'available', $jobId]);
+			return $this->redirect(['action' => 'available', $jobId]);
 		}
 		$this->loadModel("UsersJobs");
 
@@ -919,7 +919,7 @@ class JobsController extends AppController
 		} else {
 			$this->Flash->error(__('Something went wrong. Please, try again.'));
 		}
-		$this->redirect(['action' => 'available', $jobId]);
+		return $this->redirect(['action' => 'available', $jobId]);
 	}
 
 
@@ -1110,7 +1110,7 @@ class JobsController extends AppController
 	{
 		if ( !$this->Auth->user('is_admin') ) {
 			$this->Flash->error("Sorry, you do not have access to this module.");
-			$this->redirect(["action" => "index"]);
+			return $this->redirect(["action" => "index"]);
 		}
 
 		$this->loadComponent('Markdown.Markdown');
@@ -1190,7 +1190,7 @@ class JobsController extends AppController
 		}
 
 		$this->Flash->success($totalSent . " Messages sent.");
-		$this->redirect(['action' => 'view', $id]);
+		return $this->redirect(['action' => 'view', $id]);
 	}
 
 
@@ -1210,11 +1210,11 @@ class JobsController extends AppController
 	{
 		if ( is_null($id) ) {
 			$this->Flash->error(__('Invalid Action'));
-			$this->redirect(['action' => 'index']);
+			return $this->redirect(['action' => 'index']);
 		}
 		if ( !$this->Auth->user('is_admin') ) {
 			$this->Flash->error("Sorry, you do not have access to this module.");
-			$this->redirect(["action" => "index"]);
+			return $this->redirect(["action" => "index"]);
 		}
 
 		$this->loadComponent('Markdown.Markdown');
@@ -1269,7 +1269,7 @@ class JobsController extends AppController
 		$email->send($mailHTML);
 
 		$this->Flash->success("Mail sent to " . $jobRec->user->first . " " . $jobRec->user->last);
-		$this->redirect(['action' => 'staff-assign', $jobRec->job_id]);
+		return $this->redirect(['action' => 'staff-assign', $jobRec->job_id]);
 	}
 
 

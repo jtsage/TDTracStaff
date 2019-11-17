@@ -181,7 +181,9 @@
 		?>
 	</tbody>
 </table>
+<?php if ($WhoAmI) : ?>
 <button id="export" data-export="export" class="btn btn-outline-light text-dark btn-sm"><?= $this->HtmlExt->icon("cloud-download") ?> Download view as CSV</button>
+<?php endif; ?>
 </div>
 
 <?php if ( $isPaged ) : ?>
@@ -199,6 +201,7 @@
 </div>
 <?php endif; ?>
 
+<?php if ($WhoAmI) : ?>
 <div class="card rounded border p-2 shadow-sm">
 	<?= $this->Form->create("", ["id" => "markAllForm", "url" => "/payrolls/markAll"]); ?>
 	<?php foreach ( $unpaidAll as $thisUnpaid ) {
@@ -207,8 +210,8 @@
 	?>
 	<?= $this->Form->button($this->HtmlExt->icon("bookmark-off") . __(' Mark Visible Unpaid as Paid'), ["type" => "button", "id" => "markAllBut", "class" => "w-100 btn-lg btn-outline-success"]) ?>
 	<?= $this->Form->end(); ?>
-
 </div>
+<?php endif; ?>
 
 <?php else : ?>
 	<div class="alert alert-warning shadow-sm" role="alert">No qualifing payroll records found.</div>

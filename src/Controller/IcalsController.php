@@ -5,6 +5,7 @@ use App\Controller\AppController;
 use Cake\ORM\Query;
 use Cake\I18n\Date;
 use Sabre\VObject;
+use Cake\Network\Exception\NotFoundException;
 
 /**
  * Jobs Controller
@@ -43,8 +44,15 @@ class IcalsController extends AppController
 	 .o. 88P                      
 	 `Y888P                       
 	*/
-	public function jobs()
+	public function jobs($key = null, $drop = null)
 	{
+		if ( is_null($key) || $key <> $this->CONFIG_DATA['calendar-api-key'] ) {
+			throw new NotFoundException(__('Calendar key invalid'));
+		}
+		if ( is_null($drop) ) {
+			return $this->redirect(["action" => "jobs", $key, "jobs.ics"]);
+		}
+
 		$this->loadModel("Jobs");
 		
 		$jobFind = $this->Jobs->find("all")
@@ -111,7 +119,7 @@ class IcalsController extends AppController
 
 			$dtstart = $vEvt->add('DTSTART', $thisEvt['DTSTART']);
 			$dtstart['VALUE'] = 'DATE';
-
+			$vEvt->remove("UID");
 			$vEvt->add('UID', $thisEvt['UID']);
 			$vEvt->add('SUMMARY', $thisEvt['SUMMARY']);
 			$vEvt->add('LOCATION', $thisEvt['LOCATION']);
@@ -135,7 +143,14 @@ class IcalsController extends AppController
 	  888   888  o.  )88b 888    .o  888     o.  )88b 
 	  `V88V"V8P' 8""888P' `Y8bod8P' d888b    8""888P' 
 	*/
-	public function users() {
+	public function users($key = null, $drop = null) {
+		if ( is_null($key) || $key <> $this->CONFIG_DATA['calendar-api-key'] ) {
+			throw new NotFoundException(__('Calendar key invalid'));
+		}
+		if ( is_null($drop) ) {
+			return $this->redirect(["action" => "users", $key, "users.ics"]);
+		}
+
 		$this->loadModel("Jobs");
 		
 		$jobFind = $this->Jobs->find("all")
@@ -180,6 +195,7 @@ class IcalsController extends AppController
 				for ( $thisDate = $job->date_start; $i < 10 && $thisDate < $job->date_end->addDay(1); $thisDate = $thisDate->addDay(1)) {
 					$thisKahuna['DTSTART'] = $thisDate->format("Ymd");
 					$i++;
+					$userlist = [];
 					foreach ( $job->users_sch as $user ) {
 						$userlist[$user->id] = $user->first . " " . $user->last;
 					}
@@ -200,6 +216,7 @@ class IcalsController extends AppController
 			$dtstart = $vEvt->add('DTSTART', $thisEvt['DTSTART']);
 			$dtstart['VALUE'] = 'DATE';
 
+			$vEvt->remove("UID");
 			$vEvt->add('UID', $thisEvt['UID']);
 			$vEvt->add('SUMMARY', $thisEvt['SUMMARY']);
 			$vEvt->add('LOCATION', $thisEvt['LOCATION']);
@@ -223,7 +240,17 @@ class IcalsController extends AppController
 	  888   888  o.  )88b 888    .o  888     
 	  `V88V"V8P' 8""888P' `Y8bod8P' d888b    
 	*/
-	public function user($userID) {
+	public function user($userID = null, $key = null, $drop = null) {
+		if ( is_null($userID) ) {
+			throw new NotFoundException(__('User key invalid'));
+		}
+		if ( is_null($key) || $key <> $this->CONFIG_DATA['calendar-api-key'] ) {
+			throw new NotFoundException(__('Calendar key invalid'));
+		}
+		if ( is_null($drop) ) {
+			return $this->redirect(["action" => "user", $userID, $key, "user.ics"]);
+		}
+
 		$this->loadModel("Jobs");
 		
 		$jobFind = $this->Jobs->find("all")
@@ -267,6 +294,7 @@ class IcalsController extends AppController
 				$i = 0; // Safety net.
 				for ( $thisDate = $job->date_start; $i < 10 && $thisDate < $job->date_end->addDay(1); $thisDate = $thisDate->addDay(1)) {
 					$thisKahuna['DTSTART'] = $thisDate->format("Ymd");
+					$userlist = [];
 					$i++;
 					foreach ( $job->users_sch as $user ) {
 						$userlist[$user->id] = $user->first . " " . $user->last;
@@ -286,6 +314,7 @@ class IcalsController extends AppController
 			$dtstart = $vEvt->add('DTSTART', $thisEvt['DTSTART']);
 			$dtstart['VALUE'] = 'DATE';
 
+			$vEvt->remove("UID");
 			$vEvt->add('UID', $thisEvt['UID']);
 			$vEvt->add('SUMMARY', $thisEvt['SUMMARY']);
 			$vEvt->add('LOCATION', $thisEvt['LOCATION']);

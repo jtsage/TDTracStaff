@@ -421,8 +421,8 @@
 <div class="card shadow mb-2">
 	<div class="card-header bg-transparent h2 text-primary">iCalendar (ics) Links</div>
 	<div class="card-body">
-		<p><strong>Event per Job: </strong><span class="text-info"><?= $CONFIG['server-name'] ?>/ical/jobs</span></p>
-		<p><strong>Event per Scheduled Employee: </strong><span class="text-info"><?= $CONFIG['server-name'] ?>/ical/users</span></p>
+		<p><strong>Event per Job: </strong><span class="text-info"><?= $CONFIG['server-name'] ?>/icals/jobs/<?= $CONFIG['calendar-api-key'] ?>/jobs.ics</span></p>
+		<p><strong>Event per Scheduled Employee: </strong><span class="text-info"><?= $CONFIG['server-name'] ?>/icals/users/<?= $CONFIG['calendar-api-key'] ?>/users.ics</span></p>
 	</div>
 </div>
 

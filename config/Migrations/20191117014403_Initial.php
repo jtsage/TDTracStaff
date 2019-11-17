@@ -635,6 +635,7 @@ class Initial extends AbstractMigration
             array('id' => '7aebba45-57b5-4a5e-a788-004f4ffb043c','key_name' => 'paydates-period','value_short' => 'Set of period paydate, in the format [ "2019-09-11", 14 ] (start, period) or false','value_long' => 'false'),
             array('id' => '8b37c74a-3973-4864-bf96-3ec0059967c1','key_name' => 'admin-name','value_short' => 'The administrator\'s Name','value_long' => 'Example Admin'),
             array('id' => '9d0a4cdf-91db-4079-ad20-b350a51424cd','key_name' => 'long-name','value_short' => 'Long name of the system, usually a company name','value_long' => 'Example Company'),
+            array('id' => 'bbb58578-7411-4aa6-a3e0-aeb1acc0fe54','key_name' => 'calendar-api-key','value_short' => 'Key for iCal (ics) access - probably a UUID or hash or password - that is sent in cleartext.','value_long' => '5f1742c5-441e-4575-beff-c32a33ea7aa7'),
             array('id' => 'cec8b70f-a89a-42d0-9940-2f2d58102f5f','key_name' => 'mailing-address','value_short' => 'Mailing Address of the company - used in E-Mails.','value_long' => '123 Fake Street, Pittsburgh, PA 15201'),
             array('id' => 'dca46886-6cf7-41b7-8e9e-a1c350a0c79f','key_name' => 'paydates-fixed','value_short' => 'Set of fixed paydate, in the fixed format: [ [-1,-1,15], [-1,-1,30] ] (15th and 30th) or false','value_long' => '[ [-1,-1,15], [-1,-1,30] ]'),
             array('id' => 'e79b33e7-5cad-4171-bc84-83cad71a0d0e','key_name' => 'admin-email','value_short' => 'The administrator\'s E-Mail Address','value_long' => 'jtsage@gmail.com'),

@@ -59,7 +59,7 @@
 	</div>
 
 	<h5 class="text-dark mt-3 mb-1">iCalendar (ics) Link</h5>
-	<div class="pl-3 text-info"><?= $CONFIG['server-name'] ?>/ical/user/<?= $user->id ?></div>
+	<div class="pl-3 text-info"><?= $CONFIG['server-name'] ?>/icals/user/<?= $user->id ?>/<?= $CONFIG['calendar-api-key'] ?>/user.ics</div>
 </div>
 
 <?= $this->Pretty->helpMeStart("User View"); ?>

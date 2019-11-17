@@ -43,6 +43,7 @@ INSERT INTO `app_configs` (`id`, `key_name`, `value_short`, `value_long`) VALUES
 ('7aebba45-57b5-4a5e-a788-004f4ffb043c', 'paydates-period', 'Set of period paydate, in the format [ \"2019-09-11\", 14 ] (start, period) or false', 'false'),
 ('8b37c74a-3973-4864-bf96-3ec0059967c1', 'admin-name', 'The administrator\'s Name', 'Example Admin'),
 ('9d0a4cdf-91db-4079-ad20-b350a51424cd', 'long-name', 'Long name of the system, usually a company name', 'Example Company'),
+('bbb58578-7411-4aa6-a3e0-aeb1acc0fe54', 'calendar-api-key', 'Key for iCal (ics) access - probably a UUID or hash or password - that is sent in cleartext.', '5f1742c5-441e-4575-beff-c32a33ea7aa7'),
 ('cec8b70f-a89a-42d0-9940-2f2d58102f5f', 'mailing-address', 'Mailing Address of the company - used in E-Mails.', '123 Fake Street, Pittsburgh, PA 15201'),
 ('dca46886-6cf7-41b7-8e9e-a1c350a0c79f', 'paydates-fixed', 'Set of fixed paydate, in the fixed format: [ [-1,-1,15], [-1,-1,30] ] (15th and 30th) or false', '[ [-1,-1,15], [-1,-1,30] ]'),
 ('e79b33e7-5cad-4171-bc84-83cad71a0d0e', 'admin-email', 'The administrator\'s E-Mail Address', 'jtsage@gmail.com'),

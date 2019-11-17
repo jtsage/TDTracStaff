@@ -448,14 +448,14 @@ class Initial extends AbstractMigration
                 'limit' => null,
                 'null' => false,
             ])
-            ->addColumn('is_available', 'tinyinteger', [
-                'default' => '0',
-                'limit' => 4,
+            ->addColumn('is_available', 'boolean', [
+                'default' => false,
+                'limit' => null,
                 'null' => false,
             ])
-            ->addColumn('is_scheduled', 'tinyinteger', [
-                'default' => '0',
-                'limit' => 4,
+            ->addColumn('is_scheduled', 'boolean', [
+                'default' => false,
+                'limit' => null,
                 'null' => false,
             ])
             ->addColumn('note', 'string', [

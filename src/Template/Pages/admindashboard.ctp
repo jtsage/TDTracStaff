@@ -159,7 +159,7 @@
 		$upayLabel = [];
 
 		foreach ( $userPayTotal as $user ) {
-			if ( $user->total_unpaid > 0 ) {
+			if ( $user->total_unpaid >= .25 ) {
 				$upayData[] = round($user->total_unpaid,2);
 				$upayLabel[] = $user->user->first . " " . $user->user->last;
 			}
@@ -167,6 +167,7 @@
 	?>
 	<script>
 		var config = {
+				type: 'polarArea',
 				data: {
 					datasets: [{
 						data: <?= json_encode($upayData) ?>, 
@@ -198,8 +199,8 @@
 				}
 			};
 
-			var upC = document.getElementById('unpaidUserC');
-			window.myPolarArea = Chart.PolarArea(upC, config);
+			var upC = document.getElementById('unpaidUserC').getContext("2d");
+			window.myPolarArea = new Chart(upC, config);
 			
 	</script>
 </div>

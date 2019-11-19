@@ -77,7 +77,7 @@ class IcalsController extends AppController
 			$thisKahuna['LOCATION'] = $job->location;
 			$thisKahuna['DESCRIPTION'] = $job->detail;
 			$thisKahuna['DESCRIPTION'] .= '\n\nTimes: ' . $job->time_string;
-			$thisKahuna['DESCRIPTION'] .= '\nRequirements:\n';
+			$thisKahuna['DESCRIPTION'] .= '\n\nRequirements:\n';
 			foreach ( $job->roles as $role ) {
 				$thisKahuna['DESCRIPTION'] .= ' * ' . $role->title . '(' . $role->_joinData->number_needed . ')\n';
 			}

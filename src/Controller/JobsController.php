@@ -364,6 +364,10 @@ class JobsController extends AppController
 			->where([
 				"user_id" => $this->Auth->user("id"),
 				"job_id" => $job1->id
+			])
+			->order([
+				"is_scheduled" => "DESC",
+				"is_available" => "DESC"
 			]);
 
 		$this->loadModel("Payrolls");

@@ -46,7 +46,8 @@ class JobsTable extends Table
 		$this->belongsToMany('Roles', [
 			'foreignKey' => 'job_id',
 			'targetForeignKey' => 'role_id',
-			'joinTable' => 'jobs_roles'
+			'joinTable' => 'jobs_roles',
+			'sort' => ["Roles.sort_order" => "ASC"]
 		]);
 		$this->belongsToMany('Users', [
 			'foreignKey' => 'job_id',

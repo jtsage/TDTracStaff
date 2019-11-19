@@ -228,9 +228,10 @@
 
 <?php
 	$workers_Needed = [];
-	$workers_Avail = [];
-	$workers_Sched = [];
-	$workers_Label = [];
+	$workers_Avail  = [];
+	$workers_Sched  = [];
+	$workers_Label  = [];
+	$workers_Perc   = [];
 
 	foreach ( $jobsObj as $job ) {
 		if ( !empty( $job->roles ) ) {
@@ -239,9 +240,10 @@
 				$needed += $role->_joinData->number_needed;
 			}
 			$workers_Needed[] = $needed;
-			$workers_Avail[] = count($job->users_int);
-			$workers_Sched[] = count($job->users_sch);
-			$workers_Label[] = $job->name;
+			$workers_Avail[]  = count($job->users_int);
+			$workers_Sched[]  = count($job->users_sch);
+			$workers_Label[]  = $job->name;
+			$workers_Perc[]   = intval((count($job->users_sch) / ( $needed > 1 ? $needed : 0 )) * 100);
 		}
 	}
 ?>
@@ -251,16 +253,30 @@
 		labels: <?= json_encode( $workers_Label ) ?>,
 		datasets: [{
 			label: 'Needed',
+			yAxisID: "y-axis-1",
+			type: 'bar',
 			backgroundColor: "rgba(220,220,220,0.5)",
 			data: <?= json_encode( $workers_Needed ) ?>
 		}, {
 			label: 'Available',
+			yAxisID: "y-axis-1",
+			type: 'bar',
 			backgroundColor: "rgba(151,187,205,0.5)",
 			data: <?= json_encode( $workers_Avail ) ?>
 		}, {
 			label: 'Scheduled',
+			yAxisID: "y-axis-1",
+			type: 'bar',
 			backgroundColor: "rgba(82,154,190,0.5)",
 			data: <?= json_encode( $workers_Sched ) ?>
+		}, {
+			label: 'Complete %',
+			yAxisID: "y-axis-2",
+			type: 'line',
+			borderColor: "rgba(205,151,187,0.5)",
+			borderWidth: 2,
+			fill: false,
+			data: <?= json_encode( $workers_Perc ) ?>
 		}]
 
 	};
@@ -291,10 +307,27 @@
 						}
 					}],
 					yAxes: [{
-						ticks: {
-							beginAtZero: true
-						}
-					}]
+							type: "linear", // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+							display: true,
+							position: "left",
+							id: "y-axis-1",
+							ticks: {
+								beginAtZero: true
+							}
+						}, {
+							type: "linear", // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+							display: true,
+							position: "right",
+							id: "y-axis-2",
+
+							// grid line settings
+							gridLines: {
+								drawOnChartArea: false, // only want the grid lines for one axis to show up
+							},
+							ticks: {
+								beginAtZero: true
+							}
+						}]
 				}
 			}
 		});

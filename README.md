@@ -22,8 +22,8 @@ Placeholder text.  First itteration of an update to TDTrac that drops the budget
     * See: https://devanswers.co/allow-less-secure-apps-access-gmail-account/
  3. Fix permissions on ```tmp``` and ```log``` - world writeable is easiest.  They need to be writeable for both your user, **and** the webserver user.
  4. Run ```bin/cake migrations migrate``` to create the database and populate the configuration values
- 5. Run ```bin/cake tdtrac adduser -a <email> <password> <first_name> <last_name>``` to add an admin user.
- 6. Optionally, run ```bin/cake tddemo add_prod_roles``` or ```bin/cake tddemo add_teach_roles``` to add some default user roles.
+ 5. Run ```bin/cake user_add --admin <email> <password> <first_name> <last_name>``` to add an admin user.
+ 6. Optionally, run ```bin/cake roles_production``` or ```bin/cake roles_instructor``` to add some default user roles.
  7. Delete the _contents_ of ```tmp``` and ```log```
  8. A sample nginx server configuation is included. (using php-fpm).  YMMV.
  9. Visit the site, configure the rest on the configuration page. __At least:__
@@ -45,8 +45,8 @@ Instructions forthcoming. A SQL dump is available in ```sql_schema_manual.sql```
  - ```bin/cake roles_production YES``` Add "production" basic roles to the db
  - ```bin/cake user_active <username>``` Toggle user's active status
  - ```bin/cake user_add <username> <password> <first_name> <last_name> --admin -budget``` Add an ( --admin ) (--budget ) user to the system. 
- - ```bin/cake user_admin``` Toggle user's admin status 
- - ```bin/cake user_budget```  Toggle user's budget status
+ - ```bin/cake user_admin <username>``` Toggle user's admin status 
+ - ```bin/cake user_budget <username>```  Toggle user's budget status
  - ```bin/cake user_password <username> <password>``` Change a user's password 
 
 **Note**: Stay clear of the demo_ command line toys - they are to populate the demo site, and are dangerous.  That don't check to make sure the database isn't a real one first.

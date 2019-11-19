@@ -73,3 +73,10 @@
 	</table>
 	<button id="export" data-export="export" class="btn btn-outline-light text-dark btn-sm"><?= $this->HtmlExt->icon("cloud-download") ?> Download view as CSV</button>
 </div>
+
+
+
+<?= $this->Pretty->helpMeStart("View Job Budget"); ?>
+<p>View the associated budget for a job.  Regular users may only delete budget items they have added, administrators may delete any item.  To edit an item, remove and re-add it.</p>
+<p>The CSV Export button will provide an excel importable file of the current view.</p>
+<?= $this->Pretty->helpMeEnd(); ?>

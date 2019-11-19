@@ -217,3 +217,15 @@
 	<div class="alert alert-warning shadow-sm" role="alert">No qualifing payroll records found.</div>
 <?php endif; ?>
 
+
+<?= $this->Pretty->helpMeStart("View Payroll Items"); ?>
+<p>This display shows payroll items of the associated user or job.</p>
+
+<p>Unpaid items may be editted by the user that submitted them. Paid items can only be edited by an administrator.</p>
+
+<p>No-one may delete a paid item.</p>
+
+<p>The CSV Export button at the bottom of the display provides an Excel importable file for the current view.</p>
+
+<?= $this->Pretty->helpMeEnd(); ?>
+

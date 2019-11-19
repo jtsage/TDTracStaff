@@ -62,4 +62,9 @@
 <?= $this->Pretty->helpMeStart("Add User"); ?>
 <p>Allow a user to be added to the system.  Note, this system requires users be added by an administrator
 and does not allow new user sign-up</p>
+
+<p>Budget users may add and view the budget of any job</p>
+
+<p>Administrators have unrestricted access to the system, except budgets (unless also flagged true)</p>
+
 <?= $this->Pretty->helpMeEnd(); ?>

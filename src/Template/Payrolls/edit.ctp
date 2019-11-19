@@ -41,3 +41,8 @@
 	<?= $this->Form->button(__('Submit')) ?>
 	<?= $this->Form->end() ?>
 </div>
+
+
+<?= $this->Pretty->helpMeStart("Edit Payroll Item"); ?>
+<p>Use this display to edit a payroll item.  Only unpaid payroll items can be edited by regular users.</p>
+<?= $this->Pretty->helpMeEnd(); ?>

@@ -23,3 +23,8 @@
 	<?= $this->Form->button($this->HtmlExt->icon("magnify") . __(' View Dates'), ["class" => "w-100 btn-lg btn-outline-success"]) ?>
 	<?= $this->Form->end() ?>
 </div>
+
+
+<?= $this->Pretty->helpMeStart("Choose Date Range"); ?>
+<p>Use this display to choose and inclusive date range of payroll items to display.</p>
+<?= $this->Pretty->helpMeEnd(); ?>

@@ -12,3 +12,9 @@
 		<?php endforeach; ?>
 	</div>
 </div>
+
+
+<?= $this->Pretty->helpMeStart("Choose User or Job"); ?>
+<p>Choose the job of user to display.</p>
+<?= $this->Pretty->helpMeEnd(); ?>
+

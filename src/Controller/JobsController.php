@@ -72,6 +72,8 @@ class JobsController extends AppController
 			[null, __("Today's Jobs")]
 		]);
 
+		$today = new \DateTime("now", new \DateTimeZone($this->CONFIG_DATA['time-zone']) );
+
 		$jobFind = $this->Jobs->find("all")
 			->contain([
 				"Roles" => [
@@ -82,8 +84,8 @@ class JobsController extends AppController
 			])
 			->where([
 				"is_open" => 1,
-				"date_start <=" => Time::now(),
-				"date_end >=" => Time::now()
+				"date_start <=" => $today->format("Y-m-d"),
+				"date_end >=" => $today->format("Y-m-d")
 			]);
 
 		$jobs = $this->paginate($jobFind);
@@ -108,7 +110,7 @@ class JobsController extends AppController
 			[null, __("Tomorrow's Jobs")]
 		]);
 
-		$date = Time::now();
+		$date = new \DateTime("now", new \DateTimeZone($this->CONFIG_DATA['time-zone']) );
 		$date = $date->modify('+1 days');
 
 		$jobFind = $this->Jobs->find("all")
@@ -121,8 +123,8 @@ class JobsController extends AppController
 			])
 			->where([
 				"is_open" => 1,
-				"date_start <=" => $date,
-				"date_end >=" => $date
+				"date_start <=" => $date->format("Y-m-d"),
+				"date_end >=" => $date->format("Y-m-d")
 			]);
 
 		$jobs = $this->paginate($jobFind);
@@ -147,7 +149,7 @@ class JobsController extends AppController
 			[null, __("Yesterday's Jobs")]
 		]);
 
-		$date = Time::now();
+		$date = new \DateTime("now", new \DateTimeZone($this->CONFIG_DATA['time-zone']) );
 		$date = $date->modify('-1 days');
 
 		$jobFind = $this->Jobs->find("all")
@@ -160,8 +162,8 @@ class JobsController extends AppController
 			])
 			->where([
 				"is_open" => 1,
-				"date_start <=" => $date,
-				"date_end >=" => $date
+				"date_start <=" => $date->format("Y-m-d"),
+				"date_end >=" => $date->format("Y-m-d")
 			]);
 
 		$jobs = $this->paginate($jobFind);
@@ -186,7 +188,7 @@ class JobsController extends AppController
 			[null, __("This Week's Jobs")]
 		]);
 
-		$date = Time::now();
+		$date = new \DateTime("now", new \DateTimeZone($this->CONFIG_DATA['time-zone']) );
 		$date_start = $date->modify('-'.$date->format('w').' days');
 		$date_end   = clone $date_start;
 		$date_end   = $date_end->modify("+7 days");
@@ -203,11 +205,11 @@ class JobsController extends AppController
 				"is_open" => 1,
 				"OR" => [
 					[ 
-						"date_start <=" => $date_end, 
-						"date_start >=" => $date_start
+						"date_start <=" => $date_end->format("Y-m-d"), 
+						"date_start >=" => $date_start->format("Y-m-d")
 					], [
-						"date_end >=" => $date_start,
-						"date_end <=" => $date_end
+						"date_end >=" => $date_start->format("Y-m-d"),
+						"date_end <=" => $date_end->format("Y-m-d")
 					]
 				]
 			]);

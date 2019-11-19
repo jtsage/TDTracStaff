@@ -40,3 +40,8 @@ $(document).ready( function() {
 	});
 });
 </script>
+
+
+<?= $this->Pretty->helpMeStart("Add Payroll Item"); ?>
+<p>Use this display to add payroll items to the database.  Depending on configuration, you must supply either start and end times, or the number of hours worked.</p>
+<?= $this->Pretty->helpMeEnd(); ?>

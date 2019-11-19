@@ -13,5 +13,6 @@
 	<?= $this->Form->end() ?>
 </div>
 
-<?= $this->Pretty->helpMeStart("Topic Unavailable"); ?>
+<?= $this->Pretty->helpMeStart("Change Password"); ?>
+<p>Use this display to change your password, or (adminstrator only), reset the password for the selected user.</p>
 <?= $this->Pretty->helpMeEnd(); ?>

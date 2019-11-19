@@ -1,7 +1,6 @@
 <?php
 return [ 
 	'debug' => true, // THIS OVERRIDES THE DEBUG VALUE IN app.php
-	'ServerTimeZoneFix' => 'America/New_York',
 	'Datasources' => [
 		'default' => [
 			'className' => 'Cake\Database\Connection',

@@ -43,12 +43,13 @@
 	</table>
 </div>
 
-<?= $this->Pretty->helpMeStart("Topic Unavailable"); ?>
+<?= $this->Pretty->helpMeStart("Application Configuration"); ?>
 
 <p>Use this screen to configure the application. See below for how each key works.</p>
 
 <?= $this->Pretty->helpMeFld("admin-email", "Administrator's E-Mail Address"); ?>
 <?= $this->Pretty->helpMeFld("admin-name", "Administrator's Full Name"); ?>
+<?= $this->Pretty->helpMeFld("calendar-api-key", "Insecure pseudo-security for ics calendar download"); ?>
 <?= $this->Pretty->helpMeFld("job-new-email", "Template for email's sent when a job is newly added to the database and needs staff to indicate availability. {{Variables}} are substituted for configuration values, [[variables]] are substituted for job details."); ?>
 <?= $this->Pretty->helpMeFld("job-old-email", "Template for email's sent when a job is NOT newly added to the database and either STILL needs staff to indicate availability, or staffing needs have changed.  See above for variable expansion."); ?>
 <?= $this->Pretty->helpMeFld("long-name", "Long name of the system, usually a company name"); ?>
@@ -59,6 +60,7 @@
 <?= $this->Pretty->helpMeFld("require-hours", "Require hours worked, rather than just a total - must be 0 (use a total), or 1 (use start and end times)"); ?>
 <?= $this->Pretty->helpMeFld("server-name", "FQDN, with protocol of the server name (https://example.net)"); ?>
 <?= $this->Pretty->helpMeFld("short-name", "Short name of the Site, usually Initials"); ?>
+<?= $this->Pretty->helpMeFld("time-zone", "Time zone for display - used for today, tomorrow, etc - but not data saving."); ?>
 <?= $this->Pretty->helpMeFld("welcome-email", "The welcome E-Mail. {{Variables}} are substituted for configuration values. For sending username and password automatically, include \"Username: \" and \"Password: \" on individual lines."); ?>
 
 <p class="mt-4"><strong>WARNING: </strong>It is intentionally difficult to add new keys.  You can royally screw up the running system by adding values needlessly</p>

@@ -64,4 +64,10 @@
 <?= $this->Pretty->helpMeStart("Edit User"); ?>
 <p>Edit a user's detail's.  "is Password Expired" will remind a
 user to change their password at next login (defaults to true on new accounts).</p>
+
+<p>Budget users may add and view the budget of any job</p>
+
+<p>Administrators have unrestricted access to the system, except budgets (unless also flagged true)</p>
+
+<p>Inactive users will be denied login.</p>
 <?= $this->Pretty->helpMeEnd(); ?>

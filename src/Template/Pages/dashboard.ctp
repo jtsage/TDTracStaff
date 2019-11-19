@@ -202,8 +202,5 @@
 </div>
 
 <?= $this->Pretty->helpMeStart("Dashboard"); ?>
-
 <p>This display shows an overview of your data in the system.</p>
-
-
 <?= $this->Pretty->helpMeEnd(); ?>

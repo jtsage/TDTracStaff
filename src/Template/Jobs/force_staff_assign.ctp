@@ -113,7 +113,10 @@
 <?php endforeach; ?>
 
 
-<?= $this->Pretty->helpMeStart("Job Assigned Staff"); ?>
+<?= $this->Pretty->helpMeStart("Job Assigned Staff (FORCED)"); ?>
+
+<p class="text-danger"><strong>WARNING: </strong>use caution with this tool, it disregards 
+the availability information that your employees have provided.</p>
 
 <p>This display allows assignment of employees to individual job roles.  Note that only
 those employees who have specifically indicated their availability appear here. </p>

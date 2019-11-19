@@ -38,3 +38,8 @@ $(document).ready( function() {
 	});
 });
 </script>
+
+
+<?= $this->Pretty->helpMeStart("Add Payroll Item"); ?>
+<p>Forcibly add payroll hours to the system.  Use caution, this does not respect scheduled employees.</p>
+<?= $this->Pretty->helpMeEnd(); ?>

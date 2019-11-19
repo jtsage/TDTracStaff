@@ -11,5 +11,6 @@
 	<?= $this->Form->end() ?>
 </div>
 
-<?= $this->Pretty->helpMeStart("Topic Unavailable"); ?>
+<?= $this->Pretty->helpMeStart("Reset Password"); ?>
+<p>Please enter a new password for your account.</p>
 <?= $this->Pretty->helpMeEnd(); ?>

@@ -25,6 +25,10 @@
 	<?= $this->Form->end() ?>
 </div>
 
+<?= $this->Pretty->helpMeStart("Add Budget Item"); ?>
+<p>Use this display to add budget items to the database.  Category and Vendor will autocomplete from previously used values.</p>
+<?= $this->Pretty->helpMeEnd(); ?>
+
 <script>
 
 <?php

@@ -40,3 +40,8 @@
 	<?php endforeach; ?>
 </div>
 
+
+<?= $this->Pretty->helpMeStart("View Budgets"); ?>
+<p>Choose a job to view the budget information associated with it.  Percentage shown is the amount of the budget allocated. Percentages over 100% are possible.</p>
+<?= $this->Pretty->helpMeEnd(); ?>
+

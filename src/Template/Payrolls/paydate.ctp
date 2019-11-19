@@ -22,3 +22,8 @@
 	<?= $this->Form->button($this->HtmlExt->icon("magnify") . __(' View Paydate'), ["class" => "w-100 btn-lg btn-outline-success"]) ?>
 	<?= $this->Form->end() ?>
 </div>
+
+
+<?= $this->Pretty->helpMeStart("Choose Paydate"); ?>
+<p>Select a pay (paycheck) date to display</p>
+<?= $this->Pretty->helpMeEnd(); ?>

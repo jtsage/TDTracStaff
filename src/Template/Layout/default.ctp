@@ -68,12 +68,18 @@ $user = $this->request->getSession()->read('Auth.User');
 			// ]);
 			
 		?>
+		<style>
+		@media print {
+			.btn, .btn-group, .btn-group-sm-vertical, .btn-group-vertical { display: none; }
+			.shadow-sm, .shadow { -webkit-box-shadow: none !important; box-shadow: none !important; }
+		}
+		</style>
 
 	</head>
 	<body>
 	<div class="wrapper">
 		<!-- Sidebar  -->
-		<nav id="sidebar">
+		<nav class="d-print-none" id="sidebar">
 			<div class="sidebar-header">
 				<h3 class="mb-0 pb-0 text-white">TDTrac<span style="color:#C3593C">Staff</span><span style="color:#ea975b"><?= $CONFIG["short-name"] ?></span></h3>
 			</div>
@@ -165,7 +171,14 @@ $user = $this->request->getSession()->read('Auth.User');
 				<li>
 					<a class="article" onClick="javascript:$('#helpMeModal').modal(); return false;" href="#">Online Help</a>
 				</li>
+				<?php if ( $WhoAmI ) : ?>
+				<li>
+					<a class="article" target="_blank" href="https://demostaff.tdtrac.com/books/admin-handbook.pdf">Administrator Handbook</a>
+				</li>
+				<?php endif; ?>
 			</ul>
+
+			
 		</nav>
 
 		<!-- Page Content  -->
@@ -222,7 +235,8 @@ $user = $this->request->getSession()->read('Auth.User');
 					</ul>
 				</footer>
 				<footer class="d-print-block d-none" style="padding-top: 20px; margin-top: 20px; border-top: 1px solid #e5e5e5;">
-					<p class="text-center text-muted">Printed on <?= date('Y-m-d H:i T') ?></p>
+					<?php $print = new \DateTime("now", new \DateTimeZone($CONFIG['time-zone']) ); ?>
+					<p class="text-center text-muted">Printed on <?= $print->format('Y-m-d h:ia T') ?></p>
 				</footer>
 			</div>
 		</div>

@@ -22,5 +22,6 @@
 </div>
 
 
-<?= $this->Pretty->helpMeStart("Topic Unavailable"); ?>
+<?= $this->Pretty->helpMeStart("Login"); ?>
+<p>New user registration is closed for this system. Please contact the system administrator if you need and account or misplaced your login.</p>
 <?= $this->Pretty->helpMeEnd(); ?>

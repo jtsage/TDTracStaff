@@ -92,6 +92,7 @@ return [
             'className' => 'Cake\Cache\Engine\FileEngine',
             'path' => CACHE,
             'url' => env('CACHE_DEFAULT_URL', null),
+            'mask' => 0666,
         ],
 
         /**
@@ -107,6 +108,7 @@ return [
             'serialize' => true,
             'duration' => '+1 years',
             'url' => env('CACHE_CAKECORE_URL', null),
+            'mask' => 0666,
         ],
 
         /**
@@ -122,6 +124,7 @@ return [
             'serialize' => true,
             'duration' => '+1 years',
             'url' => env('CACHE_CAKEMODEL_URL', null),
+            'mask' => 0666,
         ],
 
         /**
@@ -136,6 +139,7 @@ return [
             'serialize' => true,
             'duration' => '+1 years',
             'url' => env('CACHE_CAKEROUTES_URL', null),
+            'mask' => 0666,
         ],
     ],
 
@@ -256,6 +260,7 @@ return [
             'url' => env('LOG_DEBUG_URL', null),
             'scopes' => false,
             'levels' => ['notice', 'info', 'debug'],
+            'mask' => 0666,
         ],
         'error' => [
             'className' => 'Cake\Log\Engine\FileLog',
@@ -264,6 +269,7 @@ return [
             'url' => env('LOG_ERROR_URL', null),
             'scopes' => false,
             'levels' => ['warning', 'error', 'critical', 'alert', 'emergency'],
+            'mask' => 0666,
         ],
         // To enable this dedicated query log, you need set your datasource's log flag to true
         'queries' => [

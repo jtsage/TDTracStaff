@@ -82,6 +82,7 @@ $user = $this->request->getSession()->read('Auth.User');
 				<li class="<?= ($this->request->getParam('controller') == "Pages" ? " active":"") ?>">
 					<a href="/"><?= $this->HtmlExt->icon("view-dashboard") ?> Dashboard</a>
 				</li>
+				<li><a href="/jobs/"><?= $this->HtmlExt->icon("worker") ?> <?= __("Job List") ?></a></li>
 				<li class="<?= ($this->request->getParam('controller') == "Jobs" ? " active":"") ?>">
 					<a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><?= $this->HtmlExt->icon("worker") ?> Jobs</a>
 					<ul class="collapse list-unstyled" id="homeSubmenu">

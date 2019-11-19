@@ -10,7 +10,7 @@
 		<?php 
 			$budAloc  = array_key_exists($job->id, $budgeTotal) ? $budgeTotal[$job->id] : 0;
 			$budAllow = $job->has_budget_total;
-			$budPerc  = ( $job->has_budget_total == 0 ) ? 0 : intval(($budgeTotal[$job->id] / $job->has_budget_total) * 100);
+			$budPerc  = ( $job->has_budget_total == 0 ) ? 0 : intval(($budAloc / $budAllow) * 100);
 			$color = ( $budAllow < $budAloc ) ? "danger" : "success";
 		?>
 		<?= $this->htmlExt->iconBtnLink(
@@ -28,7 +28,7 @@
 		<?php 
 			$budAloc  = array_key_exists($job->id, $budgeTotal) ? $budgeTotal[$job->id] : 0;
 			$budAllow = $job->has_budget_total;
-			$budPerc  = ( $job->has_budget_total == 0 ) ? 0 : intval(($budgeTotal[$job->id] / $job->has_budget_total) * 100);
+			$budPerc  = ( $job->has_budget_total == 0 ) ? 0 : intval(($budAloc / $budAllow) * 100);
 			$color = ( $budAllow < $budAloc ) ? "danger" : "success";
 		?>
 		<?= $this->htmlExt->iconBtnLink(

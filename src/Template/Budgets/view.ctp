@@ -9,7 +9,7 @@
 		<?php 
 			$budAloc  = array_key_exists($job->id, $budgeTotal) ? $budgeTotal[$job->id] : 0;
 			$budAllow = $job->has_budget_total;
-			$budPerc  = ( $job->has_budget_total == 0 ) ? 0 : intval(($budgeTotal[$job->id] / $job->has_budget_total) * 100);
+			$budPerc  = ( $job->has_budget_total == 0 ) ? 0 : intval(($budAloc / $budAllow) * 100);
 		?>
 		<div class="col-12 p-0 text-dark border-bottom">
 			<h3 class="p-0 m-0 mb-3 ml-2">Budget - <?= $job->category ?> - <?= $job->name ?></h3>

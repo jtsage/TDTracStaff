@@ -39,4 +39,14 @@ Placeholder text.  First itteration of an update to TDTrac that drops the budget
 
 Instructions forthcoming. A SQL dump is available in ```sql_schema_manual.sql```.  This file will create the database, and populate the configuration values. Create a user, be sure to fake a uuid for it. Everything after that can be done in the app.
 
+## Command Line Toys
 
+ - ```bin/cake roles_instructor YES``` Add "instructor" basic roles to the db.
+ - ```bin/cake roles_production YES``` Add "production" basic roles to the db
+ - ```bin/cake user_active <username>``` Toggle user's active status
+ - ```bin/cake user_add <username> <password> <first_name> <last_name> --admin -budget``` Add an ( --admin ) (--budget ) user to the system. 
+ - ```bin/cake user_admin``` Toggle user's admin status 
+ - ```bin/cake user_budget```  Toggle user's budget status
+ - ```bin/cake user_password <username> <password>``` Change a user's password 
+
+**Note**: Stay clear of the demo_ command line toys - they are to populate the demo site, and are dangerous.  That don't check to make sure the database isn't a real one first.

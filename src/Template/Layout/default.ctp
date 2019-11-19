@@ -44,28 +44,28 @@ $user = $this->request->getSession()->read('Auth.User');
 			echo $this->fetch('script');
 		
 			echo $this->Html->css('https://cdn.materialdesignicons.com/4.5.95/css/materialdesignicons.min.css');
-			echo $this->Html->css('bootstrap.min.css');
-			echo $this->Html->css('bootstrap4-toggle.min.css');
-			
-			echo $this->Html->css('typeaheadjs.min.css');
-			echo $this->Html->css('Chart.min.css');
-			echo $this->Html->css('tdtracx');
-			
+			echo $this->Html->css("main.min.css");
+			// echo $this->Html->css([
+			// 	'bootstrap.min.css',
+			// 	'bootstrap4-toggle.min.css',
+			// 	'typeaheadjs.min.css',
+			// 	'Chart.min.css',
+			// 	'tdtracx.css'
+			// ]);
 
-		?>
-		<?php
-			echo $this->Html->script('jquery-3.3.1.min.js');
-			echo $this->Html->script('typeahead.bundle.min.js');
-			echo $this->Html->script('bootstrap4-toggle.min.js');
-
-			echo $this->Html->script('popper.min.js');
-
-			echo $this->Html->script('bootstrap.min.js');
-			echo $this->Html->script('bootbox.min.js');
-			echo $this->Html->script('jtsage-datebox.min.js');
-			echo $this->Html->script('Chart.min.js');
-			echo $this->Html->script("gauge.min.js");
-			echo $this->Html->script('tdtrac-staffer');
+			echo $this->Html->script("main.min.js");
+			// echo $this->Html->script([
+			// 	'jquery-3.3.1.min.js',
+			// 	'typeahead.bundle.min.js',
+			// 	'bootstrap4-toggle.min.js',
+			// 	'popper.min.js',
+			// 	'bootstrap.min.js',
+			// 	'bootbox.min.js',
+			// 	'jtsage-datebox.min.js',
+			// 	'Chart.min.js',
+			// 	"gauge.min.js",
+			// 	'tdtrac-staffer.js'
+			// ]);
 			
 		?>
 
@@ -78,15 +78,23 @@ $user = $this->request->getSession()->read('Auth.User');
 				<h3 class="mb-0 pb-0 text-white">TDTrac<span style="color:#C3593C">Staff</span><span style="color:#ea975b"><?= $CONFIG["short-name"] ?></span></h3>
 			</div>
 
+			<?php 
+				$thisCon = $this->request->getParam('controller');
+				$thisAct = $this->request->getParam('action');
+			?>
+
 			<ul class="list-unstyled components">
-				<li class="<?= ($this->request->getParam('controller') == "Pages" ? " active":"") ?>">
+				<li class="<?= ($thisCon == "Pages" ? " active":"") ?>">
 					<a href="/"><?= $this->HtmlExt->icon("view-dashboard") ?> Dashboard</a>
 				</li>
-				<li><a href="/jobs/"><?= $this->HtmlExt->icon("worker") ?> <?= __("Job List") ?></a></li>
-				<li class="<?= ($this->request->getParam('controller') == "Jobs" ? " active":"") ?>">
+
+				<li class="<?= ($thisCon == "Jobs" && $thisAct == ( $WhoAmI ? "index":"myjobs" ) ? " active":"") ?>">
+					<a href="/jobs/"><?= $this->HtmlExt->icon("worker") ?> <?= ( $WhoAmI ) ? "Open Jobs" : "Qualified Jobs" ?></a>
+				</li>
+
+				<li class="<?= ($thisCon == "Jobs" && !in_array($thisAct, ["calendar",( $WhoAmI ? "index":"myjobs" )]) ? " active":"") ?>">
 					<a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><?= $this->HtmlExt->icon("worker") ?> Jobs</a>
 					<ul class="collapse list-unstyled" id="homeSubmenu">
-						<li class="border-bottom border-dark"><a href="/jobs/">Open Jobs</a></li>
 						<li><a href="/jobs/myrespond/">Awaiting Response</a></li>
 						<li><a href="/jobs/myjobs/">My Qualified Jobs</a></li>
 						<li class="border-bottom border-dark"><a href="/jobs/mysched/">My Scheduled Jobs</a></li>
@@ -94,17 +102,25 @@ $user = $this->request->getSession()->read('Auth.User');
 							<li><a href="/jobs/short/">All Jobs, Concise</a></li>
 							<li><a href="/jobs/inact/">Open and Inactive Jobs</a></li>
 							<li class="border-bottom border-dark"><a href="/jobs/closed/">Closed Jobs</a></li>
+							<li><a href="/jobs/today/">Today's Jobs</a></li>
+							<li><a href="/jobs/tomorrow/">Tomorrow's Jobs</a></li>
+							<li><a href="/jobs/yesterday/">Yesterday's Jobs</a></li>
+							<li><a href="/jobs/week/">This Week's Jobs</a></li>
 						<?php endif; ?>
-						<li><a href="/jobs/calendar/">Calendar</a></li>
-						<li><a href="/jobs/day/">Today</a></li>
 					</ul>
 				</li>
-				<li><a href="/payrolls/add/"><?= $this->HtmlExt->icon("alarm-plus") ?> <?= __("Add Payroll") ?></a></li>
-				<li class="<?= ($this->request->getParam('controller') == "Payrolls" ? " active":"") ?>">
+
+				<li class="<?= ($thisCon == "Jobs" && $thisAct == "calendar" ? " active":"") ?>">
+					<a href="/jobs/calendar/"><?= $this->HtmlExt->icon("calendar") ?> Calendar</a>
+				</li>
+
+				<li class="<?= ($thisCon == "Payrolls" && $thisAct == "add" ? " active":"") ?>">
+					<a href="/payrolls/add/"><?= $this->HtmlExt->icon("alarm-plus") ?> <?= __("Add Payroll") ?></a>
+				</li>
+
+				<li class="<?= ($thisCon == "Payrolls" && $thisAct <> "add" ? " active":"") ?>">
 					<a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><?= $this->HtmlExt->icon("cash") ?> Payroll</a>
 					<ul class="collapse list-unstyled" id="pageSubmenu">
-						<li><a class="<?= (!$WhoAmI)?"border-bottom":"" ?> border-dark" href="/payrolls/add/">Add Hours</a></li>
-						
 						<?php if ($WhoAmI) : ?>
 							<li><a class="border-bottom border-dark" href="/payrolls/add-force/">Force Add Hours</a></li>
 
@@ -126,13 +142,20 @@ $user = $this->request->getSession()->read('Auth.User');
 						<li><a href="/payrolls/mydates/">My Hours by Date</a></li>
 					</ul>
 				</li>
-				<?= ($BudgetAmI) ? "<li class='" . ($this->request->getParam('controller') == "Budgets" ? "active":"") . "'><a href=\"/budgets/\">{$this->HtmlExt->icon("credit-card")} Budgets</a></li>" : "" ?>
 
-				<?= ($WhoAmI) ? "<li class='" . ($this->request->getParam('controller') == "Roles" ? "active":"") . "'><a href=\"/roles/\">{$this->HtmlExt->icon("account-star")} Worker Titles</a></li>" : "" ?>
+				<?= ($BudgetAmI) ? "<li class='" . ($thisCon == "Budgets" ? "active":"") . "'><a href=\"/budgets/\">{$this->HtmlExt->icon("credit-card")} Budgets</a></li>" : "" ?>
 
-				<li class="<?= ($this->request->getParam('controller') == "Users" ? "active":"") ?>"><a href="/users/"><?= ($WhoAmI) ? $this->HtmlExt->icon("account-group") . " Users" : $this->HtmlExt->icon("account") . " My Account" ?></a></li>
+				<li class="<?= ($thisCon == "Users" ? "active":"") ?>"><a href="/users/"><?= ($WhoAmI) ? $this->HtmlExt->icon("account-group") . " Users" : $this->HtmlExt->icon("account") . " My Account" ?></a></li>
 				
-				<?= ($WhoAmI) ? "<li class='" . ($this->request->getParam('controller') == "AppConfigs" ? "active":"") . "'><a href=\"/app-configs/\">{$this->HtmlExt->icon("settings")} Configuration</a></li>" : "" ?>
+				<?php if ( $WhoAmI ) : ?>
+					<li class="<?= ($thisCon == "Roles" || $thisCon == "AppConfigs" ? " active":"") ?>">
+						<a href="#confSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><?= $this->HtmlExt->icon("settings") ?> Settings</a>
+						<ul class="collapse list-unstyled" id="confSubmenu">
+							<li><a href="/roles/">Worker Titles</a></li>
+							<li><a href="/app-configs/">Configuration</a></li>
+						</ul>
+					</li>
+				<?php endif; ?>
 
 				<li><a href="/users/logout/"><?= $this->HtmlExt->icon("logout") ?> <?= __("Logout") ?></a></li>
 

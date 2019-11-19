@@ -15,9 +15,9 @@
 		?>
 		<?= $this->htmlExt->iconBtnLink(
 			"chevron-right-box",
-			$job->name . " <span class='badge badge-pill badge-" . $color . "'>" . $budPerc . "%</span>",
+			$job->name . " <span class='badge float-right mt-1 badge-pill badge-" . $color . "'>" . $budPerc . "%</span>",
 			["action" => "view", $job->id],
-			["class" => "btn btn-outline-primary w-100 mt-2"]
+			["class" => "text-left btn btn-outline-primary w-100 mt-2"]
 		) ?>
 	<?php endforeach; ?>
 </div>
@@ -33,9 +33,9 @@
 		?>
 		<?= $this->htmlExt->iconBtnLink(
 			"chevron-right-box",
-			$job->name . " <span class='badge badge-pill badge-" . $color . "'>" . $budPerc . "%</span>",
+			$job->name . " <span class='badge float-right mt-1 badge-pill badge-" . $color . "'>" . $budPerc . "%</span>",
 			["action" => "view", $job->id],
-			["class" => "btn btn-outline-primary w-100 mt-2"]
+			["class" => "text-left btn btn-outline-primary w-100 mt-2"]
 		) ?>
 	<?php endforeach; ?>
 </div>

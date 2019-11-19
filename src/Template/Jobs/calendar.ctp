@@ -32,7 +32,7 @@
 					<?php foreach ( $calData[$row][$col]['events'] as $event ): ?>
 
 						
-						<a class="mb-1 btn btn-sm w-100 <?= ( $event['status'] == 2 ? "btn-outline-success" : ($event['status'] == 1 ? "btn-outline-warning" : "btn-outline-dark" ) ) ?>" href="/jobs/view/<?= $event["id"] ?>"><?= $event["name"] ?></a>
+						<a class="mb-1 text-left btn btn-sm w-100 <?= ( $event['status'] == 2 ? "btn-outline-success" : ($event['status'] == 1 ? "btn-outline-warning" : "btn-outline-dark" ) ) ?>" href="/jobs/view/<?= $event["id"] ?>"><?= $event["name"] ?></a>
 						
 						<?php $thisSize--; ?>
 					<?php endforeach; ?>

@@ -5,9 +5,9 @@
 		<?php foreach ( $lister as $item ) : ?>
 			<?= $this->HtmlExt->iconBtnLink(
 				"chevron-right-box", 
-				( $action == "job" ) ? $item->name : $item->comma_name,
+				( $action == "job" ) ? $item->category . " : " . $item->name : $item->comma_name,
 				[ "action" => $action, $item->id ],
-				[ 'class' => 'btn btn-outline-primary w-100']
+				[ 'class' => 'text-left btn btn-outline-primary w-100']
 			); ?>
 		<?php endforeach; ?>
 	</div>

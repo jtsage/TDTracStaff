@@ -7,6 +7,7 @@ use Cake\I18n\Date;
 use Cake\Chronos\ChronosInterface;
 use Cake\Chronos\Chronos;
 use Cake\Mailer\Email;
+use Cake\I18n\Time;
 
 /**
  * Jobs Controller
@@ -63,6 +64,168 @@ class JobsController extends AppController
 		$this->set(compact('jobs'));
 	}
 
+	public function today()
+	{
+		$this->set('crumby', [
+			["/", __("Dashboard")],
+			["/jobs/", __("Jobs")],
+			[null, __("Today's Jobs")]
+		]);
+
+		$jobFind = $this->Jobs->find("all")
+			->contain([
+				"Roles" => [
+					'sort' => ['Roles.sort_order' => 'ASC']
+				],
+				"UsersScheduled",
+				"UsersInterested"
+			])
+			->where([
+				"is_open" => 1,
+				"date_start <=" => Time::now(),
+				"date_end >=" => Time::now()
+			]);
+
+		$jobs = $this->paginate($jobFind);
+
+		$this->loadModel("Payrolls");
+
+		$this->set("myTotals", $this->Payrolls->find('jobTotals')->where(["user_id"=>$this->Auth->user("id")])->indexBy('job_id')->toArray());
+		$this->set("jobTotals", $this->Payrolls->find('jobTotals')->indexBy('job_id')->toArray());
+
+		$this->set(compact('jobs'));
+
+		$this->set("subtitle", "Today's");
+		$this->set("subtext", "This display contains only jobs happening today");
+		$this->render("index");
+	}
+
+	public function tomorrow()
+	{
+		$this->set('crumby', [
+			["/", __("Dashboard")],
+			["/jobs/", __("Jobs")],
+			[null, __("Tomorrow's Jobs")]
+		]);
+
+		$date = Time::now();
+		$date = $date->modify('+1 days');
+
+		$jobFind = $this->Jobs->find("all")
+			->contain([
+				"Roles" => [
+					'sort' => ['Roles.sort_order' => 'ASC']
+				],
+				"UsersScheduled",
+				"UsersInterested"
+			])
+			->where([
+				"is_open" => 1,
+				"date_start <=" => $date,
+				"date_end >=" => $date
+			]);
+
+		$jobs = $this->paginate($jobFind);
+
+		$this->loadModel("Payrolls");
+
+		$this->set("myTotals", $this->Payrolls->find('jobTotals')->where(["user_id"=>$this->Auth->user("id")])->indexBy('job_id')->toArray());
+		$this->set("jobTotals", $this->Payrolls->find('jobTotals')->indexBy('job_id')->toArray());
+
+		$this->set(compact('jobs'));
+
+		$this->set("subtitle", "Tomorrow's");
+		$this->set("subtext", "This display contains only jobs happening tomorrow");
+		$this->render("index");
+	}
+
+	public function yesterday()
+	{
+		$this->set('crumby', [
+			["/", __("Dashboard")],
+			["/jobs/", __("Jobs")],
+			[null, __("Yesterday's Jobs")]
+		]);
+
+		$date = Time::now();
+		$date = $date->modify('-1 days');
+
+		$jobFind = $this->Jobs->find("all")
+			->contain([
+				"Roles" => [
+					'sort' => ['Roles.sort_order' => 'ASC']
+				],
+				"UsersScheduled",
+				"UsersInterested"
+			])
+			->where([
+				"is_open" => 1,
+				"date_start <=" => $date,
+				"date_end >=" => $date
+			]);
+
+		$jobs = $this->paginate($jobFind);
+
+		$this->loadModel("Payrolls");
+
+		$this->set("myTotals", $this->Payrolls->find('jobTotals')->where(["user_id"=>$this->Auth->user("id")])->indexBy('job_id')->toArray());
+		$this->set("jobTotals", $this->Payrolls->find('jobTotals')->indexBy('job_id')->toArray());
+
+		$this->set(compact('jobs'));
+
+		$this->set("subtitle", "Yesterday's");
+		$this->set("subtext", "This display contains only jobs happening yesterday");
+		$this->render("index");
+	}
+
+	public function week()
+	{
+		$this->set('crumby', [
+			["/", __("Dashboard")],
+			["/jobs/", __("Jobs")],
+			[null, __("This Week's Jobs")]
+		]);
+
+		$date = Time::now();
+		$date_start = $date->modify('-'.$date->format('w').' days');
+		$date_end   = clone $date_start;
+		$date_end   = $date_end->modify("+7 days");
+
+		$jobFind = $this->Jobs->find("all")
+			->contain([
+				"Roles" => [
+					'sort' => ['Roles.sort_order' => 'ASC']
+				],
+				"UsersScheduled",
+				"UsersInterested"
+			])
+			->where([
+				"is_open" => 1,
+				"OR" => [
+					[ 
+						"date_start <=" => $date_end, 
+						"date_start >=" => $date_start
+					], [
+						"date_end >=" => $date_start,
+						"date_end <=" => $date_end
+					]
+				]
+			]);
+
+		$jobs = $this->paginate($jobFind);
+
+		$this->loadModel("Payrolls");
+
+		$this->set("myTotals", $this->Payrolls->find('jobTotals')->where(["user_id"=>$this->Auth->user("id")])->indexBy('job_id')->toArray());
+		$this->set("jobTotals", $this->Payrolls->find('jobTotals')->indexBy('job_id')->toArray());
+
+		$this->set(compact('jobs'));
+
+		$this->set("subtitle", "This Week's");
+		$this->set("subtext", "This display contains only jobs happening this calendar week - " . $date_start->format("Y-m-d") . " through " . $date_end->format("Y-m-d") . ".");
+		$this->render("index");
+	}
+
 
 
 	/*
@@ -95,8 +258,6 @@ class JobsController extends AppController
 			]);
 
 		$jobs = $jobFind;
-
-		
 
 		$this->set(compact('jobs'));
 	}

@@ -348,12 +348,20 @@
 		<p class="small mb-0">This shows an overview payroll hours and budget amounts in the system.</p>
 	</div>
 	<div class="card-footer bg-transparent">
-		<?= $this->HtmlExt->iconBtnLink(
-			"worker",
-			"Job List",
-			["controller" => "Jobs", "action" => "index"],
-			["class" => "btn w-100 btn-primary"]
-		); ?>
+		<div class="btn-group btn-group-sm-vertical w-100">
+			<?= $this->HtmlExt->iconBtnLink(
+				"cash",
+				"Payroll List",
+				["controller" => "Payrolls", "action" => "index"],
+				["class" => "btn w-100 btn-primary"]
+			); ?>
+			<?= $this->HtmlExt->iconBtnLink(
+				"credit-card",
+				"Budget List",
+				["controller" => "Budgets", "action" => "index"],
+				["class" => "btn w-100 btn-primary"]
+			); ?>
+		</div>
 	</div>
 </div>
 
@@ -455,8 +463,8 @@
 <div class="card shadow mb-2">
 	<div class="card-header bg-transparent h2 text-primary">iCalendar (ics) Links</div>
 	<div class="card-body">
-		<p><strong>Event per Job: </strong><span class="text-info"><?= $CONFIG['server-name'] ?>/icals/jobs/<?= $CONFIG['calendar-api-key'] ?>/jobs.ics</span></p>
-		<p><strong>Event per Scheduled Employee: </strong><span class="text-info"><?= $CONFIG['server-name'] ?>/icals/users/<?= $CONFIG['calendar-api-key'] ?>/users.ics</span></p>
+		<p><strong>Event per Job: </strong><span class="text-info small"><?= $CONFIG['server-name'] ?>/icals/jobs/<?= $CONFIG['calendar-api-key'] ?>/jobs.ics</span></p>
+		<p><strong>Event per Scheduled Employee: </strong><span class="text-info small"><?= $CONFIG['server-name'] ?>/icals/users/<?= $CONFIG['calendar-api-key'] ?>/users.ics</span></p>
 	</div>
 </div>
 

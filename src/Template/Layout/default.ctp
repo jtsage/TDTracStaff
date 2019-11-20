@@ -181,6 +181,9 @@ $user = $this->request->getSession()->read('Auth.User');
 					<a class="article" target="_blank" href="https://demostaff.tdtrac.com/books/admin-handbook.pdf">Administrator Handbook</a>
 				</li>
 				<?php endif; ?>
+				<li>
+					<a class="article" target="_blank" href="https://demostaff.tdtrac.com/books/handbook.pdf">User Handbook</a>
+				</li>
 			</ul>
 
 			

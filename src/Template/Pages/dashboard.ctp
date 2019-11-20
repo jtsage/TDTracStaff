@@ -14,7 +14,7 @@
 		<div class="card-body bg-transparent text-center text-secondary">
 			<i class="mdi mdi-worker"></i> Active Jobs
 		</div><div class="card-footer bg-transparent">
-			<div class="h1 text-primary text-right mb-0"><?= number_format($jobCounts->total_active )?></div>
+			<div class="h2 text-primary text-right mb-0"><?= number_format($jobCounts->total_active )?></div>
 		</div>
 	</div>
 
@@ -22,7 +22,7 @@
 		<div class="card-body bg-transparent text-center text-secondary">
 			<i class="mdi mdi-worker"></i> Open Jobs
 		</div><div class="card-footer bg-transparent">
-			<div class="h1 text-primary text-right mb-0"><?= number_format($jobCounts->total_open) ?></div>
+			<div class="h2 text-primary text-right mb-0"><?= number_format($jobCounts->total_open) ?></div>
 		</div>
 	</div>
 
@@ -30,7 +30,7 @@
 		<div class="card-body bg-transparent text-center text-secondary">
 			<i class="mdi mdi-calendar-check"></i> Scheduled Jobs
 		</div><div class="card-footer bg-transparent">
-			<div class="h1 text-primary text-right mb-0"><?= number_format($mySched) ?></div>
+			<div class="h2 text-primary text-right mb-0"><?= number_format($mySched) ?></div>
 		</div>
 	</div>
 
@@ -38,7 +38,7 @@
 		<div class="card-body bg-transparent text-center text-secondary">
 			<i class="mdi mdi-calendar-star"></i> Need Response
 		</div><div class="card-footer bg-transparent">
-			<div class="h1 text-primary text-right mb-0"><?= number_format($myPoss-$mySched) ?></div>
+			<div class="h2 text-primary text-right mb-0"><?= number_format($myPoss-$mySched) ?></div>
 		</div>
 	</div>
 
@@ -46,7 +46,7 @@
 		<div class="card-body bg-transparent text-center text-secondary">
 			<i class="mdi mdi-account-cash"></i> Unpaid Hours
 		</div><div class="card-footer bg-transparent">
-			<div class="h1 text-primary text-right mb-0"><?= number_format($myPay->total_unpaid,2) ?></div>
+			<div class="h2 text-primary text-right mb-0"><?= number_format($myPay->total_unpaid,2) ?></div>
 		</div>
 	</div>
 </div>

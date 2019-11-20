@@ -3,7 +3,7 @@
 		<div class="card-body bg-transparent text-center text-secondary">
 			<i class="mdi mdi-account-multiple"></i> Active Users
 		</div><div class="card-footer bg-transparent">
-			<div class="h1 text-primary text-right mb-0"><?= number_format($totUser) ?></div>
+			<div class="h3 text-primary text-right mb-0"><?= number_format($totUser) ?></div>
 		</div>
 	</div>
 
@@ -11,7 +11,7 @@
 		<div class="card-body bg-transparent text-center text-secondary">
 			<i class="mdi mdi-worker"></i> Active Jobs
 		</div><div class="card-footer bg-transparent">
-			<div class="h1 text-primary text-right mb-0"><?= number_format($jobCounts->total_active )?></div>
+			<div class="h3 text-primary text-right mb-0"><?= number_format($jobCounts->total_active )?></div>
 		</div>
 	</div>
 
@@ -19,7 +19,7 @@
 		<div class="card-body bg-transparent text-center text-secondary">
 			<i class="mdi mdi-worker"></i> Open Jobs
 		</div><div class="card-footer bg-transparent">
-			<div class="h1 text-primary text-right mb-0"><?= number_format($jobCounts->total_open) ?></div>
+			<div class="h3 text-primary text-right mb-0"><?= number_format($jobCounts->total_open) ?></div>
 		</div>
 	</div>
 
@@ -27,7 +27,7 @@
 		<div class="card-body bg-transparent text-center text-secondary">
 			<i class="mdi mdi-account-star"></i> Active Positions
 		</div><div class="card-footer bg-transparent">
-			<div class="h1 text-primary text-right mb-0"><?= number_format($availPos) ?></div>
+			<div class="h3 text-primary text-right mb-0"><?= number_format($availPos) ?></div>
 		</div>
 	</div>
 
@@ -35,7 +35,7 @@
 		<div class="card-body bg-transparent text-center text-secondary">
 			<i class="mdi mdi-cash"></i> Unpaid Hours
 		</div><div class="card-footer bg-transparent">
-			<div class="h1 text-primary text-right mb-0"><?= number_format($myPay->total_unpaid,2) ?></div>
+			<div class="h3 text-primary text-right mb-0"><?= number_format($myPay->total_unpaid,2) ?></div>
 		</div>
 	</div>
 
@@ -43,7 +43,7 @@
 		<div class="card-body bg-transparent text-center text-secondary">
 			<i class="mdi mdi-email"></i> E-Mail's Queued
 		</div><div class="card-footer bg-transparent">
-			<div class="h1 text-primary text-right mb-0"><?= number_format($MAILQUEUE) ?></div>
+			<div class="h3 text-primary text-right mb-0"><?= number_format($MAILQUEUE) ?></div>
 		</div>
 	</div>
 </div>

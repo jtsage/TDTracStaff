@@ -1326,6 +1326,7 @@ class JobsController extends AppController
 			$CONFIG['job-new-email'] :
 			$CONFIG['job-old-email'];
 
+		$mailText = preg_replace("/\\\\n/", "\n", $mailText);
 		$mailText = preg_replace_callback(
 			"/{{([\w-]+)}}/m",
 			function ($matches) use ( $CONFIG ) {
@@ -1351,18 +1352,35 @@ class JobsController extends AppController
 
 		$totalSent = 0;
 
+		$this->loadModel("MailQueues");
+
 		foreach ( $mailList as $location ) {
-			$email = new Email('default');
-			$email
-				->template('default')
-				->setTo(rtrim($location[0]), $location[1])
-				->setSubject("A job requires staffing - " . $job->name)
-				->setViewVars(['CONFIG' => $CONFIG]);
-			$email->send($mailHTML);
+			$thisMail = $this->MailQueues->newEntity([
+				"template" => "default",
+				"toUser"   => rtrim($location[0]), $location[1],
+				"subject"  => "A job requires staffing - " . $job->name,
+				"viewvars" => json_encode(['CONFIG' => $this->CONFIG_DATA]),
+				"body"     => $mailHTML
+			]);
+
+			if ( $this->CONFIG_DATA["queue-email"] ) {
+				if ( ! $this->MailQueues->save($thisMail) ) {
+					$this->Flash->error('Mail Queue Error: ' . var_export($thisMail->errors(),true));
+				}
+			} else {
+				$email = new Email('default');
+				$email
+					->template($thisMail->template)
+					->setTo($thisMail->toUser)
+					->setSubject($thisMail->subject)
+					->setViewVars(json_decode($thisMail->viewvars, true));
+				$email->send($thisMail->body);
+			}
+
 			$totalSent++;
 		}
 
-		$this->Flash->success($totalSent . " Messages sent.");
+		$this->Flash->success($totalSent . " Messages " . (($this->CONFIG_DATA["queue-email"]) ? "queued":"sent") . ".");
 		return $this->redirect(['action' => 'view', $id]);
 	}
 
@@ -1410,6 +1428,7 @@ class JobsController extends AppController
 
 		$mailText = $CONFIG['notify-email'];
 
+		$mailText = preg_replace("/\\\\n/", "\n", $mailText);
 		$mailText = preg_replace_callback(
 			"/{{([\w-]+)}}/m",
 			function ($matches) use ( $CONFIG ) {
@@ -1433,13 +1452,30 @@ class JobsController extends AppController
 
 		$mailHTML = $this->Markdown->parse($mailText);
 
-		$email = new Email('default');
-		$email
-			->template('default')
-			->setTo(rtrim($jobRec->user->username), $jobRec->user->first . " " . $jobRec->user->last)
-			->setSubject("A job now has staffing - " . $jobRec->job->name . "-" . date("Y-m-d"))
-			->setViewVars(['CONFIG' => $CONFIG]);
-		$email->send($mailHTML);
+		$this->loadModel("MailQueues");
+
+
+		$thisMail = $this->MailQueues->newEntity([
+			"template" => "default",
+			"toUser"   => rtrim($jobRec->user->username), $jobRec->user->first . " " . $jobRec->user->last,
+			"subject"  => "A job now has staffing - " . $jobRec->job->name . " - " . date("Y-m-d"),
+			"viewvars" => json_encode(['CONFIG' => $this->CONFIG_DATA]),
+			"body"     => $mailHTML
+		]);
+
+		if ( $this->CONFIG_DATA["queue-email"] ) {
+			if ( ! $this->MailQueues->save($thisMail) ) {
+				$this->Flash->error('Mail Queue Error: ' . var_export($thisMail->errors(),true));
+			}
+		} else {
+			$email = new Email('default');
+			$email
+				->template($thisMail->template)
+				->setTo($thisMail->toUser)
+				->setSubject($thisMail->subject)
+				->setViewVars(json_decode($thisMail->viewvars, true));
+			$email->send($thisMail->body);
+		}
 
 		$this->Flash->success("Mail sent to " . $jobRec->user->first . " " . $jobRec->user->last);
 		return $this->redirect(['action' => 'staff-assign', $jobRec->job_id]);

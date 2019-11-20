@@ -13,6 +13,7 @@
 		?>
 		<?php
 			$welcomeMailText = $CONFIG['welcome-email'];
+			$welcomeMailText = preg_replace("/\\\\n/", "\n", $welcomeMailText);
 			$welcomeMailText = preg_replace_callback(
 				"/{{([\w-]+)}}/m",
 				function ($matches) use ( $CONFIG ) {

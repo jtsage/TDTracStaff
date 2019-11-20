@@ -640,7 +640,9 @@ class Initial extends AbstractMigration
             array('id' => 'dca46886-6cf7-41b7-8e9e-a1c350a0c79f','key_name' => 'paydates-fixed','value_short' => 'Set of fixed paydate, in the fixed format: [ [-1,-1,15], [-1,-1,30] ] (15th and 30th) or false','value_long' => '[ [-1,-1,15], [-1,-1,30] ]'),
             array('id' => 'e79b33e7-5cad-4171-bc84-83cad71a0d0e','key_name' => 'admin-email','value_short' => 'The administrator\'s E-Mail Address','value_long' => 'jtsage@gmail.com'),
             array('id' => 'fc43931f-37b7-459c-8cc0-dd362e3b2ae5','key_name' => 'allow-unscheduled-hours','value_short' => 'Allow adding hours to jobs the user is not scheduled for. (0 /1)','value_long' => '1'),
-            array('id' => 'fe35a641-5ce3-47f6-90fe-14dca4cdb0ab','key_name' => 'short-name','value_short' => 'Short name of the Site, usually Initials','value_long' => 'EC')
+            array('id' => 'fe35a641-5ce3-47f6-90fe-14dca4cdb0ab','key_name' => 'short-name','value_short' => 'Short name of the Site, usually Initials','value_long' => 'EC'),
+            array('id' => '76b14e8d-00fd-4890-832a-540a49e2960f','key_name' => 'time-zone','value_short' => 'Display Time Zone - Used infrequently, data is stored without modification.','value_long' => 'America/New_York'),
+            array('id' => 'c9e14a00-416b-498a-8464-78d700780a14','key_name' => 'queue-email','value_short' => 'Queue E-Mail for sending later. This is a good idea, but requires cron setup to be complete.','value_long' => '1')
         );
         $this->insert('app_configs', $app_configs);
     }

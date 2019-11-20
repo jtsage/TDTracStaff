@@ -61,7 +61,7 @@ class UsersController extends AppController
 		$this->set('_serialize', ['users']);
 
 
-		$this->set('tz', Configure::read('ServerTimeZoneFix'));
+		$this->set('tz', $this->CONFIG_DATA['time-zone']);
 	}
 
 
@@ -169,7 +169,7 @@ class UsersController extends AppController
 
 		$this->set('user', $user);
 		$this->set('_serialize', ['user']);
-		$this->set('tz', Configure::read('ServerTimeZoneFix'));
+		$this->set('tz', $this->CONFIG_DATA['time-zone']);
 	}
 
 
@@ -196,27 +196,62 @@ class UsersController extends AppController
 
 			$user->is_verified = 1;
 			$user->is_password_expired = 1;
+
+			$this->loadModel("MailQueues");
 			
 			if ( $this->request->getData('welcomeEmailSend') ) {
-				$email = new Email('default');
-				$email
-					->template('default')
-					->setTo(rtrim($user->username))
-					->setSubject('Welcome to TDTracStaff')
-					->setViewVars(['CONFIG' => $this->CONFIG_DATA]);
-				$email->send(preg_replace("/\n/", "<br />\n", $this->request->getData('welcomeEmail')));
+				
+				$thisMail = $this->MailQueues->newEntity([
+					"template" => "default",
+					"toUser"   => $user->username,
+					"subject"  => "Welcome to TDTracStaff",
+					"viewvars" => json_encode(['CONFIG' => $this->CONFIG_DATA]),
+					"body"     => preg_replace("/\\n/", "<br />\n", $this->request->getData('welcomeEmail'))
+				]);
+				
+				if ( $this->CONFIG_DATA["queue-email"] ) {
+					if ( $this->MailQueues->save($thisMail) ) {
+						$this->Flash->success(__('Welcome E-Mail Added to Queue'));
+					} else {
+						$this->Flash->error('Mail Queue Error: ' . var_export($thisMail->errors(),true));
+					}
+				} else {
+					$email = new Email('default');
+					$email
+						->template($thisMail->template)
+						->setTo($thisMail->toUser)
+						->setSubject($thisMail->subject)
+						->setViewVars(json_decode($thisMail->viewvars, true));
+					$email->send($thisMail->body);
+				}
 			}
 			if ( $this->request->getData('welcomeEmailSendCopy') ) {
-				$email = new Email('default');
-				$email
-					->template('default')
-					->setTo(rtrim($this->CONFIG_DATA["admin-email"]))
-					->setSubject('Welcome to TDTracStaff: ' . $this->request->getData('first') . " " .  $this->request->getData('last'))
-					->setViewVars(['CONFIG' => $this->CONFIG_DATA]);
-				$email->send(preg_replace("/\n/", "<br />\n", $this->request->getData('welcomeEmail')));
+				$thisMail = $this->MailQueues->newEntity([
+					"template" => "default",
+					"toUser"   => rtrim($this->CONFIG_DATA["admin-email"]),
+					"subject"  => "Welcome to TDTracStaff - " . $this->request->getData('first') . " " .  $this->request->getData('last'),
+					"viewvars" => json_encode(['CONFIG' => $this->CONFIG_DATA]),
+					"body"     => preg_replace("/\\n/", "<br />\n", $this->request->getData('welcomeEmail'))
+				]);
+
+				if ( $this->CONFIG_DATA["queue-email"] ) {
+					if ( $this->MailQueues->save($thisMail) ) {
+						$this->Flash->success(__('Welcome E-Mail Copy Added to Queue'));
+					} else {
+						$this->Flash->error('Mail Queue Error: ' . var_export($thisMail->errors(),true));
+					}
+				} else {
+					$email = new Email('default');
+					$email
+						->template($thisMail->template)
+						->setTo($thisMail->toUser)
+						->setSubject($thisMail->subject)
+						->setViewVars(json_decode($thisMail->viewvars, true));
+					$email->send($thisMail->body);
+				}
 			}
 
-			if ($this->Users->save($user)) {
+			if (true ){//$this->Users->save($user)) {
 				$this->Flash->success(__('The user has been saved.'));
 				return $this->redirect(['action' => 'index']);
 			} else {

@@ -63,6 +63,12 @@ class AppController extends Controller
 		$this->set('WhoAmI', $this->Auth->user('is_admin'));
 		$this->set('BudgetAmI', $this->Auth->user('is_budget'));
 
+		if ( $this->Auth->user("is_admin")) {
+			$this->loadModel("MailQueues");
+			$mq = $this->MailQueues->find("all");
+			$this->set("MAILQUEUE", $mq->count());
+		}
+
 		// Load the config from the database.
 		$this->loadModel("AppConfigs");
 

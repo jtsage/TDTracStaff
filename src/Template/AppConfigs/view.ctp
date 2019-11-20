@@ -18,7 +18,7 @@
 
 <div class="card p-3 rounded border shadow-sm mb-2">
 	<h5 style="border-bottom: 1px dashed #ccc" class="text-dark">Current Value</h5>
-	<?= $this->Text->autoParagraph(h($appConfig->value_long)); ?>
+	<?= nl2br(preg_replace("/\\\\n/", "\n", $appConfig->value_long)); ?>
 </div>
 
 

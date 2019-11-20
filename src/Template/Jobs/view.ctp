@@ -107,19 +107,19 @@
 		</div>
 		
 		<div class="col-sm-12 col-md-6 border-bottom">
-			<dl class="m-0"><dt>Start Date</dt><dd class="m-0 ml-3 <?= ($job->date_start->isToday($CONFIG['time-zone'])?"text-primary font-italic":"") ?>"><?= $job->date_start->format("l, F j, Y") ?></dd></dl>
+			<dl class="m-0"><dt>Start Date</dt><dd class="m-0 ml-3 <?= $this->Pretty->highToday($job->date_start, $CONFIG) ?>"><?= $job->date_start->format("l, F j, Y") ?></dd></dl>
 		</div>
 		<div class="col-sm-12 col-md-6 border-bottom">
-			<dl class="m-0"><dt>End Date</dt><dd class="m-0 ml-3 <?= ($job->date_end->isToday($CONFIG['time-zone'])?"text-primary font-italic":"") ?>"><?= $job->date_end->format("l, F j, Y") ?></dd></dl>
+			<dl class="m-0"><dt>End Date</dt><dd class="m-0 ml-3 <?= $this->Pretty->highToday($job->date_end, $CONFIG) ?>"><?= $job->date_end->format("l, F j, Y") ?></dd></dl>
 		</div>
 		<div class="col-12 border-bottom">
 			<dl class="m-0"><dt>Time(s)</dt><dd class="m-0 ml-3"><?= $job->time_string ?></dd></dl>
 		</div>
 		<div class="col-sm-12 col-md-6 border-bottom">
-			<dl class="m-0"><dt>Payroll Due Date</dt><dd class="m-0 ml-3 <?= ($job->due_payroll_submitted->isToday($CONFIG['time-zone'])?"text-primary font-italic":"") ?>"><?= $job->due_payroll_submitted->format("l, F j, Y") ?></dd></dl>
+			<dl class="m-0"><dt>Payroll Due Date</dt><dd class="m-0 ml-3 <?= $this->Pretty->highToday($job->due_payroll_submitted, $CONFIG) ?>"><?= $job->due_payroll_submitted->format("l, F j, Y") ?></dd></dl>
 		</div>
 		<div class="col-sm-12 col-md-6 border-bottom">
-			<dl class="m-0"><dt>Paycheck Date</dt><dd class="m-0 ml-3 <?= ($job->due_payroll_paid->isToday($CONFIG['time-zone'])?"text-primary font-italic":"") ?>"><?= $job->due_payroll_paid->format("l, F j, Y") ?></dd></dl>
+			<dl class="m-0"><dt>Paycheck Date</dt><dd class="m-0 ml-3 <?= $this->Pretty->highToday($job->due_payroll_paid, $CONFIG) ?>"><?= $job->due_payroll_paid->format("l, F j, Y") ?></dd></dl>
 		</div>
 	</div>
 </div>
@@ -150,7 +150,7 @@
 			<dl class="m-0">
 				<dt>My Status</dt>
 				<dd class="m-0 ml-3">
-					<span class="badge badge-pill badge-<?= ["primary", "danger", "success"][$my_Status] ?>"><?= ["Not Interested", "Interested", "Scheduled"][$my_Status] ?></span> 
+					<span class="badge mb-2 badge-pill badge-<?= ["primary", "danger", "success"][$my_Status] ?>"><?= ["Not Interested", "Interested", "Scheduled"][$my_Status] ?></span> 
 					<em><?= $this->Pretty->joinAnd($my_Roles); ?></em>
 				</dd>
 			</dl>
@@ -218,7 +218,7 @@
 			<?php endif; ?>
 		</div>
 		<?php if ($WhoAmI) : ?>
-			<div class="col-md-3 border-bottom py-0 m-0">
+			<div class="d-print-none col-md-3 border-bottom py-0 m-0">
 				<div class="btn-group-vertical w-100 mb-2">
 				<?= $this->HtmlExt->iconBtnLink(
 					"printer", 'Print Scheduled',

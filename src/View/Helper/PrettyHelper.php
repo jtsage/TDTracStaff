@@ -7,6 +7,14 @@ use Cake\View\Helper;
 
 class PrettyHelper extends Helper
 {
+	public function highToday($in_date, $CONFIG) {
+		$today = new \DateTime("now", new \DateTimeZone($CONFIG['time-zone']) );
+		if ( $today->format("Y-m-d") == $in_date->format("Y-m-d") ) {
+			return "text-primary text-italic";
+		} else {
+			return "";
+		}
+	}
 	public function joinAnd($values) {
 		if ( empty($values) ) { return "<em><small>none</small></em>"; }
 		if ( count($values) == 1 ) {

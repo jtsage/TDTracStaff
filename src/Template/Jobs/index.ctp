@@ -140,19 +140,19 @@
 						<dl class="m-0"><dt>Location</dt><dd class="m-0 ml-3"><a target="_blank" class="text-info" href="<?= $locHref ?>"><?= $job->location ?></a></dd></dl>
 					</div>
 					<div class="col-sm-12 col-md-6 border-bottom">
-						<dl class="m-0"><dt>Start Date</dt><dd class="<?= ($job->date_start->isToday($CONFIG['time-zone'])?"text-primary font-italic":"") ?> m-0 ml-3"><?= $job->date_start->format("l, F j, Y") ?></dd></dl>
+						<dl class="m-0"><dt>Start Date</dt><dd class="<?= $this->Pretty->highToday($job->date_start, $CONFIG) ?> m-0 ml-3"><?= $job->date_start->format("l, F j, Y") ?></dd></dl>
 					</div>
 					<div class="col-sm-12 col-md-6 border-bottom">
-						<dl class="m-0"><dt>End Date</dt><dd class="<?= ($job->date_end->isToday($CONFIG['time-zone'])?"text-primary font-italic":"") ?> m-0 ml-3"><?= $job->date_end->format("l, F j, Y") ?></dd></dl>
+						<dl class="m-0"><dt>End Date</dt><dd class="<?= $this->Pretty->highToday($job->date_end, $CONFIG) ?> m-0 ml-3"><?= $job->date_end->format("l, F j, Y") ?></dd></dl>
 					</div>
 					<div class="col-12 border-bottom">
 						<dl class="m-0"><dt>Time(s)</dt><dd class="m-0 ml-3"><?= $job->time_string ?></dd></dl>
 					</div>
 					<div class="col-sm-12 col-md-6 border-bottom">
-						<dl class="m-0"><dt>Payroll Due Date</dt><dd class="<?= ($job->due_payroll_submitted->isToday($CONFIG['time-zone'])?"text-primary font-italic":"") ?> m-0 ml-3"><?= $job->due_payroll_submitted->format("l, F j, Y") ?></dd></dl>
+						<dl class="m-0"><dt>Payroll Due Date</dt><dd class="<?= $this->Pretty->highToday($job->due_payroll_submitted, $CONFIG) ?> m-0 ml-3"><?= $job->due_payroll_submitted->format("l, F j, Y") ?></dd></dl>
 					</div>
 					<div class="col-sm-12 col-md-6 border-bottom">
-						<dl class="m-0"><dt>Paycheck Date</dt><dd class="<?= ($job->due_payroll_paid->isToday($CONFIG['time-zone'])?"text-primary font-italic":"") ?> m-0 ml-3"><?= $job->due_payroll_paid->format("l, F j, Y") ?></dd></dl>
+						<dl class="m-0"><dt>Paycheck Date</dt><dd class="<?= $this->Pretty->highToday($job->due_payroll_paid, $CONFIG) ?> m-0 ml-3"><?= $job->due_payroll_paid->format("l, F j, Y") ?></dd></dl>
 					</div>
 					<div class="col-sm-12 col-md-6 border-bottom">
 						<dl class="m-0"><dt><?= ($WhoAmI)?"All":"Your" ?> Hours Total</dt><dd class="m-0 ml-3"><?= number_format($pay_Total, 2) ?></dd></dl>

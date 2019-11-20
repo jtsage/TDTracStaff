@@ -27,17 +27,27 @@ Placeholder text.  First itteration of an update to TDTrac that drops the budget
  7. Delete the _contents_ of ```tmp``` and ```log```
  8. A sample nginx server configuation is included. (using php-fpm).  YMMV.
  9. Visit the site, configure the rest on the configuration page. __At least:__
-    * admin_email
-    * admin_name
-    * short_name
-    * long_name
-    * server_name
-    * mailing_address
- 10. This ships with debugging turned on.  Turn it off in ```config/tdtrac.php```
+    * admin-email
+    * admin-name
+    * short-name
+    * long-name
+    * server-name
+    * mailing-address
+ 10. This ships with debugging turned off.  Turn it on in ```config/tdtrac.php``` when reporting any errors.
+
+## Crontab Install
+
+Yeah, gotta write / test this bit.  
+
+ 1. Set up the crontab
+ 2. Change the configuration value of 'queue-email' to "1" (the default)
+
+**Important Note** Some features do not appear in the user interface if mail queuing is not enabled. This is for performance reasons.
 
 ## Install without command line access.
 
-Instructions forthcoming. A SQL dump is available in ```sql_schema_manual.sql```.  This file will create the database, and populate the configuration values. Create a user, be sure to fake a uuid for it. Everything after that can be done in the app.
+Instructions forthcoming. A SQL dump is available in ```sql_schema_manual.sql```.  This file will create the database, and populate the configuration values. Create a user, be sure to fake a uuid for it. Everything after that can be done in the app. Include note here about turning off mail queuing.
+
 
 ## Command Line Toys
 

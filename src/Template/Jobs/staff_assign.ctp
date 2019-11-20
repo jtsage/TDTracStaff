@@ -10,6 +10,8 @@
 		( $job->is_open ) ? "success" : "primary",
 		( $job->is_open ) ? "Open" : "Closed"
 	];
+
+	$allList = [];
 ?>
 <div class="card rounded border shadow-sm mb-2 px-3 pt-3">
 	<h3 class="text-dark mb-4"><?= $job->category . ": " . $job->name ?>
@@ -51,6 +53,7 @@
 		<tr><th class="w-25">User</th><th class="w-25">Current Status</th><th class="text-center">Actions</th></tr>
 
 		<?php foreach ( $interest as $person ): ?>
+			<?php $allList[$person->user->id] = true ?>
 			<?php if ( $person->role_id == $role->id ) : ?>
 				<tr>
 					<td class="align-middle"><a href="/users/view/<?= $person->user->id ?>"><?= $person->user->first ?> <?= $person->user->last ?></td>
@@ -84,6 +87,19 @@
 
 <?php endforeach; ?>
 
+<?php if ( $CONFIG["queue-email"] ) : ?>
+<div class="card rounded border shadow-sm mb-2">
+	<?php
+		echo $this->Form->create(null, ["action" => "notify-all/". $job->id]);
+		
+		foreach ( $allList as $userid => $crap ) {
+			echo $this->Form->hidden("users[]", ["value" => $userid]);
+		}
+		echo $this->Form->button($this->HtmlExt->icon("email") . __('Notify All Employees'), ["class" => "loadingClick w-100 btn-lg m-2 btn-outline-warning"]);
+		echo $this->Form->end();
+	?>
+</div>
+<?php endif; ?>
 
 <?= $this->Pretty->helpMeStart("Job Assigned Staff"); ?>
 

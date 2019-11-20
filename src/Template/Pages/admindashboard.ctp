@@ -38,6 +38,14 @@
 			<div class="h1 text-primary text-right mb-0"><?= number_format($myPay->total_unpaid,2) ?></div>
 		</div>
 	</div>
+
+	<div class="card p-2 bg-light m-2 shadow">
+		<div class="card-body bg-transparent text-center text-secondary">
+			<i class="mdi mdi-email"></i> E-Mail's Queued
+		</div><div class="card-footer bg-transparent">
+			<div class="h1 text-primary text-right mb-0"><?= number_format($MAILQUEUE) ?></div>
+		</div>
+	</div>
 </div>
 
 <div class="card-deck mb-1 mb-md-4">

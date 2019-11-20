@@ -64,6 +64,19 @@ class JobsController extends AppController
 		$this->set(compact('jobs'));
 	}
 
+
+
+	/*
+	     .                   .o8                        
+	   .o8                  "888                        
+	 .o888oo  .ooooo.   .oooo888   .oooo.   oooo    ooo 
+	   888   d88' `88b d88' `888  `P  )88b   `88.  .8'  
+	   888   888   888 888   888   .oP"888    `88..8'   
+	   888 . 888   888 888   888  d8(  888     `888'    
+	   "888" `Y8bod8P' `Y8bod88P" `Y888""8o     .8'     
+	                                        .o..P'      
+	                                        `Y8P'       
+	*/
 	public function today()
 	{
 		$this->set('crumby', [
@@ -102,6 +115,17 @@ class JobsController extends AppController
 		$this->render("index");
 	}
 
+
+
+	/*
+	     .                                                                                      
+	   .o8                                                                                      
+	 .o888oo  .ooooo.  ooo. .oo.  .oo.    .ooooo.  oooo d8b oooo d8b  .ooooo.  oooo oooo    ooo 
+	   888   d88' `88b `888P"Y88bP"Y88b  d88' `88b `888""8P `888""8P d88' `88b  `88. `88.  .8'  
+	   888   888   888  888   888   888  888   888  888      888     888   888   `88..]88..8'   
+	   888 . 888   888  888   888   888  888   888  888      888     888   888    `888'`888'    
+	   "888" `Y8bod8P' o888o o888o o888o `Y8bod8P' d888b    d888b    `Y8bod8P'     `8'  `8'     
+	*/
 	public function tomorrow()
 	{
 		$this->set('crumby', [
@@ -141,6 +165,19 @@ class JobsController extends AppController
 		$this->render("index");
 	}
 
+
+
+	/*
+	                                    .                            .o8                        
+	                                  .o8                           "888                        
+	 oooo    ooo  .ooooo.   .oooo.o .o888oo  .ooooo.  oooo d8b  .oooo888   .oooo.   oooo    ooo 
+	  `88.  .8'  d88' `88b d88(  "8   888   d88' `88b `888""8P d88' `888  `P  )88b   `88.  .8'  
+	   `88..8'   888ooo888 `"Y88b.    888   888ooo888  888     888   888   .oP"888    `88..8'   
+	    `888'    888    .o o.  )88b   888 . 888    .o  888     888   888  d8(  888     `888'    
+	     .8'     `Y8bod8P' 8""888P'   "888" `Y8bod8P' d888b    `Y8bod88P" `Y888""8o     .8'     
+	 .o..P'                                                                         .o..P'      
+	 `Y8P'                                                                          `Y8P'       
+	*/
 	public function yesterday()
 	{
 		$this->set('crumby', [
@@ -180,6 +217,17 @@ class JobsController extends AppController
 		$this->render("index");
 	}
 
+
+
+	/*
+	                                      oooo        
+	                                      `888        
+	 oooo oooo    ooo  .ooooo.   .ooooo.   888  oooo  
+	  `88. `88.  .8'  d88' `88b d88' `88b  888 .8P'   
+	   `88..]88..8'   888ooo888 888ooo888  888888.    
+	    `888'`888'    888    .o 888    .o  888 `88b.  
+	     `8'  `8'     `Y8bod8P' `Y8bod8P' o888o o888o 
+	*/
 	public function week()
 	{
 		$this->set('crumby', [
@@ -1479,6 +1527,102 @@ class JobsController extends AppController
 
 		$this->Flash->success("Mail sent to " . $jobRec->user->first . " " . $jobRec->user->last);
 		return $this->redirect(['action' => 'staff-assign', $jobRec->job_id]);
+	}
+
+
+	/*
+	                           .    o8o   .o88o.                   .o.       oooo  oooo  
+	                         .o8    `"'   888 `"                  .888.      `888  `888  
+	 ooo. .oo.    .ooooo.  .o888oo oooo  o888oo  oooo    ooo     .8"888.      888   888  
+	 `888P"Y88b  d88' `88b   888   `888   888     `88.  .8'     .8' `888.     888   888  
+	  888   888  888   888   888    888   888      `88..8'     .88ooo8888.    888   888  
+	  888   888  888   888   888 .  888   888       `888'     .8'     `888.   888   888  
+	 o888o o888o `Y8bod8P'   "888" o888o o888o       .8'     o88o     o8888o o888o o888o 
+	                                             .o..P'                                  
+	                                             `Y8P'                                   
+	*/
+	function notifyAll ($id = null )
+	{
+		if ( is_null($id) ) {
+			$this->Flash->error(__('Invalid Action'));
+			return $this->redirect(['action' => 'index']);
+		}
+		if ( !$this->Auth->user('is_admin') ) {
+			$this->Flash->error("Sorry, you do not have access to this module.");
+			return $this->redirect(["action" => "index"]);
+		}
+
+		$this->loadComponent('Markdown.Markdown');
+
+		$this->loadModel("Jobs");
+		$this->loadModel("Users");
+
+		$job = $this->Jobs->get($id);
+
+		$jobArray = $job->toArray();
+
+		foreach ( $jobArray as $key => $value ) {
+			if ( gettype($value) == "object" ) {
+				if ( get_class($value) == "Cake\I18n\FrozenDate" ) {
+					$jobArray[$key . "_string"] = $value->format("l, F j, Y");
+				}
+			}
+		}
+
+		$CONFIG = $this->CONFIG_DATA;
+
+		$mailText = $CONFIG['notify-email'];
+
+		$mailText = preg_replace("/\\\\n/", "\n", $mailText);
+		$mailText = preg_replace_callback(
+			"/{{([\w-]+)}}/m",
+			function ($matches) use ( $CONFIG ) {
+				if ( !empty($CONFIG[$matches[1]]) ) {
+					return $CONFIG[$matches[1]];
+				}
+				return $matches[1];
+			},
+			$mailText
+		);
+		$mailText = preg_replace_callback(
+			"/\[\[([\w-]+)\]\]/m",
+			function ($matches) use ( $jobArray ) {
+				if ( !empty($jobArray[$matches[1]]) ) {
+					return $jobArray[$matches[1]];
+				}
+				return $matches[1];
+			},
+			$mailText
+		);
+
+		$mailHTML = $this->Markdown->parse($mailText);
+
+		$users = $this->Users->find("all")
+			->where([
+				"id IN" => $this->request->getData('users')
+			]);
+
+		$this->loadModel("MailQueues");
+
+		$mailsQueued = 0;
+		foreach ( $users as $user ) {
+			$thisMail = $this->MailQueues->newEntity([
+				"template" => "default",
+				"toUser"   => rtrim($user->username), $user->first . " " . $user->last,
+				"subject"  => "A job now has staffing - " . $job->name . " - " . date("Y-m-d"),
+				"viewvars" => json_encode(['CONFIG' => $this->CONFIG_DATA]),
+				"body"     => $mailHTML
+			]);
+
+			if ( ! $this->MailQueues->save($thisMail) ) {
+				$this->Flash->error('Mail Queue Error: ' . var_export($thisMail->errors(),true));
+			} else {
+				$mailsQueued++;
+			}
+		}
+
+		$this->Flash->success($mailsQueued . " E-mails added to queue");
+		return $this->redirect(['action' => 'staff-assign', $job->id]);
 	}
 
 

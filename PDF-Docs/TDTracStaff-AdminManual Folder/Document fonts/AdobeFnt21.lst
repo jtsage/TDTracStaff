@@ -1,0 +1,352 @@
+%!Adobe-FontList 1.20
+%Locale:0x409
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:Invalid
+OutlineFileName:/Users/jtsage/Desktop/TDTracStaff-AdminManual Folder/Document fonts/AdobeFnt21.lst
+FileLength:7959
+FileModTime:596046557
+%EndFont
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:Type1
+FontName:AkzidenzGroteskBQ-LigCndIt
+FamilyName:Akzidenz-Grotesk BQ Light Conde
+StyleName:Italic
+MenuName:Akzidenz-Grotesk BQ Light Conde
+StyleBits:1
+WeightClass:300
+WidthClass:3
+AngleClass:1
+FullName:Akzidenz-Grotesk BQ Light Condensed Italic
+WritingScript:Roman
+OutlineFileName:/Users/jtsage/Desktop/TDTracStaff-AdminManual Folder/Document fonts/AkzidenzGrotesk-LightCondItalic.otf
+DataFormat:sfntData
+UsesStandardEncoding:yes
+isCFF:yes
+hasSVG:no
+VariableFontType:NonVariableFont
+FileLength:32476
+FileModTime:491153318
+NameArray:0,Mac,4,Akzidenz-Grotesk BQ Light Condensed Italic
+NameArray:0,Win,1,Akzidenz-Grotesk BQ Light Conde
+%EndFont
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:Type1
+FontName:AkzidenzGroteskBQ-Medium
+FamilyName:Akzidenz-Grotesk BQ
+StyleName:Medium
+MenuName:Akzidenz-Grotesk BQ
+StyleBits:0
+WeightClass:500
+WidthClass:5
+AngleClass:0
+FullName:Akzidenz-Grotesk BQ Medium
+WritingScript:Roman
+OutlineFileName:/Users/jtsage/Desktop/TDTracStaff-AdminManual Folder/Document fonts/AkzidenzGrotesk-Medium.otf
+DataFormat:sfntData
+UsesStandardEncoding:yes
+isCFF:yes
+hasSVG:no
+VariableFontType:NonVariableFont
+FileLength:31440
+FileModTime:491153302
+NameArray:0,Mac,4,Akzidenz-Grotesk BQ Medium
+NameArray:0,Win,1,Akzidenz-Grotesk BQ
+%EndFont
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:Type1
+FontName:AkzidenzGroteskBQ-LightIt
+FamilyName:Akzidenz-Grotesk BQ Light
+StyleName:Italic
+MenuName:Akzidenz-Grotesk BQ Light
+StyleBits:1
+WeightClass:300
+WidthClass:5
+AngleClass:1
+FullName:Akzidenz-Grotesk BQ Light Italic
+WritingScript:Roman
+OutlineFileName:/Users/jtsage/Desktop/TDTracStaff-AdminManual Folder/Document fonts/AkzidenzGrotesk-LightItalic.otf
+DataFormat:sfntData
+UsesStandardEncoding:yes
+isCFF:yes
+hasSVG:no
+VariableFontType:NonVariableFont
+FileLength:31564
+FileModTime:491153303
+NameArray:0,Mac,4,Akzidenz-Grotesk BQ Light Italic
+NameArray:0,Win,1,Akzidenz-Grotesk BQ Light
+%EndFont
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:Type1
+FontName:AkzidenzGroteskBQ-Bold
+FamilyName:Akzidenz-Grotesk BQ
+StyleName:Bold
+MenuName:Akzidenz-Grotesk BQ
+StyleBits:2
+WeightClass:700
+WidthClass:5
+AngleClass:0
+FullName:Akzidenz-Grotesk BQ Bold
+WritingScript:Roman
+OutlineFileName:/Users/jtsage/Desktop/TDTracStaff-AdminManual Folder/Document fonts/AkzidenzGrotesk-Bold.otf
+DataFormat:sfntData
+UsesStandardEncoding:yes
+isCFF:yes
+hasSVG:no
+VariableFontType:NonVariableFont
+FileLength:31716
+FileModTime:491153300
+NameArray:0,Mac,4,Akzidenz-Grotesk BQ Bold
+NameArray:0,Win,1,Akzidenz-Grotesk BQ
+%EndFont
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:TrueType
+FontName:GillSans
+FamilyName:Gill Sans
+StyleName:Regular
+MenuName:Gill Sans
+StyleBits:0
+WeightClass:400
+WidthClass:5
+AngleClass:0
+FullName:Gill Sans
+WritingScript:Roman
+OutlineFileName:/Users/jtsage/Desktop/TDTracStaff-AdminManual Folder/Document fonts/GillSans.ttc
+TTCOffset:60
+DataFormat:sfntData
+hasSVG:no
+VariableFontType:NonVariableFont
+FileLength:1251924
+FileModTime:562113868
+NameArray:0,Mac,4,Gill Sans
+%EndFont
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:TrueType
+FontName:GillSans-Bold
+FamilyName:Gill Sans
+StyleName:Bold
+MenuName:Gill Sans
+StyleBits:2
+WeightClass:700
+WidthClass:5
+AngleClass:0
+FullName:Gill Sans Bold
+WritingScript:Roman
+OutlineFileName:/Users/jtsage/Desktop/TDTracStaff-AdminManual Folder/Document fonts/GillSans.ttc
+TTCOffset:408
+DataFormat:sfntData
+hasSVG:no
+VariableFontType:NonVariableFont
+FileLength:1251924
+FileModTime:562113868
+NameArray:0,Mac,4,Gill Sans Bold
+%EndFont
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:TrueType
+FontName:GillSans-Italic
+FamilyName:Gill Sans
+StyleName:Italic
+MenuName:Gill Sans
+StyleBits:1
+WeightClass:400
+WidthClass:5
+AngleClass:1
+FullName:Gill Sans Italic
+WritingScript:Roman
+OutlineFileName:/Users/jtsage/Desktop/TDTracStaff-AdminManual Folder/Document fonts/GillSans.ttc
+TTCOffset:724
+DataFormat:sfntData
+hasSVG:no
+VariableFontType:NonVariableFont
+FileLength:1251924
+FileModTime:562113868
+NameArray:0,Mac,4,Gill Sans Italic
+%EndFont
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:TrueType
+FontName:GillSans-BoldItalic
+FamilyName:Gill Sans
+StyleName:Bold Italic
+MenuName:Gill Sans
+StyleBits:3
+WeightClass:700
+WidthClass:5
+AngleClass:1
+FullName:Gill Sans Bold Italic
+WritingScript:Roman
+OutlineFileName:/Users/jtsage/Desktop/TDTracStaff-AdminManual Folder/Document fonts/GillSans.ttc
+TTCOffset:1040
+DataFormat:sfntData
+hasSVG:no
+VariableFontType:NonVariableFont
+FileLength:1251924
+FileModTime:562113868
+NameArray:0,Mac,4,Gill Sans Bold Italic
+%EndFont
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:TrueType
+FontName:GillSans-SemiBold
+FamilyName:Gill Sans
+StyleName:SemiBold
+MenuName:Gill Sans
+StyleBits:0
+WeightClass:600
+WidthClass:5
+AngleClass:0
+FullName:Gill Sans SemiBold
+FamilyNameNative:
+StyleNameNative:SemiBold
+FullNameNative:
+WritingScript:Cyrillic
+OutlineFileName:/Users/jtsage/Desktop/TDTracStaff-AdminManual Folder/Document fonts/GillSans.ttc
+TTCOffset:1356
+DataFormat:sfntData
+hasSVG:no
+VariableFontType:NonVariableFont
+FileLength:1251924
+FileModTime:562113868
+NameArray:0,Mac,4,Gill Sans SemiBold
+NameArray:0,Win,1,Gill Sans
+%EndFont
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:TrueType
+FontName:GillSans-SemiBoldItalic
+FamilyName:Gill Sans
+StyleName:SemiBold Italic
+MenuName:Gill Sans
+StyleBits:1
+WeightClass:600
+WidthClass:5
+AngleClass:1
+FullName:Gill Sans SemiBold Italic
+FamilyNameNative:
+StyleNameNative:SemiBold Italic
+FullNameNative:
+WritingScript:Cyrillic
+OutlineFileName:/Users/jtsage/Desktop/TDTracStaff-AdminManual Folder/Document fonts/GillSans.ttc
+TTCOffset:1608
+DataFormat:sfntData
+hasSVG:no
+VariableFontType:NonVariableFont
+FileLength:1251924
+FileModTime:562113868
+NameArray:0,Mac,4,Gill Sans SemiBold Italic
+NameArray:0,Win,1,Gill Sans
+%EndFont
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:TrueType
+FontName:GillSans-UltraBold
+FamilyName:Gill Sans
+StyleName:UltraBold
+MenuName:Gill Sans
+StyleBits:0
+WeightClass:1000
+WidthClass:5
+AngleClass:0
+FullName:Gill Sans UltraBold
+WritingScript:Roman
+OutlineFileName:/Users/jtsage/Desktop/TDTracStaff-AdminManual Folder/Document fonts/GillSans.ttc
+TTCOffset:1860
+DataFormat:sfntData
+hasSVG:no
+VariableFontType:NonVariableFont
+FileLength:1251924
+FileModTime:562113868
+NameArray:0,Mac,4,Gill Sans UltraBold
+NameArray:0,Win,16,Gill Sans
+%EndFont
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:TrueType
+FontName:GillSans-Light
+FamilyName:Gill Sans
+StyleName:Light
+MenuName:Gill Sans
+StyleBits:0
+WeightClass:300
+WidthClass:5
+AngleClass:0
+FullName:Gill Sans Light
+WritingScript:Roman
+OutlineFileName:/Users/jtsage/Desktop/TDTracStaff-AdminManual Folder/Document fonts/GillSans.ttc
+TTCOffset:2144
+DataFormat:sfntData
+hasSVG:no
+VariableFontType:NonVariableFont
+FileLength:1251924
+FileModTime:562113868
+NameArray:0,Mac,4,Gill Sans Light
+%EndFont
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:TrueType
+FontName:GillSans-LightItalic
+FamilyName:Gill Sans
+StyleName:Light Italic
+MenuName:Gill Sans
+StyleBits:1
+WeightClass:300
+WidthClass:5
+AngleClass:1
+FullName:Gill Sans Light Italic
+WritingScript:Roman
+OutlineFileName:/Users/jtsage/Desktop/TDTracStaff-AdminManual Folder/Document fonts/GillSans.ttc
+TTCOffset:2460
+DataFormat:sfntData
+hasSVG:no
+VariableFontType:NonVariableFont
+FileLength:1251924
+FileModTime:562113868
+NameArray:0,Mac,4,Gill Sans Light Italic
+%EndFont
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:Type1
+FontName:AkzidenzGroteskBQ-Reg
+FamilyName:Akzidenz-Grotesk BQ
+StyleName:Regular
+MenuName:Akzidenz-Grotesk BQ
+StyleBits:0
+WeightClass:500
+WidthClass:5
+AngleClass:0
+FullName:Akzidenz-Grotesk BQ Regular
+WritingScript:Roman
+OutlineFileName:/Users/jtsage/Desktop/TDTracStaff-AdminManual Folder/Document fonts/AkzidenzGrotesk-Regular.otf
+DataFormat:sfntData
+UsesStandardEncoding:yes
+isCFF:yes
+hasSVG:no
+VariableFontType:NonVariableFont
+FileLength:31564
+FileModTime:491153302
+NameArray:0,Mac,4,Akzidenz-Grotesk BQ Regular
+NameArray:0,Win,1,Akzidenz-Grotesk BQ
+%EndFont
+

@@ -7,4 +7,6 @@ cat typeaheadjs.min.css >> main.min.css
 echo "" >> main.min.css
 cat Chart.min.css >> main.min.css
 echo "" >> main.min.css
+cat materialdesignicons.min.css >> main.min.css
+echo "" >> main.min.css
 cat tdtracx.css >> main.min.css

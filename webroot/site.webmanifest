@@ -1,6 +1,6 @@
 {
-    "name": "TDTracX",
-    "short_name": "TDTracX",
+    "name": "TDTrac",
+    "short_name": "TDTrac",
     "icons": [
         {
             "src": "/android-chrome-192x192.png",
@@ -8,8 +8,8 @@
             "type": "image/png"
         },
         {
-            "src": "/android-chrome-256x256.png",
-            "sizes": "256x256",
+            "src": "/android-chrome-384x384.png",
+            "sizes": "384x384",
             "type": "image/png"
         }
     ],

@@ -32,9 +32,14 @@ $user = $this->request->getSession()->read('Auth.User');
 		<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 		<title><?= $cakeDescription ?></title>
 
-		<link href="/favicon.ico" type="image/x-icon" rel="icon"/><link href="/favicon.ico" type="image/x-icon" rel="shortcut icon"/>
-		<meta name="apple-mobile-web-app-title" content="TDTracStaff">
-		<meta name="application-name" content="TDTracStaff">
+		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+		<link rel="manifest" href="/site.webmanifest">
+		<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+		<meta name="apple-mobile-web-app-title" content="TDTrac">
+		<meta name="application-name" content="TDTrac">
+		<meta name="msapplication-TileColor" content="#2b5797">
 		<meta name="theme-color" content="#ffffff">
 
 		<?php
@@ -43,9 +48,9 @@ $user = $this->request->getSession()->read('Auth.User');
 			echo $this->fetch('css');
 			echo $this->fetch('script');
 		
-			echo $this->Html->css('https://cdn.materialdesignicons.com/4.5.95/css/materialdesignicons.min.css');
 			echo $this->Html->css("main.min.css");
 			// echo $this->Html->css([
+			// 	'materialdesignicons.min.css',
 			// 	'bootstrap.min.css',
 			// 	'bootstrap4-toggle.min.css',
 			// 	'typeaheadjs.min.css',
@@ -238,7 +243,7 @@ $user = $this->request->getSession()->read('Auth.User');
 				<footer class="d-print-none" style="padding-top: 20px; margin-top: 20px; border-top: 1px solid #e5e5e5;">
 					<p class="text-center text-muted"><?= __("TDTracStaff - the Theater time and job tracker") ?><br /><small>Site Administrator Contact: <a href="mailto:<?= $CONFIG['admin-email'] ?>"><?= $CONFIG['admin-name'] ?></a></small></p>
 					<ul class="text-center list-inline text-muted d-print-none">
-						<li class="list-inline-item"><?= __('Currently v0.0.0a1') ?></li>
+						<li class="list-inline-item"><?= __('Currently v1.0.0-beta1') ?></li>
 						<li class="list-inline-item"><a href="https://github.com/jtsage/TDTracStaff">GitHub</a></li>
 					</ul>
 				</footer>

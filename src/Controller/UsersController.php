@@ -251,7 +251,7 @@ class UsersController extends AppController
 				}
 			}
 
-			if (true ){//$this->Users->save($user)) {
+			if ( $this->Users->save($user)) {
 				$this->Flash->success(__('The user has been saved.'));
 				return $this->redirect(['action' => 'index']);
 			} else {

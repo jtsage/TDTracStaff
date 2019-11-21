@@ -6,7 +6,7 @@
 		['class' => 'text-left text-md-center w-100 btn btn-outline-primary']
 	) ?>
 	<?= $this->HtmlExt->iconBtnlink(
-		"account-edit", "Edit User",
+		"account-edit", (( $WhoAmI ) ? "Edit User" : "Edit Profile"),
 		['action' => 'edit', $user->id],
 		['class' => 'text-left text-md-center w-100 btn btn-outline-success']
 	) ?>
@@ -46,6 +46,7 @@
 					<dl class="m-0 mb-2"><dt>Active User?</dt><dd class="m-0 ml-3"><?= $this->HtmlExt->badgeActive($user->is_active) ?></dd></dl>
 					<dl class="m-0 mb-2"><dt>Expired Password?</dt><dd class="m-0 ml-3"><?= $this->HtmlExt->badgePass($user->is_password_expired) ?></dd></dl>
 					<dl class="m-0 mb-2"><dt>Administrator?</dt><dd class="m-0 ml-3"><?= $this->HtmlExt->badgeAdmin($user->is_admin) ?></dd></dl>
+					<dl class="m-0 mb-2"><dt>Budget User?</dt><dd class="m-0 ml-3"><?= $this->HtmlExt->badgeBudget($user->is_budget) ?></dd></dl>
 				</div>
 			</div>
 		</div>

@@ -14,6 +14,7 @@
 			echo $this->Form->control('detail', ["label" => "Description of Job"]);
 			echo $this->Form->control('category', ["label" => "Job Category", "help" => "Auto-completes with previously used categories for convenience.", "autocomplete" => "new-user-address"]);
 			echo $this->Form->control('location', ["label" => "Job Location", "help" => "Presents as a Google Maps link, address preferred", "autocomplete" => "new-user-address"]);
+			echo $this->Form->control('parent_id', ["label" => "Related, Parent Job", "options" => $parentJobsArr, 'help' => 'If this job is part of a larger job, select the "parent" job here.']);
 		?><div style="border-bottom: 1px dashed #ccc;" class="mt-4 mb-2"><h5>Job Dates</h5></div><?php
 			echo $this->Datebox->calbox('date_start', ["label" => 'Start Date', 'help' => 'Start Date of the job']);
 			echo $this->Datebox->calbox('date_end', ["label" => 'End Date', 'help' => 'Ending Date of the job']);

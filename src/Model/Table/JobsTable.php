@@ -82,6 +82,18 @@ class JobsTable extends Table
 			'conditions' => ["OR" => [ "UsersJobs.is_scheduled" => 1, "UsersJobs.is_available" => 1]],
 			'sort' => ["last" => "ASC", "first" => "ASC"]
 		]);
+		$this->hasMany('ChildJobs', [
+			'foreignKey' => 'parent_id',
+			'bindingKey' => 'id',
+			'className' => 'Jobs',
+			'propertyName' => "children"
+		]);
+		$this->hasMany('ParentJob', [
+			'foreignKey' => 'id',
+			'bindingKey' => 'parent_id',
+			'className' => 'Jobs',
+			'propertyName' => "parents"
+		]);
 		$this->addBehavior('Timestamp', [
 			'events' => [
 				'Model.beforeSave' => [
@@ -118,7 +130,8 @@ class JobsTable extends Table
 					'sort' => ['Roles.sort_order' => 'ASC']
 				],
 				"UsersScheduled",
-				"UsersInterested"
+				"UsersInterested",
+				"ChildJobs"
 			])
 			->where([
 				"is_open"   => 1,

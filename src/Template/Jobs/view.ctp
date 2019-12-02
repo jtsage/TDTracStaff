@@ -87,18 +87,28 @@
 
 <div class="card rounded border shadow-sm mb-2 px-3 pt-3">
 	<div class="text-dark mb-4"><span class="h3"><?= $job->category . ": " . $job->name ?></span>
+		
 		<?= ( $job->has_budget ) ? "<span class=\"float-right badge ml-1 badge-warning\">Budgeted</span>" : "" ?>
 		<?= ( !$job->has_payroll ) ? "<span class=\"float-right badge ml-1 badge-warning\">No Payroll</span>" : "" ?>
 		<span class="float-right badge ml-1 badge-<?= $actStyle[0] ?>"><?= $actStyle[1] ?></span>
 		<span class="float-right badge ml-1 badge-<?= $openStyle[0] ?>"><?= $openStyle[1] ?></span>
+		<?= ( count($job->children) > 0 ) ? "<span class=\"float-right badge ml-1 badge-info\">Has Sub-Jobs</span>" : "" ?>
+		<?= ( !is_null($job->parent_id) ) ? "<span class=\"float-right badge ml-1 badge-info\">Is a Sub-Job</span>" : "" ?>
 </div>
 
 	<?php if ($WhoAmI) : ?>
+		<div class="btn-group w-100">
 		<?= $this->HtmlExt->iconBtnLink(
 			"calendar-edit", 'Edit Job',
 			['action' => 'edit', $job->id],
 			['class' => 'w-100 mb-2 btn btn-outline-success']
 		) ?>
+		<?= is_null($job->parent_id) ? $this->HtmlExt->iconBtnLink(
+			"calendar-plus", 'Add Associated Job',
+			['action' => 'add', $job->id],
+			['class' => 'w-100 mb-2 btn btn-outline-success']
+		) : "" ?>
+		</div>
 	<?php endif; ?>
 
 	<div class="row">
@@ -123,6 +133,44 @@
 		</div>
 	</div>
 </div>
+
+<?php if ( count($job->children) > 0 ) : ?>
+<div class="card rounded border shadow-sm mb-2 px-3 pt-3">
+	<div class="row">
+		<div class="col-12 p-0 text-dark text-center"><h5 class="p-0 m-0 mb-2">Associated Sub-Jobs</h5></div>
+		<div class="col-12">This job is has associated sub-jobs or tasks.  They appear here as a list.</div>
+		<div class="col-12 py-0 pb-2 m-0">
+			<?php foreach ( $job->children as $child ) : ?>
+				<?= $this->HtmlExt->iconBtnLink(
+					"arrow-bottom-right-bold-outline", $child->category . ": " . $child->name,
+					['action' => 'view', $child->id],
+					['class' => 'w-100 mb-1 btn btn-outline-info']
+				) ?>
+			<?php endforeach; ?>
+		</div>
+	</div>
+</div>
+<?php endif; ?>
+
+<?php if ( !is_null($job->parent_id) ) : ?>
+<div class="card rounded border shadow-sm mb-2 px-3 pt-3">
+	<div class="row">
+		<div class="col-12 p-0 text-dark text-center"><h5 class="p-0 m-0 mb-2">Parent Job</h5></div>
+		<div class="col-12">This job is part of a larger parent job.  For details, please view the parent job.</div>
+		<div class="col-12 py-0 pb-2 m-0">
+			<?php foreach ( $job->parents as $parent ) : ?>
+				<?= $this->HtmlExt->iconBtnLink(
+					"arrow-top-right-bold-outline", $parent->category . ": " . $parent->name,
+					['action' => 'view', $parent->id],
+					['class' => 'w-100 mb-1 btn btn-outline-info']
+				) ?>
+			<?php endforeach; ?>
+		</div>
+	</div>
+</div>
+<?php endif; ?>
+
+
 
 <div class="card rounded border shadow-sm mb-2 px-3 pt-3">
 	<div class="row">

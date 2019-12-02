@@ -52,6 +52,7 @@ class Job extends Entity
         'updated_at' => true,
         'due_payroll_submitted' => true,
         'due_payroll_paid' => true,
+        'parent_id' => true,
         'payrolls' => true,
         'roles' => true,
         'users' => true

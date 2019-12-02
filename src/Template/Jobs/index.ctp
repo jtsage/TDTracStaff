@@ -118,6 +118,8 @@
 						<span class="float-right badge ml-1 badge-<?= $actStyle[0] ?>"><?= $actStyle[1] ?></span>
 						<span class="float-right badge ml-1 badge-<?= $openStyle[0] ?>"><?= $openStyle[1] ?></span>
 					<?php endif; ?>
+					<?= ( count($job->children) > 0 ) ? "<span class=\"float-right badge ml-1 badge-info\">Has Sub-Jobs</span>" : "" ?>
+					<?= ( !is_null($job->parent_id) ) ? "<span class=\"float-right badge ml-1 badge-info\">Is a Sub-Job</span>" : "" ?>
 				</h5>
 
 				<?php if ( $WhoAmI ) : ?>

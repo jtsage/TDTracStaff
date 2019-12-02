@@ -50,9 +50,10 @@ class JobsController extends AppController
 					'sort' => ['Roles.sort_order' => 'ASC']
 				],
 				"UsersScheduled",
-				"UsersInterested"
+				"UsersInterested",
+				"ChildJobs"
 			])
-			->where(["is_open" => 1 ]);
+			->where(["is_open" => 1, "parent_id IS" => null ]);
 
 		$jobs = $this->paginate($jobFind);
 
@@ -93,7 +94,8 @@ class JobsController extends AppController
 					'sort' => ['Roles.sort_order' => 'ASC']
 				],
 				"UsersScheduled",
-				"UsersInterested"
+				"UsersInterested",
+				"ChildJobs"
 			])
 			->where([
 				"is_open" => 1,
@@ -143,7 +145,8 @@ class JobsController extends AppController
 					'sort' => ['Roles.sort_order' => 'ASC']
 				],
 				"UsersScheduled",
-				"UsersInterested"
+				"UsersInterested",
+				"ChildJobs"
 			])
 			->where([
 				"is_open" => 1,
@@ -195,7 +198,8 @@ class JobsController extends AppController
 					'sort' => ['Roles.sort_order' => 'ASC']
 				],
 				"UsersScheduled",
-				"UsersInterested"
+				"UsersInterested",
+				"ChildJobs"
 			])
 			->where([
 				"is_open" => 1,
@@ -247,7 +251,8 @@ class JobsController extends AppController
 					'sort' => ['Roles.sort_order' => 'ASC']
 				],
 				"UsersScheduled",
-				"UsersInterested"
+				"UsersInterested",
+				"ChildJobs"
 			])
 			->where([
 				"is_open" => 1,
@@ -300,6 +305,7 @@ class JobsController extends AppController
 		]);
 
 		$jobFind = $this->Jobs->find("all")
+			->contain(["ChildJobs"])
 			->order([
 				'is_open'    => 'DESC',
 				'is_active'  => 'DESC',
@@ -341,7 +347,8 @@ class JobsController extends AppController
 					'sort' => ['Roles.sort_order' => 'ASC']
 				],
 				"UsersScheduled",
-				"UsersInterested"
+				"UsersInterested",
+				"ChildJobs"
 			])
 			->where(["is_open" => 1, "is_active" => 0 ]);
 
@@ -387,7 +394,8 @@ class JobsController extends AppController
 					'sort' => ['Roles.sort_order' => 'ASC']
 				],
 				"UsersScheduled",
-				"UsersInterested"
+				"UsersInterested",
+				"ChildJobs"
 			])
 			->where(["is_open" => 0 ]);
 
@@ -557,7 +565,9 @@ class JobsController extends AppController
 					'sort' => ['Roles.sort_order' => 'ASC']
 				],
 				"UsersScheduled",
-				"UsersInterested"
+				"UsersInterested",
+				"ChildJobs",
+				"ParentJob"
 			])
 			->where([
 				"id" => $id
@@ -670,7 +680,7 @@ class JobsController extends AppController
 	 d8(  888  888   888  888   888  
 	 `Y888""8o `Y8bod88P" `Y8bod88P" 
 	*/
-	public function add()
+	public function add($parID = null)
 	{
 		if ( !$this->Auth->user('is_admin') ) {
 			$this->Flash->error("Sorry, you do not have access to this module.");
@@ -685,7 +695,37 @@ class JobsController extends AppController
 			->select(['location'])
 			->order(["location" => "ASC"]);
 
-		$this->set(compact('allCats','allLoc'));
+		$parentWhere = [
+			"is_open"   => 1,
+			"is_active" => 1,
+		];
+
+		if ( is_null($parID) ) {
+			$parentWhere["parent_id IS"] = null;
+		} else {
+			$parentWhere["id"] = $parID;
+			$this->set("addToParent", true);
+		}
+
+		$parentJobs = $this->Jobs->find("list", [
+				'keyField' => 'id',
+				'valueField' => function ($row) {
+					return $row['category'] . ': ' . $row['name'];
+				}
+			])
+			->where($parentWhere)
+			->order([
+				'date_start' => 'DESC',
+				'name'       => 'ASC'
+			]);
+			
+		$parentJobsArr = $parentJobs->toArray();
+
+		if ( is_null($parID) ) {
+			array_unshift($parentJobsArr, "n/a - This is a top-level job");
+		}
+
+		$this->set(compact('allCats','allLoc','parentJobsArr'));
 
 		$this->set('crumby', [
 			["/", __("Dashboard")],
@@ -696,6 +736,7 @@ class JobsController extends AppController
 		$job = $this->Jobs->newEntity();
 		if ($this->request->is('post')) {
 			$job = $this->Jobs->patchEntity($job, $this->request->getData());
+			if ( $job->parent_id == "0" ) { $job->parent_id = null; }
 			if ($this->Jobs->save($job)) {
 				$this->Flash->success(__('The job has been saved.'));
 
@@ -730,11 +771,34 @@ class JobsController extends AppController
 			->select(['location'])
 			->order(["location" => "ASC"]);
 
-		$this->set(compact('allCats','allLoc'));
+		$parentWhere = [
+			"is_open"      => 1,
+			"is_active"    => 1,
+			"parent_id IS" => null
+		];
+
+		$parentJobs = $this->Jobs->find("list", [
+				'keyField'   => 'id',
+				'valueField' => function ($row) {
+					return $row['category'] . ': ' . $row['name'];
+				}
+			])
+			->where($parentWhere)
+			->order([
+				'date_start' => 'DESC',
+				'name'       => 'ASC'
+			]);
+
+		$parentJobsArr = $parentJobs->toArray();
+
+		array_unshift($parentJobsArr, "n/a - This is a top-level job");
+
+		$this->set(compact('allCats','allLoc','parentJobsArr'));
 
 		$job = $this->Jobs->get($id);
 		if ($this->request->is(['patch', 'post', 'put'])) {
 			$job = $this->Jobs->patchEntity($job, $this->request->getData());
+			if ( $job->parent_id == "0" ) { $job->parent_id = null; }
 			if ($this->Jobs->save($job)) {
 				$this->Flash->success(__('The job has been saved.'));
 

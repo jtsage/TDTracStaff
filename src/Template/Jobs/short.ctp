@@ -31,7 +31,11 @@
 				( $job->is_open ) ? "Open" : "Closed"
 			];
 		?>
-		<td class="align-middle"><?= $job->category . ": " . $job->name ?></td>
+		<td class="align-middle">
+			<?= $job->category . ": " . $job->name ?>
+			<?= !is_null($job->parent_id) ? "<span class=\"float-right mt-1 badge badge-info\">is a Sub-Job</span>" : "" ?>
+			<?= !empty($job->children) ? "<span class=\"float-right mt-1 badge badge-info\">has Sub-Jobs</span>" : "" ?>
+		</td>
 		<td class="align-middle">
 			<span style="width:48%" class="badge badge-<?= $openStyle[0] ?>"><?= $openStyle[1] ?></span>
 			<span style="width:48%" class="badge badge-<?= $actStyle[0] ?>"><?= $actStyle[1] ?></span>

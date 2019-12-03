@@ -140,6 +140,11 @@
 		<div class="col-12 p-0 text-dark text-center"><h5 class="p-0 m-0 mb-2">Associated Sub-Jobs</h5></div>
 		<div class="col-12">This job is has associated sub-jobs or tasks.  They appear here as a list.</div>
 		<div class="col-12 py-0 pb-2 m-0">
+			<?= $this->HtmlExt->iconBtnLink(
+				"calendar-text", "View All",
+				['action' => 'subjobs', $job->id],
+				['class' => 'w-100 mb-1 btn btn-outline-primary']
+			) ?>
 			<?php foreach ( $job->children as $child ) : ?>
 				<?= $this->HtmlExt->iconBtnLink(
 					"arrow-bottom-right-bold-outline", $child->category . ": " . $child->name,

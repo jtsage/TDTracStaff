@@ -170,6 +170,11 @@
 					['action' => 'view', $job->id],
 					['class' => 'btn btn-md text-left btn-outline-primary']
 				) ?>
+				<?= ( !empty($job->children) ) ? $this->HtmlExt->iconBtnLink(
+					"calendar-text", 'View Sub Jobs',
+					['action' => 'subjobs', $job->id],
+					['class' => 'btn btn-md text-left btn-outline-primary']
+				) : "" ?>
 				<?= $this->HtmlExt->iconBtnLink(
 					"calendar-check", 'My Availability',
 					['action' => 'available', $job->id],

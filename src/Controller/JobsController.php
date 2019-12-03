@@ -65,6 +65,45 @@ class JobsController extends AppController
 		$this->set(compact('jobs'));
 	}
 
+	public function subjobs($id = null)
+	{
+		if ( is_null($id) ) {
+			return $this->redirect(["action" => "index"]);
+		}
+
+		$parentJob = $this->Jobs->get($id);
+
+		$this->set('crumby', [
+			["/", __("Dashboard")],
+			["/jobs/", __("Jobs")],
+			[null, $parentJob->category . ": " . $parentJob->name . "'s Sub Jobs"]
+		]);
+
+		$jobFind = $this->Jobs->find("all")
+			->contain([
+				"Roles" => [
+					'sort' => ['Roles.sort_order' => 'ASC']
+				],
+				"UsersScheduled",
+				"UsersInterested",
+				"ChildJobs"
+			])
+			->where(["is_open" => 1, "parent_id IS" => $id ]);
+
+		$jobs = $this->paginate($jobFind);
+
+		$this->loadModel("Payrolls");
+
+		$this->set("myTotals", $this->Payrolls->find('jobTotals')->where(["user_id"=>$this->Auth->user("id")])->indexBy('job_id')->toArray());
+		$this->set("jobTotals", $this->Payrolls->find('jobTotals')->indexBy('job_id')->toArray());
+
+		$this->set(compact('jobs'));
+
+		$this->set("subtitle", $parentJob->category . ": " . $parentJob->name . "'s Sub-Jobs");
+		$this->set("subtext", "This display contains only jobs associated to the specified master (parent) job.");
+		$this->render("index");
+	}
+
 
 
 	/*
@@ -774,7 +813,8 @@ class JobsController extends AppController
 		$parentWhere = [
 			"is_open"      => 1,
 			"is_active"    => 1,
-			"parent_id IS" => null
+			"parent_id IS" => null,
+			"id <>"        => $id
 		];
 
 		$parentJobs = $this->Jobs->find("list", [

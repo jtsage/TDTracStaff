@@ -10,6 +10,26 @@
 			echo $this->Form->input('first', ['label' => __("First Name")]);
 			echo $this->Form->input('last', ['label' => __("Last Name")]);
 			echo $this->Form->input('phone', ['label' => __("Phone Number"), "help" => "###-###-#### preferred"]);
+			echo $this->Form->input('is_admin', [
+				'data-toggle'   => "toggle",
+				'data-width'    => '100%',
+				'data-height'   => '36px',
+				'data-on'       => __('Admin User'),
+				'data-off'      => __('Regular User'),
+				'data-onstyle'  => 'warning',
+				'data-offstyle' => 'success',
+				'label'         => ""
+			]);
+			echo $this->Form->input('is_budget', [
+				'data-toggle'   => "toggle",
+				'data-width'    => '100%',
+				'data-height'   => '36px',
+				'data-on'       => __('Budget User'),
+				'data-off'      => __('Non-Budget User'),
+				'data-onstyle'  => 'warning',
+				'data-offstyle' => 'success',
+				'label'         => ""
+			]);
 		?>
 		<?php
 			$welcomeMailText = $CONFIG['welcome-email'];

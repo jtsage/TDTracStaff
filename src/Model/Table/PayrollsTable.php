@@ -196,6 +196,11 @@ class PayrollsTable extends Table
 			->allowEmptyString('is_paid', false);
 
 		$validator
+			->scalar('notes')
+			->maxLength('notes', 250)
+			->allowEmptyString('notes', true);
+
+		$validator
 			->dateTime('created_at')
 			->allowEmptyDateTime('created_at', false);
 

@@ -243,7 +243,7 @@ $user = $this->request->getSession()->read('Auth.User');
 				<footer class="d-print-none" style="padding-top: 20px; margin-top: 20px; border-top: 1px solid #e5e5e5;">
 					<p class="text-center text-muted"><?= __("TDTracStaff - the Theater time and job tracker") ?><br /><small>Site Administrator Contact: <a href="mailto:<?= $CONFIG['admin-email'] ?>"><?= $CONFIG['admin-name'] ?></a></small></p>
 					<ul class="text-center list-inline text-muted d-print-none">
-						<li class="list-inline-item"><?= __('Currently v1.0.0-beta1') ?></li>
+						<li class="list-inline-item"><?= __('Currently v1.0.1') ?></li>
 						<li class="list-inline-item"><a href="https://github.com/jtsage/TDTracStaff">GitHub</a></li>
 					</ul>
 				</footer>

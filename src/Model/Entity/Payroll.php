@@ -39,6 +39,7 @@ class Payroll extends Entity
         'is_paid' => true,
         'user_id' => true,
         'job_id' => true,
+        'notes' => true,
         'created_at' => true,
         'updated_at' => true,
         'user' => true,

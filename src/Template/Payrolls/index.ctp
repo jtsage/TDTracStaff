@@ -124,7 +124,11 @@
 				<?= $payroll->user->last ?>
 				</a></td>
 			<?php endif; ?>
-			<td class="align-middle"><a href="/jobs/view/<?= $payroll->job->id ?>" class="text-reset"><?= $payroll->job->name ?></a></td>
+			<td class="align-middle"><a href="/jobs/view/<?= $payroll->job->id ?>" class="text-reset"><?= $payroll->job->name ?></a>
+				<?php if ( !empty($payroll->notes) ) : ?>
+					<br><span class="pl-2 small font-italic"><?= $payroll->notes ?></span>
+				<?php endif; ?>
+			</td>
 
 			<td class="align-middle text-right">
 				<?= $payroll->date_worked->format('\<\s\p\a\n \c\l\a\s\s="\d\-\n\o\n\e \d\-\m\d\-\i\n\l\i\n\e\"\>Y-\<\/\s\p\a\n\>m-d') ?>

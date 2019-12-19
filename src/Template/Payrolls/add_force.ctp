@@ -25,6 +25,8 @@
 			} else {
 				echo $this->Form->control('hours_worked', ['help' => 'Enter the total number of hours worked as a decimal - i.e. 7.5', 'required' => 'required']);
 			}
+
+			echo $this->Form->control('notes', ["label" => "Note", 'help' => 'Additional Required Details for these hours.']);
 		?>
 	</fieldset>
 	<?= $this->Form->button($this->HtmlExt->icon("account-cash") . __(' Add Hours'), ["class" => "w-100 btn-lg btn-outline-success"]) ?>

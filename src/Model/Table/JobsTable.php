@@ -206,8 +206,7 @@ class JobsTable extends Table
 		$validator
 			->scalar('time_string')
 			->maxLength('time_string', 250)
-			->requirePresence('time_string', 'create')
-			->allowEmptyString('time_string', false);
+			->allowEmptyString('time_string', true);
 
 		$validator
 			->boolean('is_active')

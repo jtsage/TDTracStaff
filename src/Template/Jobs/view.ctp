@@ -291,6 +291,11 @@
 						'class' => 'emailNeedBtn text-left w-100 btn btn-outline-warning'
 					]
 				) ?>
+				<?= ( $WhoAmI && $CONFIG['sms-enable'] ) ? $this->HtmlExt->iconBtnlink(
+					"message-alert", "Send Bulk SMS",
+					['action' => 'sms', $job->id],
+					['class' => 'text-left w-100 btn btn-outline-warning']
+				) : "" ?>
 				<?= $this->HtmlExt->iconBtnLink(
 					"account-multiple-check", 'Assign Staff',
 					['action' => 'staffAssign', $job->id],

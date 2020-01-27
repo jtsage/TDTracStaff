@@ -8,6 +8,8 @@ use Cake\Chronos\ChronosInterface;
 use Cake\Chronos\Chronos;
 use Cake\Mailer\Email;
 use Cake\I18n\Time;
+use Aws\Sns\SnsClient;
+use Aws\Exception\AwsException;
 
 /**
  * Jobs Controller
@@ -648,6 +650,98 @@ class JobsController extends AppController
 		$this->set('job', $job1);
 	}
 
+
+	/*
+	  .oooo.o ooo. .oo.  .oo.    .oooo.o 
+	 d88(  "8 `888P"Y88bP"Y88b  d88(  "8 
+	 `"Y88b.   888   888   888  `"Y88b.  
+	 o.  )88b  888   888   888  o.  )88b 
+	 8""888P' o888o o888o o888o 8""888P' 
+	*/
+	public function sms($id)
+	{
+		if ( ! $this->CONFIG_DATA['sms-enable'] ) {
+			$this->Flash->error(__("SMS Functionality is diabled"));
+			return $this->redirect(['action' => 'view', $id]);
+		}
+		if ( ! $this->Auth->user('is_admin')) {
+			$this->Flash->error(__("You do not have access to send SMS messages"));
+			return $this->redirect(['action' => 'view', $id]);
+		}
+
+
+		$job = $this->Jobs->get($id, [
+			'contain' => [ 
+				"Roles" => [
+					'sort' => ['Roles.sort_order' => 'ASC']
+				]
+			]
+		]);
+
+		$this->loadModel("UsersJobs");
+
+		$interested = $this->UsersJobs->find("all")
+			->contain(["Users"])
+			->order([
+				"Users.last"  => "ASC",
+				"Users.first" => "ASC"
+			])
+			->where([
+				"job_id"       => $id,
+				"is_scheduled" => 1
+			]);
+
+		$this->set("job", $job);
+		$this->set("scheduled", $interested);
+
+		$this->set('crumby', [
+			["/", __("Dashboard")],
+			["/jobs/", __("Jobs")],
+			["/jobs/view/" . $job->id, $job->name],
+			[null, "Send SMS to Assigned Staff"]
+		]);
+
+		if ( $this->request->is('post')) {
+			var_dump($this->request->getData());
+
+			$this->loadModel("Users");
+
+			$sentMessage = "SMS sent to: ";
+
+			$message = $this->request->getData('message');
+			$usersToSend = $this->Users->find("all")
+				->where(["ID in" => $this->request->getData('users')]);
+
+			$SnSclient = new SnsClient([
+				'region'  => 'us-east-1',
+				'version' => '2010-03-31',
+				'credentials' => [
+					'key'    => $this->CONFIG_DATA['sms-access-key'],
+					'secret' => $this->CONFIG_DATA['sms-private-key'],
+				],
+			]);
+
+			foreach ( $usersToSend as $user ) {
+				$goodPhone = "+1" . preg_replace('~\D~', '', $user->phone);
+
+				try {
+					$result = $SnSclient->publish([
+						'Message' => $message,
+						'PhoneNumber' => $goodPhone,
+					]);
+					$sentMessage .= $user->full_name . ", ";
+					$this->set('aws_res', $result);
+				} catch (AwsException $e) {
+					// output error message if fails
+					$this->log($e->getMessage());
+				} 
+			}
+			$this->Flash->success($sentMessage);
+			return $this->redirect(['action' => 'view', $id]);
+
+		}
+
+	}
 	
 
 

@@ -7,6 +7,15 @@ use Cake\View\Helper;
 
 class PrettyHelper extends Helper
 {
+	public function validPhone($inPhone) {
+		$goodPhone = preg_replace('~\D~', '', $inPhone);
+
+		if ( strlen($goodPhone) <> 10 ) {
+			return [ false, "In-valid Number" ];
+		} else {
+			return [ true, "+1" . $goodPhone ];
+		}
+	}
 	public function highToday($in_date, $CONFIG) {
 		$today = new \DateTime("now", new \DateTimeZone($CONFIG['time-zone']) );
 		if ( $today->format("Y-m-d") == $in_date->format("Y-m-d") ) {

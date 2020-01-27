@@ -20,6 +20,11 @@
 		['action' => 'roles', $user->id],
 		['class' => 'text-left text-md-center w-100 btn btn-outline-purp']
 	) : "" ?>
+	<?= ( $WhoAmI && $CONFIG['sms-enable'] ) ? $this->HtmlExt->iconBtnlink(
+		"message-alert", "Send SMS",
+		['action' => 'sms', $user->id],
+		['class' => 'text-left text-md-center w-100 btn btn-outline-danger']
+	) : "" ?>
 	</div>
 </div>
 

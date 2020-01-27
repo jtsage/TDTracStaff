@@ -6,6 +6,8 @@ use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Mailer\Email;
 use Cake\I18n\Time;
+use Aws\Sns\SnsClient;
+use Aws\Exception\AwsException;
 
 /**
  * Users Controller
@@ -64,6 +66,63 @@ class UsersController extends AppController
 		$this->set('tz', $this->CONFIG_DATA['time-zone']);
 	}
 
+	/*
+	  .oooo.o ooo. .oo.  .oo.    .oooo.o 
+	 d88(  "8 `888P"Y88bP"Y88b  d88(  "8 
+	 `"Y88b.   888   888   888  `"Y88b.  
+	 o.  )88b  888   888   888  o.  )88b 
+	 8""888P' o888o o888o o888o 8""888P' 
+	*/
+	public function sms($id)
+	{
+		if ( ! $this->CONFIG_DATA['sms-enable'] ) {
+			$this->Flash->error(__("SMS Functionality is diabled"));
+			return $this->redirect(['action' => 'view', $id]);
+		}
+		if ( ! $this->Auth->user('is_admin')) {
+			$this->Flash->error(__("You do not have access to send SMS messages"));
+			return $this->redirect(['action' => 'view', $id]);
+		}
+
+		$user = $this->Users->get($id);
+		$this->set("user", $user);
+
+		$this->set('crumby', [
+			["/", __("Dashboard")],
+			["/users/", __("Users")],
+			["/users/" . $user->id , $user->first . " " . $user->last],
+			[null, "Send SMS"]
+		]);
+
+		if ( $this->request->is('post')) {
+			$goodPhone = "+1" . preg_replace('~\D~', '', $user->phone);
+
+			$SnSclient = new SnsClient([
+				'region'  => 'us-east-1',
+				'version' => '2010-03-31',
+				'credentials' => [
+					'key'    => $this->CONFIG_DATA['sms-access-key'],
+					'secret' => $this->CONFIG_DATA['sms-private-key'],
+				],
+			]);
+			
+			try {
+				$result = $SnSclient->publish([
+					'Message' => $this->request->getData('message'),
+					'PhoneNumber' => $goodPhone,
+				]);
+				
+				$this->set('aws_res', $result);
+			} catch (AwsException $e) {
+				// output error message if fails
+				$this->log($e->getMessage());
+			} 
+			$this->Flash->success(__('Message Sent!'));
+			return $this->redirect(['action' => 'view', $id]);
+
+		}
+
+	}
 
 
 	/*
@@ -153,6 +212,8 @@ class UsersController extends AppController
 		$user = $this->Users->get($id, [
 			'contain' => ['Roles']
 		]);
+		
+
 
 		if ( $this->Auth->user('is_admin')) {
 			$this->set('crumby', [
@@ -166,6 +227,8 @@ class UsersController extends AppController
 				[null, __("Your Profile")]
 			]);
 		}
+
+
 
 		$this->set('user', $user);
 		$this->set('_serialize', ['user']);

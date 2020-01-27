@@ -110,7 +110,7 @@
 	<div class="card p-3 rounded border shadow-sm mb-2">
 		<div class="row">
 			<div class="col-md-9 m-0">
-				<h5 class="text-dark"><?= $job->category . ": " . $job->name ?>
+				<h5 class="text-dark"><?= $job->name ?>
 					<?php if ( $WhoAmI ) : ?>
 						<a href="#" data-change="active" data-name="<?= $job->name ?>" data-job="<?= $job->id ?>" class="act-<?= $job->id ?> clickOpenAct float-right badge ml-1 badge-<?= $actStyle[0] ?>"><?= $actStyle[1] ?></a>
 						<a href="#" data-change="open" data-name="<?= $job->name ?>" data-job="<?= $job->id ?>" class="open-<?= $job->id ?> clickOpenAct float-right badge ml-1 badge-<?= $openStyle[0] ?>"><?= $openStyle[1] ?></a>
@@ -136,7 +136,7 @@
 
 				<div class="row pl-3">
 					<div class="col-12 border-bottom">
-						<dl class="m-0"><dt>Description</dt><dd class="m-0 ml-3"><?= $job->detail ?></dd></dl>
+						<dl class="m-0"><dt>Description</dt><dd class="m-0 ml-3"><em><?= $job->category ?></em> : <?= $job->detail ?></dd></dl>
 					</div>
 					<div class="col-12 border-bottom">
 						<dl class="m-0"><dt>Location</dt><dd class="m-0 ml-3"><a target="_blank" class="text-info" href="<?= $locHref ?>"><?= $job->location ?></a></dd></dl>

@@ -47,6 +47,11 @@
 					['class' => 'btn btn-outline-primary btn-sm text-left']
 				) . 
 				$this->HtmlExt->iconBtnLink(
+					"message-alert", "Send SMS",
+					['action' => 'sms', $user->id],
+					['class' => 'btn btn-outline-info btn-sm text-left']
+				) . 
+				$this->HtmlExt->iconBtnLink(
 					"account-key", "Change Pass",
 					['action' => 'changepass', $user->id],
 					['class' => 'btn btn-outline-warning btn-sm text-left']

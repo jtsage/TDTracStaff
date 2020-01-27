@@ -21,3 +21,5 @@ How to setup the needed bits on amazon AWS.
     * Access key ID -> sms-access-key in TDTrac config
 
     * Secret access key -> sms-private-key in TDTrac config
+
+10. Edit the 'sms-enable' config key, set it to 1.

@@ -27,16 +27,20 @@ class RoutesPanel extends DebugPanel
     /**
      * Get summary data for the routes panel.
      *
-     * @return int
+     * @return string
      */
     public function summary()
     {
         $appClass = Configure::read('App.namespace') . '\Application';
         if (class_exists($appClass, false) && !Router::$initialized) {
-            return 0;
+            return '0';
         }
 
-        return count(Router::routes());
+        $routes = array_filter(Router::routes(), function ($route) {
+            return (!isset($routes->defaults['plugin'])) || $route->defaults['plugin'] !== 'DebugKit';
+        });
+
+        return (string)count($routes);
     }
 
     /**
@@ -47,9 +51,9 @@ class RoutesPanel extends DebugPanel
      */
     public function shutdown(Event $event)
     {
+        /* @var \Cake\Controller\Controller|null $controller */
         $controller = $event->getSubject();
-        /* @var \Cake\Http\ServerRequest $request */
-        $request = $controller ? $controller->request : null;
+        $request = $controller ? $controller->getRequest() : null;
         $this->_data = [
             'matchedRoute' => $request ? $request->getParam('_matchedRoute') : null,
         ];

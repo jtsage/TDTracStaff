@@ -184,15 +184,22 @@ trait IntegrationTestTrait
     /**
      * Stored flash messages before render
      *
-     * @var null|array
+     * @var array|null
      */
     protected $_flashMessages;
 
     /**
      *
-     * @var null|string
+     * @var string|null
      */
     protected $_cookieEncryptionKey;
+
+    /**
+     * List of fields that are excluded from field validation.
+     *
+     * @var string[]
+     */
+    protected $_unlockedFields = [];
 
     /**
      * Auto-detect if the HTTP middleware stack should be used.
@@ -268,6 +275,17 @@ trait IntegrationTestTrait
     public function enableSecurityToken()
     {
         $this->_securityToken = true;
+    }
+
+    /**
+     * Set list of fields that are excluded from field validation.
+     *
+     * @param string[] $unlockedFields List of fields that are excluded from field validation.
+     * @return void
+     */
+    public function setUnlockedFields(array $unlockedFields = [])
+    {
+        $this->_unlockedFields = $unlockedFields;
     }
 
     /**
@@ -671,10 +689,14 @@ trait IntegrationTestTrait
     protected function _addTokens($url, $data)
     {
         if ($this->_securityToken === true) {
+            $fields = array_diff_key($data, array_flip($this->_unlockedFields));
+
             $keys = array_map(function ($field) {
                 return preg_replace('/(\.\d+)+$/', '', $field);
-            }, array_keys(Hash::flatten($data)));
-            $tokenData = $this->_buildFieldToken($url, array_unique($keys));
+            }, array_keys(Hash::flatten($fields)));
+
+            $tokenData = $this->_buildFieldToken($url, array_unique($keys), $this->_unlockedFields);
+
             $data['_Token'] = $tokenData;
             $data['_Token']['debug'] = 'SecurityComponent debug data would be added here';
         }
@@ -836,7 +858,7 @@ trait IntegrationTestTrait
     }
 
     /**
-     * Asserts that the Location header is correct.
+     * Asserts that the Location header is correct. Comparison is made against a full URL.
      *
      * @param string|array|null $url The URL you expected the client to go to. This
      *   can either be a string URL or an array compatible with Router::url(). Use null to
@@ -851,6 +873,25 @@ trait IntegrationTestTrait
 
         if ($url) {
             $this->assertThat(Router::url($url, ['_full' => true]), new HeaderEquals($this->_response, 'Location'), $verboseMessage);
+        }
+    }
+
+    /**
+     * Asserts that the Location header is correct. Comparison is made against exactly the URL provided.
+     *
+     * @param string|array|null $url The URL you expected the client to go to. This
+     *   can either be a string URL or an array compatible with Router::url(). Use null to
+     *   simply check for the existence of this header.
+     * @param string $message The failure message that will be appended to the generated message.
+     * @return void
+     */
+    public function assertRedirectEquals($url = null, $message = '')
+    {
+        $verboseMessage = $this->extractVerboseMessage($message);
+        $this->assertThat(null, new HeaderSet($this->_response, 'Location'), $verboseMessage);
+
+        if ($url) {
+            $this->assertThat(Router::url($url), new HeaderEquals($this->_response, 'Location'), $verboseMessage);
         }
     }
 
@@ -1237,7 +1278,7 @@ trait IntegrationTestTrait
      * Inspect controller to extract possible causes of the failed assertion
      *
      * @param string $message Original message to use as a base
-     * @return null|string
+     * @return string|null
      */
     protected function extractVerboseMessage($message = null)
     {

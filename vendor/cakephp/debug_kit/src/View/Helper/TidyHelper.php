@@ -50,7 +50,7 @@ class TidyHelper extends Helper
      * Fudge the markup slightly so that the tag which is invalid is highlighted
      *
      * @param string $html ''
-     * @param string &$out ''
+     * @param string $out ''
      * @return array
      */
     public function process($html = '', &$out = '')
@@ -73,6 +73,7 @@ class TidyHelper extends Helper
                 if (isset($markup[$line - 1])) {
                     $string .= h($markup[$line - 1]);
                 }
+                // phpcs:ignore
                 $string .= '<strong>' . h(@$markup[$line]) . '</strong>';
                 if (isset($markup[$line + 1])) {
                     $string .= h($markup[$line + 1]);
@@ -125,7 +126,7 @@ class TidyHelper extends Helper
      * normalized string so that the error messages can be linked to the line that caused them.
      *
      * @param string $in ''
-     * @param string &$out ''
+     * @param string $out ''
      * @return string
      */
     public function tidyErrors($in = '', &$out = '')
@@ -163,7 +164,7 @@ class TidyHelper extends Helper
      * exec method
      *
      * @param mixed $cmd ''
-     * @param mixed &$out null
+     * @param mixed $out null
      * @return bool True if successful
      */
     protected function _exec($cmd, &$out = null)

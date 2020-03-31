@@ -70,13 +70,13 @@ class MigrationTask extends SimpleMigrationTask
                 'namespace' => $namespace,
                 'tables' => [],
                 'action' => null,
-                'name' => $className
+                'name' => $className,
             ];
         }
 
         $arguments = $this->args;
         unset($arguments[0]);
-        $columnParser = new ColumnParser;
+        $columnParser = new ColumnParser();
         $fields = $columnParser->parseFields($arguments);
         $indexes = $columnParser->parseIndexes($arguments);
         $primaryKey = $columnParser->parsePrimaryKey($arguments);
@@ -96,9 +96,9 @@ class MigrationTask extends SimpleMigrationTask
             'columns' => [
                 'fields' => $fields,
                 'indexes' => $indexes,
-                'primaryKey' => $primaryKey
+                'primaryKey' => $primaryKey,
             ],
-            'name' => $className
+            'name' => $className,
         ];
     }
 
@@ -118,6 +118,9 @@ class MigrationTask extends SimpleMigrationTask
             $table = Inflector::underscore($matches[2]);
         } elseif (preg_match('/^(Remove).+?(?:From)(.*)/', $name, $matches)) {
             $action = 'drop_field';
+            $table = Inflector::underscore($matches[2]);
+        } elseif (preg_match('/^(Alter).+?(?:On)(.*)/', $name, $matches)) {
+            $action = 'alter_field';
             $table = Inflector::underscore($matches[2]);
         } elseif (preg_match('/^(Alter)(.*)/', $name, $matches)) {
             $action = 'alter_table';

@@ -60,6 +60,7 @@ DTSTART:20140811T220000Z
 DTEND:20140811T230000Z
 ORGANIZER;CN=Strunk:mailto:strunk@example.org
 ATTENDEE;CN=White;PARTSTAT=NEEDS-ACTION:mailto:white@example.org
+DTSTAMP:**ANY**
 END:VEVENT
 END:VCALENDAR
 ICS;
@@ -80,11 +81,9 @@ ICS;
         $this->parse(null, $message, $expected, 'mailto:strunk@example.org');
     }
 
-    /**
-     * @expectedException \Sabre\VObject\ITip\ITipException
-     */
     public function testBrokenEventUIDMisMatch()
     {
+        $this->expectException(ITipException::class);
         $message = <<<ICS
 BEGIN:VCALENDAR
 VERSION:2.0
@@ -104,11 +103,9 @@ ICS;
         $this->parse(null, $message, [], 'mailto:strunk@example.org');
     }
 
-    /**
-     * @expectedException \Sabre\VObject\ITip\ITipException
-     */
     public function testBrokenEventOrganizerMisMatch()
     {
+        $this->expectException(ITipException::class);
         $message = <<<ICS
 BEGIN:VCALENDAR
 VERSION:2.0
@@ -181,6 +178,7 @@ DTSTART:20140716T120000Z
 DURATION:PT1H
 RRULE:FREQ=DAILY
 EXDATE:20140717T120000Z,20140718T120000Z
+DTSTAMP:**ANY**
 END:VEVENT
 END:VCALENDAR
 ICS
@@ -208,6 +206,7 @@ DTSTART:20140716T120000Z
 DURATION:PT1H
 RRULE:FREQ=DAILY
 EXDATE:20140717T120000Z
+DTSTAMP:**ANY**
 END:VEVENT
 BEGIN:VEVENT
 UID:foobar
@@ -217,6 +216,7 @@ ATTENDEE;CN=Two:mailto:two@example.org
 ATTENDEE;CN=Three:mailto:three@example.org
 DTSTART:20140718T120000Z
 DURATION:PT1H
+DTSTAMP:**ANY**
 END:VEVENT
 END:VCALENDAR
 ICS
@@ -243,6 +243,7 @@ ATTENDEE;CN=Two:mailto:two@example.org
 ATTENDEE;CN=Three:mailto:three@example.org
 DTSTART:20140718T120000Z
 DURATION:PT1H
+DTSTAMP:**ANY**
 END:VEVENT
 END:VCALENDAR
 ICS
@@ -306,6 +307,7 @@ DTSTART:20140716T120000Z
 DTEND:20140716T130000Z
 RRULE:FREQ=DAILY
 EXDATE:20140718T120000Z
+DTSTAMP:**ANY**
 END:VEVENT
 END:VCALENDAR
 ICS
@@ -332,6 +334,7 @@ ATTENDEE;CN=Two;PARTSTAT=NEEDS-ACTION:mailto:two@example.org
 DTSTART:20140716T120000Z
 DTEND:20140716T130000Z
 RRULE:FREQ=DAILY
+DTSTAMP:**ANY**
 END:VEVENT
 BEGIN:VEVENT
 UID:foobar
@@ -341,6 +344,7 @@ ATTENDEE;CN=Two:mailto:two@example.org
 ATTENDEE;CN=Three:mailto:three@example.org
 DTSTART:20140718T120000Z
 DTEND:20140718T130000Z
+DTSTAMP:**ANY**
 END:VEVENT
 END:VCALENDAR
 ICS
@@ -367,6 +371,7 @@ ATTENDEE;CN=Two:mailto:two@example.org
 ATTENDEE;CN=Three:mailto:three@example.org
 DTSTART:20140718T120000Z
 DTEND:20140718T130000Z
+DTSTAMP:**ANY**
 END:VEVENT
 END:VCALENDAR
 ICS
@@ -417,6 +422,7 @@ ATTENDEE;CN=One;PARTSTAT=NEEDS-ACTION:mailto:one@example.org
 DTSTART:20140716T120000Z
 DTEND:20140716T130000Z
 RRULE:FREQ=WEEKLY;INTERVAL=2;COUNT=8;BYDAY=SA,SU
+DTSTAMP:**ANY**
 END:VEVENT
 END:VCALENDAR
 ICS
@@ -446,11 +452,9 @@ ICS;
         $this->parse(null, $message, [], 'mailto:strunk@example.org');
     }
 
-    /**
-     * @expectedException \Sabre\VObject\ITip\ITipException
-     */
     public function testMultipleUID()
     {
+        $this->expectException(ITipException::class);
         $message = <<<ICS
 BEGIN:VCALENDAR
 VERSION:2.0
@@ -479,11 +483,9 @@ ICS;
         $this->parse(null, $message, [], 'mailto:strunk@example.org');
     }
 
-    /**
-     * @expectedException \Sabre\VObject\ITip\SameOrganizerForAllComponentsException
-     */
     public function testChangingOrganizers()
     {
+        $this->expectException(SameOrganizerForAllComponentsException::class);
         $message = <<<ICS
 BEGIN:VCALENDAR
 VERSION:2.0

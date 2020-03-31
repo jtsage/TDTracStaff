@@ -13,6 +13,7 @@
 namespace DebugKit\Model\Table;
 
 use Cake\Core\Configure;
+use Cake\Database\Driver\Sqlite;
 use Cake\ORM\Query;
 use Cake\ORM\Table;
 use DebugKit\Model\Entity\Request;
@@ -30,7 +31,6 @@ use DebugKit\Model\Entity\Request;
  */
 class RequestsTable extends Table
 {
-
     use LazyTableTrait;
 
     /**
@@ -46,8 +46,8 @@ class RequestsTable extends Table
         ]);
         $this->addBehavior('Timestamp', [
             'events' => [
-                'Model.beforeSave' => ['requested_at' => 'new']
-            ]
+                'Model.beforeSave' => ['requested_at' => 'new'],
+            ],
         ]);
         $this->ensureTables(['DebugKit.Requests', 'DebugKit.Panels']);
     }
@@ -76,16 +76,27 @@ class RequestsTable extends Table
     }
 
     /**
+     * Check if garbage collection should be run
+     *
+     * @return bool
+     */
+    protected function shouldGc()
+    {
+        return time() % 100 === 0;
+    }
+
+    /**
      * Garbage collect old request data.
      *
-     * Delete request data that is older than 2 weeks old.
+     * Delete request data that is older than latest 20 requests.
+     * You can use the `DebugKit.requestCount` config to change this limit.
      * This method will only trigger periodically.
      *
      * @return void
      */
     public function gc()
     {
-        if (time() % 100 !== 0) {
+        if (!$this->shouldGc()) {
             return;
         }
         $noPurge = $this->find()
@@ -108,5 +119,10 @@ class RequestsTable extends Table
 
         $statement = $query->execute();
         $statement->closeCursor();
+
+        $conn = $this->getConnection();
+        if ($conn->getDriver() instanceof Sqlite) {
+            $conn->execute('VACUUM;');
+        }
     }
 }

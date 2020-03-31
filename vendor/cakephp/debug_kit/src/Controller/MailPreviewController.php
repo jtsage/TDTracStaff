@@ -14,9 +14,7 @@
 namespace DebugKit\Controller;
 
 use Cake\Collection\CollectionInterface;
-use Cake\Controller\Controller;
 use Cake\Core\App;
-use Cake\Core\Configure;
 use Cake\Core\Plugin as CorePlugin;
 use Cake\Event\Event;
 use Cake\Http\Exception\NotFoundException;
@@ -33,22 +31,8 @@ use Psr\Http\Message\ResponseInterface;
  *
  * @property \DebugKit\Model\Table\PanelsTable $Panels
  */
-class MailPreviewController extends Controller
+class MailPreviewController extends DebugKitController
 {
-    /**
-     * Before filter callback.
-     *
-     * @param \Cake\Event\Event $event The beforeFilter event.
-     * @return void
-     * @throws \Cake\Http\Exception\NotFoundException
-     */
-    public function beforeFilter(Event $event)
-    {
-        if (!Configure::read('debug')) {
-            throw new NotFoundException();
-        }
-    }
-
     /**
      * Before render handler.
      *
@@ -202,7 +186,7 @@ class MailPreviewController extends Controller
                     $base = str_replace(".php", "", basename($file));
                     $class = App::className($plugin . $base, 'Mailer/Preview');
                     if ($class) {
-                        yield ['plugin' => trim($plugin, '.'), 'class' => new $class];
+                        yield ['plugin' => trim($plugin, '.'), 'class' => new $class()];
                     }
                 }
             });
@@ -269,7 +253,7 @@ class MailPreviewController extends Controller
         if (!$realClass) {
             throw new NotFoundException("Mailer preview ${previewName} not found");
         }
-        $mailPreview = new $realClass;
+        $mailPreview = new $realClass();
 
         $email = $mailPreview->find($emailName);
         if (!$email) {

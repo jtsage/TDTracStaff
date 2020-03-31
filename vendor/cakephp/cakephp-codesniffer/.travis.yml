@@ -6,8 +6,7 @@ php:
   - 7.1
   - 7.2
   - 7.3
-
-sudo: false
+  - 7.4snapshot
 
 matrix:
   fast_finish: true
@@ -15,6 +14,9 @@ matrix:
   include:
     - php: 7.2
       env: PHPCS=1
+
+before_install:
+  - if [[ $TRAVIS_PHP_VERSION != "7.4snapshot" ]]; then phpenv config-rm xdebug.ini; fi
 
 before_script:
   - composer install --prefer-source
@@ -26,6 +28,10 @@ script:
 
 after_success:
   - if [[ $PHPCS != 1 && $TRAVIS_PHP_VERSION = 7.1 ]]; then bash <(curl -s https://codecov.io/bash); fi
+
+cache:
+    directories:
+        - $HOME/.composer/cache
 
 notifications:
   email: false

@@ -42,7 +42,8 @@ class DocBlockHelper extends Helper
         foreach ($annotations as $annotation) {
             if (strlen($annotation) > 1 && $annotation[0] === '@' && strpos($annotation, ' ') > 0) {
                 $type = substr($annotation, 0, strpos($annotation, ' '));
-                if ($this->_annotationSpacing &&
+                if (
+                    $this->_annotationSpacing &&
                     $previous !== false &&
                     $previous !== $type
                 ) {
@@ -70,7 +71,8 @@ class DocBlockHelper extends Helper
     public function associatedEntityTypeToHintType($type, Association $association)
     {
         $annotationType = $association->type();
-        if ($annotationType === Association::MANY_TO_MANY ||
+        if (
+            $annotationType === Association::MANY_TO_MANY ||
             $annotationType === Association::ONE_TO_MANY
         ) {
             return $type . '[]';
@@ -248,13 +250,13 @@ class DocBlockHelper extends Helper
             foreach ($assocs as $assoc) {
                 $typeStr = Inflector::camelize($type);
                 $tableFqn = $associationInfo[$assoc['alias']]['targetFqn'];
-                $annotations[] = "@property {$tableFqn}|\Cake\ORM\Association\\{$typeStr} \${$assoc['alias']}";
+                $annotations[] = "@property {$tableFqn}&\Cake\ORM\Association\\{$typeStr} \${$assoc['alias']}";
             }
         }
         $annotations[] = "@method \\{$namespace}\\Model\\Entity\\{$entity} get(\$primaryKey, \$options = [])";
         $annotations[] = "@method \\{$namespace}\\Model\\Entity\\{$entity} newEntity(\$data = null, array \$options = [])";
         $annotations[] = "@method \\{$namespace}\\Model\\Entity\\{$entity}[] newEntities(array \$data, array \$options = [])";
-        $annotations[] = "@method \\{$namespace}\\Model\\Entity\\{$entity}|bool save(\\Cake\\Datasource\\EntityInterface \$entity, \$options = [])";
+        $annotations[] = "@method \\{$namespace}\\Model\\Entity\\{$entity}|false save(\\Cake\\Datasource\\EntityInterface \$entity, \$options = [])";
         $annotations[] = "@method \\{$namespace}\\Model\\Entity\\{$entity} saveOrFail(\\Cake\\Datasource\\EntityInterface \$entity, \$options = [])";
         $annotations[] = "@method \\{$namespace}\\Model\\Entity\\{$entity} patchEntity(\\Cake\\Datasource\\EntityInterface \$entity, array \$data, array \$options = [])";
         $annotations[] = "@method \\{$namespace}\\Model\\Entity\\{$entity}[] patchEntities(\$entities, array \$data, array \$options = [])";

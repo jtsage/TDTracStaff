@@ -20,19 +20,19 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 trait CommandTrait
 {
-
     /**
      * Overrides the action execute method in order to vanish the idea of environments
      * from phinx. CakePHP does not believe in the idea of having in-app environments
      *
      * @param \Symfony\Component\Console\Input\InputInterface $input the input object
      * @param \Symfony\Component\Console\Output\OutputInterface $output the output object
-     * @return void
+     * @return int|null
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->beforeExecute($input, $output);
-        parent::execute($input, $output);
+
+        return parent::execute($input, $output);
     }
 
     /**

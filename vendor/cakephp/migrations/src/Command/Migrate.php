@@ -20,11 +20,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class Migrate extends MigrateCommand
 {
-
-    use CommandTrait;
-    use ConfigurationTrait {
+    use CommandTrait {
         execute as parentExecute;
     }
+    use ConfigurationTrait;
     use EventDispatcherTrait;
 
     /**
@@ -56,15 +55,17 @@ class Migrate extends MigrateCommand
      *
      * @param \Symfony\Component\Console\Input\InputInterface $input the input object
      * @param \Symfony\Component\Console\Output\OutputInterface $output the output object
-     * @return mixed
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $event = $this->dispatchEvent('Migration.beforeMigrate');
         if ($event->isStopped()) {
-            return $event->result;
+            return $event->result ? BaseCommand::CODE_SUCCESS : BaseCommand::CODE_ERROR;
         }
-        $this->parentExecute($input, $output);
+        $result = $this->parentExecute($input, $output);
         $this->dispatchEvent('Migration.afterMigrate');
+
+        return $result !== null ? $result : BaseCommand::CODE_SUCCESS;
     }
 }

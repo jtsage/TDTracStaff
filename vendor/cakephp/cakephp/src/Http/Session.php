@@ -35,7 +35,6 @@ use SessionHandlerInterface;
  */
 class Session
 {
-
     /**
      * The Session handler instance used as an engine for persisting the session data.
      *
@@ -142,7 +141,7 @@ class Session
                 'cookie' => 'CAKEPHP',
                 'ini' => [
                     'session.use_trans_sid' => 0,
-                ]
+                ],
             ],
             'cake' => [
                 'cookie' => 'CAKEPHP',
@@ -151,8 +150,8 @@ class Session
                     'session.serialize_handler' => 'php',
                     'session.use_cookies' => 1,
                     'session.save_path' => TMP . 'sessions',
-                    'session.save_handler' => 'files'
-                ]
+                    'session.save_handler' => 'files',
+                ],
             ],
             'cache' => [
                 'cookie' => 'CAKEPHP',
@@ -163,8 +162,8 @@ class Session
                 ],
                 'handler' => [
                     'engine' => 'CacheSession',
-                    'config' => 'default'
-                ]
+                    'config' => 'default',
+                ],
             ],
             'database' => [
                 'cookie' => 'CAKEPHP',
@@ -175,9 +174,9 @@ class Session
                     'session.serialize_handler' => 'php',
                 ],
                 'handler' => [
-                    'engine' => 'DatabaseSession'
-                ]
-            ]
+                    'engine' => 'DatabaseSession',
+                ],
+            ],
         ];
 
         if (isset($defaults[$name])) {
@@ -615,7 +614,7 @@ class Session
             $params['httponly']
         );
 
-        if (session_id()) {
+        if (session_id() !== '') {
             session_regenerate_id(true);
         }
     }

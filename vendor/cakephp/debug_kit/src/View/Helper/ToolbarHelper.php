@@ -47,6 +47,7 @@ class ToolbarHelper extends Helper
      * set sorting of values
      *
      * @param bool $sort Whether or not sort values by key
+     * @return void
      */
     public function setSort($sort)
     {
@@ -127,7 +128,8 @@ class ToolbarHelper extends Helper
                 $value = ' - recursion';
             }
 
-            if ((
+            if (
+                (
                 $value instanceof ArrayAccess ||
                 $value instanceof Iterator ||
                 is_array($value) ||

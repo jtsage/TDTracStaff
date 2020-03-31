@@ -13,7 +13,7 @@
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
-$wantedOptions = array_flip(['length', 'limit', 'default', 'unsigned', 'null', 'comment', 'autoIncrement']);
+$wantedOptions = array_flip(['length', 'limit', 'default', 'unsigned', 'null', 'comment', 'autoIncrement', 'precision', 'scale']);
 $tableMethod = $this->Migration->tableMethod($action);
 $columnMethod = $this->Migration->columnMethod($action);
 $indexMethod = $this->Migration->indexMethod($action);
@@ -32,7 +32,7 @@ class <%= $name %> extends AbstractMigration
      * Change Method.
      *
      * More information on this method is available here:
-     * http://docs.phinx.org/en/latest/migrations.html#the-change-method
+     * https://book.cakephp.org/phinx/0/en/migrations.html#the-change-method
      * @return void
      */
     public function change()

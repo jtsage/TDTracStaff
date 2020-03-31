@@ -30,7 +30,6 @@ use Symfony\Component\Console\Output\ConsoleOutput;
  */
 class MigrationsShell extends Shell
 {
-
     /**
      * {@inheritDoc}
      */
@@ -40,7 +39,7 @@ class MigrationsShell extends Shell
         'Migrations.MarkMigrated',
         'Migrations.Migrate',
         'Migrations.Rollback',
-        'Migrations.Status'
+        'Migrations.Status',
     ];
 
     /**
@@ -74,6 +73,7 @@ class MigrationsShell extends Shell
             ->addOption('template', ['short' => 't'])
             ->addOption('format', ['short' => 'f'])
             ->addOption('only', ['short' => 'o'])
+            ->addOption('dry-run', ['short' => 'x'])
             ->addOption('exclude', ['short' => 'e']);
     }
 
@@ -85,7 +85,7 @@ class MigrationsShell extends Shell
     public function initialize()
     {
         if (!defined('PHINX_VERSION')) {
-            define('PHINX_VERSION', (0 === strpos('@PHINX_VERSION@', '@PHINX_VERSION')) ? '0.4.3' : '@PHINX_VERSION@');
+            define('PHINX_VERSION', 'UNKNOWN');
         }
         parent::initialize();
     }
@@ -107,7 +107,12 @@ class MigrationsShell extends Shell
         $app->setAutoExit(false);
         $exitCode = $app->run($input, $this->getOutput());
 
-        if (isset($this->argv[1]) && in_array($this->argv[1], ['migrate', 'rollback']) &&
+        if (in_array('-h', $this->argv) || in_array('--help', $this->argv)) {
+            return $exitCode === 0;
+        }
+
+        if (
+            isset($this->argv[1]) && in_array($this->argv[1], ['migrate', 'rollback']) &&
             !$this->params['no-lock'] &&
             $exitCode === 0
         ) {

@@ -26,7 +26,6 @@ use Symfony\Component\Console\Output\NullOutput;
  */
 class Migrations
 {
-
     use ConfigurationTrait;
 
     /**
@@ -224,7 +223,8 @@ class Migrations
     {
         $this->setCommand('mark_migrated');
 
-        if (isset($options['target']) &&
+        if (
+            isset($options['target']) &&
             isset($options['exclude']) &&
             isset($options['only'])
         ) {
@@ -239,7 +239,7 @@ class Migrations
         $params = [
             array_pop($migrationPaths),
             $this->getManager()->getVersionsToMark($input),
-            $this->output
+            $this->output,
         ];
 
         $this->run('markVersionsAsMigrated', $params, $input);
@@ -295,6 +295,7 @@ class Migrations
             $seedPath = array_pop($seedPaths);
         }
 
+        $pdo = null;
         if ($this->manager instanceof Manager) {
             $pdo = $this->manager->getEnvironment('default')
                 ->getAdapter()
@@ -306,7 +307,7 @@ class Migrations
         $manager = $this->getManager($newConfig);
         $manager->setInput($input);
 
-        if (isset($pdo)) {
+        if ($pdo !== null) {
             $adapter = $this->manager->getEnvironment('default')->getAdapter();
             while ($adapter instanceof WrapperInterface) {
                 $adapter = $adapter->getAdapter();

@@ -23,7 +23,8 @@ project = 'CakePHP DebugKit'
 
 # Other versions that display in the version picker menu.
 version_list = [
-    {'name': '3.x', 'number': '/debugkit/3.x', 'title': '3.x', 'current': True},
+    {'name': '3.x', 'number': '/debugkit/3', 'title': '3.x', 'current': True},
+    {'name': '4.x', 'number': '/debugkit/4', 'title': '4.x'},
 ]
 
 # Languages available.
@@ -31,7 +32,7 @@ languages = ['en', 'fr', 'ja', 'pt']
 
 # The GitHub branch name for this version of the docs
 # for edit links to point at.
-branch = 'master'
+branch = '3.x'
 
 # Current version being built
 version = '3.x'
@@ -44,6 +45,8 @@ show_root_link = True
 repository = 'cakephp/debug_kit'
 
 source_path = 'docs/'
+
+hide_page_contents = ('search', '404', 'contents')
 
 # DebugKit docs use mp4 videos to show the UI
 extensions.append('sphinxcontrib.video')

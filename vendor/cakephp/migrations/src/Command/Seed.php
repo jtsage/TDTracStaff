@@ -20,7 +20,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class Seed extends SeedRun
 {
-
     use CommandTrait {
         execute as parentExecute;
     }
@@ -52,13 +51,13 @@ class Seed extends SeedRun
      *
      * @param \Symfony\Component\Console\Input\InputInterface $input the input object
      * @param \Symfony\Component\Console\Output\OutputInterface $output the output object
-     * @return mixed
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $event = $this->dispatchEvent('Migration.beforeSeed');
         if ($event->isStopped()) {
-            return $event->result;
+            return $event->result ? BaseCommand::CODE_SUCCESS : BaseCommand::CODE_ERROR;
         }
 
         $seed = $input->getOption('seed');
@@ -69,7 +68,9 @@ class Seed extends SeedRun
         $this->setInput($input);
         $this->bootstrap($input, $output);
         $this->getManager()->setInput($input);
-        $this->parentExecute($input, $output);
+        $result = $this->parentExecute($input, $output);
         $this->dispatchEvent('Migration.afterSeed');
+
+        return $result !== null ? $result : BaseCommand::CODE_SUCCESS;
     }
 }

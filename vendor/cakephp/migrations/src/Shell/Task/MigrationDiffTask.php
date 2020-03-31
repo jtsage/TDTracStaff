@@ -115,7 +115,7 @@ class MigrationDiffTask extends SimpleMigrationTask
         $collection = $this->getCollection($this->connection);
         EventManager::instance()->on('Bake.initialize', function (Event $event) use ($collection) {
             $event->getSubject()->loadHelper('Migrations.Migration', [
-                'collection' => $collection
+                'collection' => $collection,
             ]);
         });
 
@@ -210,7 +210,7 @@ class MigrationDiffTask extends SimpleMigrationTask
     {
         $this->templateData['fullTables'] = [
             'add' => array_diff_key($this->currentSchema, $this->dumpSchema),
-            'remove' => array_diff_key($this->dumpSchema, $this->currentSchema)
+            'remove' => array_diff_key($this->dumpSchema, $this->currentSchema),
         ];
     }
 
@@ -238,6 +238,10 @@ class MigrationDiffTask extends SimpleMigrationTask
                 if ($key > 0) {
                     $column['after'] = $currentColumns[$key - 1];
                 }
+                if (isset($column['unsigned'])) {
+                    $column['signed'] = !$column['unsigned'];
+                    unset($column['unsigned']);
+                }
                 $this->templateData[$table]['columns']['add'][$columnName] = $column;
             }
 
@@ -248,10 +252,11 @@ class MigrationDiffTask extends SimpleMigrationTask
                 unset($column['collate']);
                 unset($oldColumn['collate']);
 
-                if (in_array($columnName, $oldColumns) &&
+                if (
+                    in_array($columnName, $oldColumns) &&
                     $column !== $oldColumn
                 ) {
-                    $changedAttributes = array_diff($column, $oldColumn);
+                    $changedAttributes = array_diff_assoc($column, $oldColumn);
 
                     foreach (['type', 'length', 'null', 'default'] as $attribute) {
                         $phinxAttributeName = $attribute;
@@ -260,6 +265,16 @@ class MigrationDiffTask extends SimpleMigrationTask
                         }
                         if (!isset($changedAttributes[$phinxAttributeName])) {
                             $changedAttributes[$phinxAttributeName] = $column[$attribute];
+                        }
+                    }
+
+                    if (isset($changedAttributes['unsigned'])) {
+                        $changedAttributes['signed'] = !$changedAttributes['unsigned'];
+                        unset($changedAttributes['unsigned']);
+                    } else {
+                        // badish hack
+                        if (isset($column['unsigned']) && $column['unsigned'] === true) {
+                            $changedAttributes['signed'] = false;
                         }
                     }
 
@@ -313,6 +328,12 @@ class MigrationDiffTask extends SimpleMigrationTask
             foreach ($addedConstraints as $constraintName) {
                 $this->templateData[$table]['constraints']['add'][$constraintName] =
                     $currentSchema->getConstraint($constraintName);
+                $constraint = $currentSchema->getConstraint($constraintName);
+                if ($constraint['type'] === Table::CONSTRAINT_FOREIGN) {
+                    $this->templateData[$table]['constraints']['add'][$constraintName] = $constraint;
+                } else {
+                    $this->templateData[$table]['indexes']['add'][$constraintName] = $constraint;
+                }
             }
 
             // constraints having the same name between new and old schema
@@ -320,7 +341,8 @@ class MigrationDiffTask extends SimpleMigrationTask
             foreach ($currentConstraints as $constraintName) {
                 $constraint = $currentSchema->getConstraint($constraintName);
 
-                if (in_array($constraintName, $oldConstraints) &&
+                if (
+                    in_array($constraintName, $oldConstraints) &&
                     $constraint !== $this->dumpSchema[$table]->getConstraint($constraintName)
                 ) {
                     $this->templateData[$table]['constraints']['remove'][$constraintName] =
@@ -371,7 +393,8 @@ class MigrationDiffTask extends SimpleMigrationTask
             foreach ($currentIndexes as $indexName) {
                 $index = $currentSchema->getIndex($indexName);
 
-                if (in_array($indexName, $oldIndexes) &&
+                if (
+                    in_array($indexName, $oldIndexes) &&
                     $index !== $this->dumpSchema[$table]->getIndex($indexName)
                 ) {
                     $this->templateData[$table]['indexes']['remove'][$indexName] =
@@ -441,7 +464,7 @@ class MigrationDiffTask extends SimpleMigrationTask
         }
 
         $dispatch = $this->dispatchShell([
-            'command' => $dispatchCommand
+            'command' => $dispatchCommand,
         ]);
 
         if ($dispatch === 1) {
@@ -530,7 +553,7 @@ class MigrationDiffTask extends SimpleMigrationTask
 
         $parser->addArgument('name', [
             'help' => 'Name of the migration to bake. Can use Plugin.name to bake migration files into plugins.',
-            'required' => true
+            'required' => true,
         ]);
 
         return $parser;

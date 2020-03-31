@@ -7,11 +7,11 @@
 
 This is a Database Migrations system for CakePHP 3.
 
-The plugin consists of a CakePHP shell wrapper for the [phinx](http://phinx.org) migrations library.
+The plugin consists of a CakePHP shell wrapper for the [Phinx](http://phinx.org) migrations library.
 
 ## Installation
 
-You can install this plugin into your CakePHP application using [composer](http://getcomposer.org).
+You can install this plugin into your CakePHP application using [Composer](http://getcomposer.org).
 
 Run the following command
 ```sh
@@ -43,4 +43,4 @@ Additionally, you will need to configure the ``default`` database configuration 
 
 ## Documentation
 
-Full documentation of the plugin can be found on the [CakePHP Cookbook](http://book.cakephp.org/3.0/en/migrations.html).
+Full documentation of the plugin can be found on the [CakePHP Cookbook](https://book.cakephp.org/migrations/2/).

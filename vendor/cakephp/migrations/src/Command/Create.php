@@ -22,11 +22,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class Create extends CreateCommand
 {
-
-    use CommandTrait;
-    use ConfigurationTrait {
+    use CommandTrait {
         execute as parentExecute;
     }
+    use ConfigurationTrait;
 
     /**
      * {@inheritdoc}
@@ -65,11 +64,11 @@ class Create extends CreateCommand
      *
      * @param \Symfony\Component\Console\Input\InputInterface $input the input object
      * @param \Symfony\Component\Console\Output\OutputInterface $output the output object
-     * @return mixed
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->parentExecute($input, $output);
+        $result = $this->parentExecute($input, $output);
 
         $output->writeln('<info>renaming file in CamelCase to follow CakePHP convention...</info>');
 
@@ -94,5 +93,7 @@ class Create extends CreateCommand
                 $output->writeln(sprintf('<info>An error occurred while renaming file to %s</info>', $newPath));
             }
         }
+
+        return $result !== null ? $result : BaseCommand::CODE_SUCCESS;
     }
 }

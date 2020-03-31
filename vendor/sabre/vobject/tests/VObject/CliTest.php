@@ -11,8 +11,17 @@ use PHPUnit\Framework\TestCase;
  */
 class CliTest extends TestCase
 {
-    public function setUp()
+    /** @var CliMock */
+    private $cli;
+
+    private $sabreTempDir = __DIR__.'/../temp/';
+
+    public function setUp(): void
     {
+        if (!file_exists($this->sabreTempDir)) {
+            mkdir($this->sabreTempDir);
+        }
+
         $this->cli = new CliMock();
         $this->cli->stderr = fopen('php://memory', 'r+');
         $this->cli->stdout = fopen('php://memory', 'r+');
@@ -266,7 +275,7 @@ VCF;
 
     public function testConvertDefaultFormats()
     {
-        $outputFile = SABRE_TEMPDIR.'bar.json';
+        $outputFile = $this->sabreTempDir.'bar.json';
 
         $this->assertEquals(
             2,
@@ -279,7 +288,7 @@ VCF;
 
     public function testConvertDefaultFormats2()
     {
-        $outputFile = SABRE_TEMPDIR.'bar.ics';
+        $outputFile = $this->sabreTempDir.'bar.ics';
 
         $this->assertEquals(
             2,

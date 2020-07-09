@@ -19,3 +19,5 @@ echo "" >> main.min.js
 cat gauge.min.js >> main.min.js
 echo "" >> main.min.js
 cat tdtrac-staffer.js >> main.min.js
+echo "" >> main.min.js
+cat js.cookie.min.js >> main.min.js

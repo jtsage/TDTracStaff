@@ -13,6 +13,7 @@
 				[' ', ['class' => 'align-middle font-weight-bold']],
 				( ( $CONFIG['require-hours'] ) ? [" ", ['class' => 'd-none d-md-table-cell']] : false ),
 				( ( $CONFIG['require-hours'] ) ? [" ", ['class' => 'd-none d-md-table-cell']] : false ),
+				" ",
 				[number_format($userTotals[$currentUserID]["total_unpaid"],2), ['class' => 'font-weight-bold align-middle text-right']],
 				[" ", ['class' => "d-none d-md-table-cell"] ],
 				" "
@@ -23,6 +24,7 @@
 				[' ', ['class' => 'align-middle font-weight-bold', 'style' => "border-bottom-color: #777;"]],
 				( ( $CONFIG['require-hours'] ) ? [" ", ['class' => 'd-none d-md-table-cell', 'style' => "border-bottom-color: #777;"]] : false ),
 				( ( $CONFIG['require-hours'] ) ? [" ", ['class' => 'd-none d-md-table-cell', 'style' => "border-bottom-color: #777;"]] : false ),
+				" ",
 				[number_format($userTotals[$currentUserID]["total_worked"],2), ['class' => 'font-weight-bold font-italic align-middle text-right', 'style' => "border-bottom-color: #777;"]],
 				[" ", ['class' => "d-none d-md-table-cell", 'style' => "border-bottom-color: #777;"] ],
 				[" ", ['style' => "border-bottom-color: #777;"] ]
@@ -53,7 +55,7 @@
 			echo $this->HtmlExt->iconBtnLink(
 				"bookmark", 'View All',
 				$linkie,
-				['class' => 'btn btn-outline-dark w-100']
+				['class' => 'btn btn-outline-dark w-100 mb-2']
 			);
 		} else {
 			$linkie = ["action" => $this->request->getParam('action')];
@@ -62,11 +64,62 @@
 			echo $this->HtmlExt->iconBtnLink(
 				'bookmark-check', 'View Unpaid',
 				$linkie,
-				['class' => 'btn btn-outline-dark w-100']
+				['class' => 'btn btn-outline-dark w-100 mb-2']
 			);
 		}
 	}
 ?>
+
+<div class="btn-group w-100">
+	<a class="noteclick note-col btn btn-outline-primary" href="#">Show Notes as Column</a>
+	<a class="noteclick note-inline btn btn-outline-primary" href="#">Show Notes as Inline</a>
+	<a class="noteclick note-none btn btn-outline-primary" href="#">Don't Show Notes</a>
+</div>
+
+<script>
+	$(".noteclick").on("click", function() {
+		if ( $(this).hasClass("note-col") ) {
+			$(".noteclick").removeClass("btn-primary").addClass("btn-outline-primary");
+			$(".notes-by-col").addClass("d-table-cell").removeClass("d-none");
+			$(".notes-by-inline").removeClass("d-inline").addClass("d-none");
+			Cookies.set('note-display', 0, { expires: 365 });
+		}
+		if ( $(this).hasClass("note-inline") ) {
+			$(".noteclick").removeClass("btn-primary").addClass("btn-outline-primary");
+			$(".notes-by-col").removeClass("d-table-cell").addClass("d-none");
+			$(".notes-by-inline").addClass("d-inline").removeClass("d-none");
+			Cookies.set('note-display', 1, { expires: 365 });
+		}
+		if ( $(this).hasClass("note-none") ) {
+			$(".noteclick").removeClass("btn-primary").addClass("btn-outline-primary");
+			$(".notes-by-col").removeClass("d-table-cell").addClass("d-none");
+			$(".notes-by-inline").removeClass("d-inline").addClass("d-none");
+			Cookies.set('note-display', 2, { expires: 365 });
+		}
+		$(this).removeClass("btn-outline-primary").addClass("btn-primary");
+		return false;
+	});
+	$( document ).ready(function() {
+		var cook = parseInt(Cookies.get("note-display"),10) || 0;
+		switch (cook) {
+			case 0:
+				$(".notes-by-col").addClass("d-table-cell").removeClass("d-none");
+				$(".notes-by-inline").removeClass("d-inline").addClass("d-none");
+				$(".note-col").removeClass("btn-outline-primary").addClass("btn-primary");
+				break;
+			case 1:
+				$(".notes-by-col").removeClass("d-table-cell").addClass("d-none");
+				$(".notes-by-inline").addClass("d-inline").removeClass("d-none");
+				$(".note-inline").removeClass("btn-outline-primary").addClass("btn-primary");
+				break;
+			case 2:
+				$(".notes-by-col").removeClass("d-table-cell").addClass("d-none");
+				$(".notes-by-inline").removeClass("d-inline").addClass("d-none");
+				$(".note-none").removeClass("btn-outline-primary").addClass("btn-primary");
+				break;
+		}
+	});
+</script>
 </div>
 
 <?php if ( $payrolls->count() > 0 ) : ?>
@@ -80,6 +133,7 @@
 				<th scope="col">User</th>
 			<?php endif; ?>
 			<th scope="col">Job</th>
+			<th scope="col" class="notes-by-col d-table-cell">Notes</th>
 
 			<th scope="col" class="text-center">Date</th>
 
@@ -125,10 +179,12 @@
 				</a></td>
 			<?php endif; ?>
 			<td class="align-middle"><a href="/jobs/view/<?= $payroll->job->id ?>" class="text-reset"><?= $payroll->job->name ?></a>
-				<?php if ( !empty($payroll->notes) ) : ?>
-					<br><span class="pl-2 small font-italic"><?= $payroll->notes ?></span>
-				<?php endif; ?>
+				<span class="d-inline notes-by-inline"><br><span class="pl-2 small font-italic"><?= ( !empty($payroll->notes) ) ? $payroll->notes : "" ?></span></span>
 			</td>
+			<td class="notes-by-col d-table-cell">
+				<?= ( !empty($payroll->notes) ) ? $payroll->notes : "" ?>
+			</td>
+
 
 			<td class="align-middle text-right">
 				<?= $payroll->date_worked->format('\<\s\p\a\n \c\l\a\s\s="\d\-\n\o\n\e \d\-\m\d\-\i\n\l\i\n\e\"\>Y-\<\/\s\p\a\n\>m-d') ?>

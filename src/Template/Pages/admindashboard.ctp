@@ -252,7 +252,7 @@
 			$workers_Avail[]  = count($job->users_int);
 			$workers_Sched[]  = count($job->users_sch);
 			$workers_Label[]  = $job->name;
-			$workers_Perc[]   = intval((count($job->users_sch) / ( $needed > 1 ? $needed : 0 )) * 100);
+			$workers_Perc[]   = ( $needed > 0 ) ? intval((count($job->users_sch) / ( $needed )) * 100) : 100;
 		}
 	}
 ?>

@@ -91,6 +91,8 @@ class Folder
 
     /**
      * Functions array to be called depending on the sort type chosen.
+     *
+     * @var string[]
      */
     protected $_fsorts = [
         self::SORT_NAME => 'getPathname',
@@ -353,7 +355,6 @@ class Folder
      *
      * @param string $path Path to check
      * @return string Set of slashes ("\\" or "/")
-     *
      * @deprecated 3.7.0 This method will be removed in 4.0.0. Use correctSlashFor() instead.
      */
     public static function normalizePath($path)

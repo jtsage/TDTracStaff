@@ -143,7 +143,6 @@ class TranslateBehavior extends Behavior implements PropertyMarshalInterface
      * @param string $table the table name to use for storing each field translation
      * @param string $model the model field value
      * @param string $strategy the strategy used in the _i18n association
-     *
      * @return void
      */
     public function setupFieldAssociations($fields, $table, $model, $strategy)
@@ -374,11 +373,11 @@ class TranslateBehavior extends Behavior implements PropertyMarshalInterface
     }
 
     /**
+     * {@inheritDoc}
+     *
      * Add in `_translations` marshalling handlers. You can disable marshalling
      * of translations by setting `'translations' => false` in the options
      * provided to `Table::newEntity()` or `Table::patchEntity()`.
-     *
-     * {@inheritDoc}
      */
     public function buildMarshalMap($marshaller, $map, $options)
     {

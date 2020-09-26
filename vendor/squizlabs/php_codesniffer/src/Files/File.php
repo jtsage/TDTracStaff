@@ -1254,9 +1254,7 @@ class File
 
         $content = null;
         for ($i = $stackPtr; $i < $this->numTokens; $i++) {
-            if ($this->tokens[$i]['code'] === T_STRING
-                || $this->tokens[$i]['code'] === T_FN
-            ) {
+            if ($this->tokens[$i]['code'] === T_STRING) {
                 $content = $this->tokens[$i]['content'];
                 break;
             }
@@ -1631,6 +1629,7 @@ class File
                 T_CALLABLE     => T_CALLABLE,
                 T_SELF         => T_SELF,
                 T_PARENT       => T_PARENT,
+                T_STATIC       => T_STATIC,
                 T_NS_SEPARATOR => T_NS_SEPARATOR,
             ];
 
@@ -1938,6 +1937,7 @@ class File
         );
 
         if ($this->tokens[$tokenBefore]['code'] === T_FUNCTION
+            || $this->tokens[$tokenBefore]['code'] === T_CLOSURE
             || $this->tokens[$tokenBefore]['code'] === T_FN
         ) {
             // Function returns a reference.
@@ -2277,6 +2277,7 @@ class File
 
             if (isset($this->tokens[$i]['scope_opener']) === true
                 && $i === $this->tokens[$i]['scope_closer']
+                && $this->tokens[$i]['code'] !== T_CLOSE_PARENTHESIS
             ) {
                 // Found the end of the previous scope block.
                 return $lastNotEmpty;
@@ -2334,7 +2335,6 @@ class File
         }
 
         $lastNotEmpty = $start;
-
         for ($i = $start; $i < $this->numTokens; $i++) {
             if ($i !== $start && isset($endTokens[$this->tokens[$i]['code']]) === true) {
                 // Found the end of the statement.
@@ -2357,7 +2357,8 @@ class File
                 || $i === $this->tokens[$i]['scope_condition'])
             ) {
                 if ($this->tokens[$i]['code'] === T_FN) {
-                    $i = ($this->tokens[$i]['scope_closer'] - 1);
+                    $lastNotEmpty = $this->tokens[$i]['scope_closer'];
+                    $i            = ($this->tokens[$i]['scope_closer'] - 1);
                     continue;
                 }
 

@@ -567,6 +567,47 @@ class PHP extends Tokenizer
             }
 
             /*
+                PHP 8 tokenizes a new line after a slash comment to the next whitespace token.
+            */
+
+            if (PHP_VERSION_ID >= 80000
+                && $tokenIsArray === true
+                && ($token[0] === T_COMMENT && strpos($token[1], '//') === 0)
+                && isset($tokens[($stackPtr + 1)]) === true
+                && is_array($tokens[($stackPtr + 1)]) === true
+                && $tokens[($stackPtr + 1)][0] === T_WHITESPACE
+            ) {
+                $nextToken = $tokens[($stackPtr + 1)];
+
+                // If the next token is a single new line, merge it into the comment token
+                // and set to it up to be skipped.
+                if ($nextToken[1] === "\n" || $nextToken[1] === "\r\n" || $nextToken[1] === "\n\r") {
+                    $token[1] .= $nextToken[1];
+                    $tokens[($stackPtr + 1)] = null;
+
+                    if (PHP_CODESNIFFER_VERBOSITY > 1) {
+                        echo "\t\t* merged newline after comment into comment token $stackPtr".PHP_EOL;
+                    }
+                } else {
+                    // This may be a whitespace token consisting of multiple new lines.
+                    if (strpos($nextToken[1], "\r\n") === 0) {
+                        $token[1] .= "\r\n";
+                        $tokens[($stackPtr + 1)][1] = substr($nextToken[1], 2);
+                    } else if (strpos($nextToken[1], "\n\r") === 0) {
+                        $token[1] .= "\n\r";
+                        $tokens[($stackPtr + 1)][1] = substr($nextToken[1], 2);
+                    } else if (strpos($nextToken[1], "\n") === 0) {
+                        $token[1] .= "\n";
+                        $tokens[($stackPtr + 1)][1] = substr($nextToken[1], 1);
+                    }
+
+                    if (PHP_CODESNIFFER_VERBOSITY > 1) {
+                        echo "\t\t* stripped first newline after comment and added it to comment token $stackPtr".PHP_EOL;
+                    }
+                }//end if
+            }//end if
+
+            /*
                 If this is a double quoted string, PHP will tokenize the whole
                 thing which causes problems with the scope map when braces are
                 within the string. So we need to merge the tokens together to
@@ -1227,6 +1268,9 @@ class PHP extends Tokenizer
                 // detect the T_FN token more easily.
                 $tokens[$stackPtr][0] = T_FN;
                 $token[0] = T_FN;
+                if (PHP_CODESNIFFER_VERBOSITY > 1) {
+                    echo "\t\t* token $stackPtr changed from T_STRING to T_FN".PHP_EOL;
+                }
             }
 
             /*
@@ -1241,18 +1285,25 @@ class PHP extends Tokenizer
                 || $token[0] === T_FN)
                 && $finalTokens[$lastNotEmptyToken]['code'] !== T_USE
             ) {
-                for ($x = ($stackPtr + 1); $x < $numTokens; $x++) {
-                    if (is_array($tokens[$x]) === false
-                        || isset(Util\Tokens::$emptyTokens[$tokens[$x][0]]) === false
-                    ) {
-                        // Non-empty content.
-                        break;
+                if ($token[0] === T_FUNCTION) {
+                    for ($x = ($stackPtr + 1); $x < $numTokens; $x++) {
+                        if (is_array($tokens[$x]) === false
+                            || isset(Util\Tokens::$emptyTokens[$tokens[$x][0]]) === false
+                        ) {
+                            // Non-empty content.
+                            break;
+                        }
                     }
-                }
 
-                if ($x < $numTokens && is_array($tokens[$x]) === true) {
-                    $tokens[$x][0] = T_STRING;
-                }
+                    if ($x < $numTokens && is_array($tokens[$x]) === true) {
+                        if (PHP_CODESNIFFER_VERBOSITY > 1) {
+                            $oldType = Util\Tokens::tokenName($tokens[$x][0]);
+                            echo "\t\t* token $x changed from $oldType to T_STRING".PHP_EOL;
+                        }
+
+                        $tokens[$x][0] = T_STRING;
+                    }
+                }//end if
 
                 /*
                     This is a special condition for T_ARRAY tokens used for
@@ -1390,7 +1441,8 @@ class PHP extends Tokenizer
                 && $token[0] === T_STRING
                 && isset($tokens[($stackPtr + 1)]) === true
                 && $tokens[($stackPtr + 1)] === ':'
-                && $tokens[($stackPtr - 1)][0] !== T_PAAMAYIM_NEKUDOTAYIM
+                && (is_array($tokens[($stackPtr - 1)]) === false
+                || $tokens[($stackPtr - 1)][0] !== T_PAAMAYIM_NEKUDOTAYIM)
             ) {
                 $stopTokens = [
                     T_CASE               => true,
@@ -1819,6 +1871,7 @@ class PHP extends Tokenizer
                         T_CALLABLE     => T_CALLABLE,
                         T_PARENT       => T_PARENT,
                         T_SELF         => T_SELF,
+                        T_STATIC       => T_STATIC,
                     ];
 
                     $closer = $this->tokens[$x]['parenthesis_closer'];
@@ -1841,15 +1894,25 @@ class PHP extends Tokenizer
                             T_CLOSE_TAG            => true,
                         ];
 
-                        $inTernary = false;
+                        $inTernary    = false;
+                        $lastEndToken = null;
 
                         for ($scopeCloser = ($arrow + 1); $scopeCloser < $numTokens; $scopeCloser++) {
                             if (isset($endTokens[$this->tokens[$scopeCloser]['code']]) === true) {
+                                if ($lastEndToken !== null
+                                    && $this->tokens[$scopeCloser]['code'] === T_CLOSE_PARENTHESIS
+                                    && $this->tokens[$scopeCloser]['parenthesis_opener'] < $arrow
+                                ) {
+                                    $scopeCloser = $lastEndToken;
+                                }
+
                                 break;
                             }
 
                             if (isset($this->tokens[$scopeCloser]['scope_closer']) === true
                                 && $this->tokens[$scopeCloser]['code'] !== T_INLINE_ELSE
+                                && $this->tokens[$scopeCloser]['code'] !== T_END_HEREDOC
+                                && $this->tokens[$scopeCloser]['code'] !== T_END_NOWDOC
                             ) {
                                 // We minus 1 here in case the closer can be shared with us.
                                 $scopeCloser = ($this->tokens[$scopeCloser]['scope_closer'] - 1);
@@ -1857,12 +1920,14 @@ class PHP extends Tokenizer
                             }
 
                             if (isset($this->tokens[$scopeCloser]['parenthesis_closer']) === true) {
-                                $scopeCloser = $this->tokens[$scopeCloser]['parenthesis_closer'];
+                                $scopeCloser  = $this->tokens[$scopeCloser]['parenthesis_closer'];
+                                $lastEndToken = $scopeCloser;
                                 continue;
                             }
 
                             if (isset($this->tokens[$scopeCloser]['bracket_closer']) === true) {
-                                $scopeCloser = $this->tokens[$scopeCloser]['bracket_closer'];
+                                $scopeCloser  = $this->tokens[$scopeCloser]['bracket_closer'];
+                                $lastEndToken = $scopeCloser;
                                 continue;
                             }
 
@@ -1885,6 +1950,10 @@ class PHP extends Tokenizer
                             if (PHP_CODESNIFFER_VERBOSITY > 1) {
                                 $line = $this->tokens[$i]['line'];
                                 echo "\t=> token $i on line $line processed as arrow function".PHP_EOL;
+                                echo "\t\t* scope opener set to $arrow *".PHP_EOL;
+                                echo "\t\t* scope closer set to $scopeCloser *".PHP_EOL;
+                                echo "\t\t* parenthesis opener set to $x *".PHP_EOL;
+                                echo "\t\t* parenthesis closer set to $closer *".PHP_EOL;
                             }
 
                             $this->tokens[$i]['code']            = T_FN;
@@ -1894,7 +1963,7 @@ class PHP extends Tokenizer
                             $this->tokens[$i]['scope_closer']    = $scopeCloser;
                             $this->tokens[$i]['parenthesis_owner']  = $i;
                             $this->tokens[$i]['parenthesis_opener'] = $x;
-                            $this->tokens[$i]['parenthesis_closer'] = $this->tokens[$x]['parenthesis_closer'];
+                            $this->tokens[$i]['parenthesis_closer'] = $closer;
 
                             $this->tokens[$arrow]['code'] = T_FN_ARROW;
                             $this->tokens[$arrow]['type'] = 'T_FN_ARROW';
@@ -1918,6 +1987,18 @@ class PHP extends Tokenizer
                         }//end if
                     }//end if
                 }//end if
+
+                // If after all that, the extra tokens are not set, this is not an arrow function.
+                if (isset($this->tokens[$i]['scope_closer']) === false) {
+                    if (PHP_CODESNIFFER_VERBOSITY > 1) {
+                        $line = $this->tokens[$i]['line'];
+                        echo "\t=> token $i on line $line is not an arrow function".PHP_EOL;
+                        echo "\t\t* token changed from T_FN to T_STRING".PHP_EOL;
+                    }
+
+                    $this->tokens[$i]['code'] = T_STRING;
+                    $this->tokens[$i]['type'] = 'T_STRING';
+                }
             } else if ($this->tokens[$i]['code'] === T_OPEN_SQUARE_BRACKET) {
                 if (isset($this->tokens[$i]['bracket_closer']) === false) {
                     continue;
@@ -1935,6 +2016,7 @@ class PHP extends Tokenizer
                     T_STRING                   => T_STRING,
                     T_CONSTANT_ENCAPSED_STRING => T_CONSTANT_ENCAPSED_STRING,
                 ];
+                $allowed     += Util\Tokens::$magicConstants;
 
                 for ($x = ($i - 1); $x >= 0; $x--) {
                     // If we hit a scope opener, the statement has ended

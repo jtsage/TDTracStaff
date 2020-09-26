@@ -7,11 +7,14 @@
 
 Plugin containing CakePdf lib which will use a PDF engine to convert HTML to PDF.
 
-Current engines:
+Engines included in the plugin:
 * DomPdf (^0.8)
 * Mpdf (^7.0)
 * Tcpdf (^6.2)
 * WkHtmlToPdf **RECOMMENDED ENGINE**
+
+Community maintained engines:
+* [PDFreactor](https://github.com/jmischer/cake-pdfreactor)
 
 
 ## Requirements
@@ -36,7 +39,7 @@ by default CakePdf expects the wkhtmltopdf binary to be located in /usr/bin/wkht
 If you are using wkhtmltopdf in Windows, remove any spaces in the path name. For example
 use `C:/Progra~1/wkhtmltopdf/bin/wkhtmltopdf.exe`
 
-DomPdf, Mpdf and Tcpdf can be installed via composer using on of the following commands:
+DomPdf, Mpdf and Tcpdf can be installed via composer using one of the following commands:
 
 ```
 composer require dompdf/dompdf
@@ -288,6 +291,13 @@ For example
 ```
 echo $this->Html->image('logo.png', ['fullBase' => true]);
 echo $this->Html->css('bootstrap.css', ['fullBase' => true]);
+```
+
+If you are enable to get URLs for assets working properly, you can
+try using file system paths instead for the assets.
+
+```
+<img src="<?= WWW_ROOT ?>img/logo.png" />
 ```
 
 ## Get header and footer on all pages

@@ -228,8 +228,6 @@ class Query extends DatabaseQuery implements JsonSerializable, QueryInterface
      * been added to the query by the first. If you need to change the list after the first call,
      * pass overwrite boolean true which will reset the select clause removing all previous additions.
      *
-     *
-     *
      * @param \Cake\ORM\Table|\Cake\ORM\Association $table The table to use to get an array of columns
      * @param string[] $excludedFields The un-aliased column names you do not want selected from $table
      * @param bool $overwrite Whether to reset/remove previous selected fields
@@ -879,6 +877,19 @@ class Query extends DatabaseQuery implements JsonSerializable, QueryInterface
     }
 
     /**
+     * Clears the internal result cache and the internal count value from the current
+     * query object.
+     *
+     * @return $this
+     */
+    public function clearResult()
+    {
+        $this->_dirty();
+
+        return $this;
+    }
+
+    /**
      * Object clone hook.
      *
      * Destroys the clones inner iterator and clones the value binder, and eagerloader instances.
@@ -1111,15 +1122,18 @@ class Query extends DatabaseQuery implements JsonSerializable, QueryInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Converts the Node into a SQL string fragment.
+     *
+     * @param \Cake\Database\ValueBinder|null $generator Placeholder generator object
+     * @return string
      */
-    public function sql(ValueBinder $binder = null)
+    public function sql(ValueBinder $generator = null)
     {
         $this->triggerBeforeFind();
 
         $this->_transformQuery();
 
-        return parent::sql($binder);
+        return parent::sql($generator);
     }
 
     /**

@@ -159,11 +159,12 @@ $user = $this->request->getSession()->read('Auth.User');
 				<li class="<?= ($thisCon == "Users" ? "active":"") ?>"><a href="/users/"><?= ($WhoAmI) ? $this->HtmlExt->icon("account-group") . " Users" : $this->HtmlExt->icon("account") . " My Account" ?></a></li>
 				
 				<?php if ( $WhoAmI ) : ?>
-					<li class="<?= ($thisCon == "Roles" || $thisCon == "AppConfigs" || $thisCon == "MailQueues" ? " active":"") ?>">
+					<li class="<?= ($thisCon == "Roles" || $thisCon == "AppConfigs" || $thisCon == "MailQueues"  || $thisCon == "Reminders" ? " active":"") ?>">
 						<a href="#confSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><?= $this->HtmlExt->icon("settings") ?> Settings</a>
 						<ul class="collapse list-unstyled" id="confSubmenu">
 							<li><a href="/roles/">Worker Titles</a></li>
 							<li><a href="/app-configs/">Configuration</a></li>
+							<li><a href="/reminders/">Reminders</a></li>
 							<?php if ( $CONFIG["queue-email"] ) : ?>
 								<li>
 									<a href="/mail-queues/">E-Mail Outbox <?= ( $MAILQUEUE > 0 ? "<span class=\"badge badge-warning float-right mt-1\">{$MAILQUEUE}</span>" : "" ) ?></a>

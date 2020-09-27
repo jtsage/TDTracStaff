@@ -13,7 +13,7 @@ class AddReminders extends AbstractMigration
     public function change()
     {
         $app_configs = array(
-            array('id'=>'dcb1bd2c-df45-4eb5-95a8-2553ba1ec9b5', 'key_name' => 'hours-due-email','value_short' => 'Sent when hours are due, a reminder e-mail','value_long' => 'Good day!\n\nYou are receiving the e-mail to remind you that hours are due very soon.  At your earliest connivence, please log in and make sure that any hours you have worked have been added to the system.\n\n@@@{{server-name}}/payrolls/add/|Set your availability@@@\n\nThank you for your time today!\n\n_~{{admin-name}}_\n<{{admin-email}}>'),
+            array('id'=>'dcb1bd2c-df45-4eb5-95a8-2553ba1ec9b5', 'key_name' => 'hours-due-email','value_short' => 'Sent when hours are due, a reminder e-mail','value_long' => 'Good day!\n\nYou are receiving the e-mail to remind you that hours are due very soon.  At your earliest connivence, please log in and make sure that any hours you have worked have been added to the system.\n\n@@@{{server-name}}/payrolls/add/|Add your hours@@@\n\nThank you for your time today!\n\n_~{{admin-name}}_\n<{{admin-email}}>'),
         );
         
 

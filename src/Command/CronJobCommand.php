@@ -88,7 +88,7 @@ class CronJobCommand extends Command
 						$mailBody = preg_replace("/\\\\n/", "<br />\n", $mailBody);
 
 						$md = new ParseDownExtra();
-						$mailHTML = $md->parse($mailBody);
+						$mailHTML = $md->setUrlsLinked(false)->parse($mailBody);
 
 						foreach ( $users as $thisUser ) {
 							$io->verbose("  - Queuing Mail for: " . $thisUser->fullName . " <" . $thisUser->username . ">" );

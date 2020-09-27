@@ -21,7 +21,7 @@
 		<thead>
 			<tr>
 				<th scope="col"><?= $this->Paginator->sort('description') ?></th>
-				<th scope="col"><?= $this->Paginator->sort('start_time') ?></th>
+				<th scope="col"><?= $this->Paginator->sort('start_time', "Next Run Date") ?></th>
 				<th scope="col"><?= $this->Paginator->sort('type') ?></th>
 				<th scope="col"><?= $this->Paginator->sort('period') ?></th>
 				<th scope="col"><?= $this->Paginator->sort('last_run') ?></th>
@@ -33,7 +33,7 @@
 			<tr>
 			<td><?= h($reminder->description) ?></td>
 				<td><?= h($reminder->start_time) ?></td>
-				<td><?= ["", "Submit Hours Reminder"][$reminder->type] ?></td>
+				<td><?= ["Cron Tracker", "Submit Hours Reminder"][$reminder->type] ?></td>
 				<td><?= $this->Number->format($reminder->period) ?></td>
 				<td><?= h($reminder->last_run) ?></td>
 				<td class="actions text-center"><div class="btn-group w-100">

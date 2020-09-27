@@ -45,24 +45,24 @@ class MailQueuesTable extends Table
     {
         $validator
             ->uuid('id')
-            ->allowEmptyString('id', 'create');
+            ->allowEmptyString('id', "UUID required", 'create');
 
         $validator
             ->scalar('template')
             ->maxLength('template', 50)
-            ->allowEmptyString('template', false);
+            ->allowEmptyString('template', "Template cannot be empty", false);
 
         $validator
             ->scalar('toUser')
             ->maxLength('toUser', 250)
             ->requirePresence('toUser', 'create')
-            ->allowEmptyString('toUser', false);
+            ->allowEmptyString('toUser', "Must have a to-User", false);
 
         $validator
             ->scalar('subject')
             ->maxLength('subject', 250)
             ->requirePresence('subject', 'create')
-            ->allowEmptyString('subject', false);
+            ->allowEmptyString('subject', "Subject required", false);
 
         $validator
             ->scalar('viewvars')
@@ -71,11 +71,11 @@ class MailQueuesTable extends Table
         $validator
             ->scalar('body')
             ->requirePresence('body', 'create')
-            ->allowEmptyString('body', false);
+            ->allowEmptyString('body', "Must have some body text", false);
 
         $validator
             ->dateTime('created_at')
-            ->allowEmptyDateTime('created_at', false);
+            ->allowEmptyDateTime('created_at');
 
         return $validator;
     }

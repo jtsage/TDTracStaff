@@ -1,0 +1,6 @@
+[Unit]
+Description=TDTrac Mail Queue Runner - EXAMPLE
+
+[Service]
+User=www-data
+ExecStart=/path/to/installation/bin/cake process_mail_queue

@@ -1,0 +1,6 @@
+[Unit]
+Description=TDTrac CRON Queue Runner - EXAMPLE
+
+[Service]
+User=www-data
+ExecStart=/path/to/installation/bin/cake cron_job

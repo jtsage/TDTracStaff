@@ -1,0 +1,9 @@
+[Unit]
+Description=TDTrac CRON Queue Runner - EXAMPLE - Every day at 8:00am
+
+[Timer]
+OnCalendar=*-*-* 8:00:00
+Unit=tdtrac-cron-EXAMPLE.service
+
+[Install]
+WantedBy=timers.target

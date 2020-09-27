@@ -39,13 +39,18 @@ TDTrac is a web based job budget and payroll hours tracker, built by a Technical
 
 TDTracStaff semi-requires a crontab task to run.  It's a really, really good idea to use this method rather than turning off queued E-mail. (If you absolutly must, reverse step 2 below)
 
- 1. Set up a crontab for e-mail.  In this example, send every 10 minutes (100 emails max)
+ 1. Set up a crontab for e-mail and cron.  In this example, send every 10 minutes (100 emails max), cron runs at 8:00am
 
      * ```*/10 * * * * /usr/bin/sudo -u www-data /path-to-install/bin/cake process_mail_queue```
+     * ```0 0 8 * * /usr/bin/sudo -u www-data /path-to-install/bin/cake cron_job```
 
  2. Change the configuration value of ```queue-email``` to "1" (the default)
 
 **Important Note** Some features do not appear in the user interface if mail queuing is not enabled. This is for performance reasons.
+
+**Another Important Note** CRON jobs with e-mail require the use of mail queuing.
+
+**Last Important Note** I've moved away from cron, look in ./Example_Config_SYSTEMD for how to do it with systemd timer units.
 
 ## Install without command line access.
 

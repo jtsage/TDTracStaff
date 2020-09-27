@@ -12,14 +12,14 @@
     <table class="vertical-table table w-100">
         <tr>
             <th scope="row"><?= __('Type') ?></th>
-            <td><?= ["", "Remind to Submit Hours"][$reminder->type] ?></td>
+            <td><?= ["Cron Tracker", "Remind to Submit Hours"][$reminder->type] ?></td>
         </tr>
         <tr>
             <th scope="row"><?= __('Period (Number of days between)') ?></th>
             <td><?= $this->Number->format($reminder->period) ?></td>
         </tr>
         <tr>
-            <th scope="row"><?= __('Start Time') ?></th>
+            <th scope="row"><?= __('Next Run Date') ?></th>
             <td><?= h($reminder->start_time) ?></td>
         </tr>
         <tr>

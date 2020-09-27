@@ -12,8 +12,8 @@
 	<fieldset>
 		<?php 
 			echo $this->Form->control('description');
-			echo $this->Datebox->calbox('start_time', ["label" => 'Start Date', 'help' => 'Start Date of the reminder']);
-			echo $this->Form->control('type', ["options" => [1 => "Hours Due Reminder"]]);
+			echo $this->Datebox->calbox('start_time', ["label" => 'Next Run Date', 'help' => 'Start Date of the reminder (if in the past, will run next time the scheduler runs)']);
+			echo $this->Form->control('type', ["options" => [0 => "Cron Tracker", 1 => "Hours Due Reminder"]]);
 			echo $this->Form->control('period', ["label" => "Run every # Days"]);
 		?>
 		<div style="border-bottom: 1px dashed #ccc;" class="mt-4 mb-2"><h5>Users to Notify</h5></div>

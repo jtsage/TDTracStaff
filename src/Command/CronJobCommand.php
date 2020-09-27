@@ -6,6 +6,8 @@ use Cake\Console\Command;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Cake\I18n\FrozenTime;
+use Markdown\Parsedown\Parsedown;
+use Markdown\Parsedown\ParsedownExtra;
 
 class CronJobCommand extends Command
 {
@@ -83,6 +85,11 @@ class CronJobCommand extends Command
 							$mailBody
 						);
 
+						$mailBody = preg_replace("/\\\\n/", "<br />\n", $mailBody);
+
+						$md = new ParseDownExtra();
+						$mailHTML = $md->parse($mailBody);
+
 						foreach ( $users as $thisUser ) {
 							$io->verbose("  - Queuing Mail for: " . $thisUser->fullName . " <" . $thisUser->username . ">" );
 
@@ -91,7 +98,7 @@ class CronJobCommand extends Command
 								"toUser"   => $thisUser->username,
 								"subject"  => "Payrol Hour Submission Reminder - " . date("Y-m-d"),
 								"viewvars" => json_encode(['CONFIG' => $configArr]),
-								"body"     => preg_replace("/\\n/", "<br />\n", $mailBody)
+								"body"     => $mailHTML
 							]);
 
 							if ( $this->MailQueues->save($thisMail) ) {

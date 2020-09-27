@@ -2,4 +2,5 @@
 /logs/*
 /config/tdtracx.php
 /config/Migrations/schema-dump-default.lock
+/vendor/symfony/console/Resources/bin/hiddeninput.exe
 /webroot/files

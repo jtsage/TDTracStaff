@@ -721,6 +721,16 @@ class JobsController extends AppController
 				],
 			]);
 
+			try {
+				$result = $SnSclient->SetSMSAttributes([
+						'attributes' => [
+							'DefaultSMSType' => 'Transactional',
+						],
+				]);
+			} catch (AwsException $e) {
+				$this->log($e->getMessage());
+			}
+
 			foreach ( $usersToSend as $user ) {
 				$goodPhone = "+1" . preg_replace('~\D~', '', $user->phone);
 

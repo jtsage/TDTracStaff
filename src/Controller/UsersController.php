@@ -105,6 +105,16 @@ class UsersController extends AppController
 					'secret' => $this->CONFIG_DATA['sms-private-key'],
 				],
 			]);
+
+			try {
+				$result = $SnSclient->SetSMSAttributes([
+						'attributes' => [
+							'DefaultSMSType' => 'Transactional',
+						],
+				]);
+			} catch (AwsException $e) {
+				$this->log($e->getMessage());
+			}
 			
 			try {
 				$result = $SnSclient->publish([

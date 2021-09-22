@@ -688,7 +688,7 @@ class PayrollsController extends AppController
 			$jobs = [ $job->id => $job->name ];
 		} else {
 
-			$jobs_sch = $this->Payrolls->Jobs->find("activeOpenList", [
+			$jobs_sch = $this->Payrolls->Jobs->find("activeOpenListAlpha", [
 				'keyField'   => 'id',
 				'valueField' => function ($row) {
 					return $row["name"] . " (scheduled)";

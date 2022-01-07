@@ -23,10 +23,11 @@ class JobsController extends AppController
 	public $paginate = [
 		'limit' => 10,
 		'order' => [
+			'name'       => 'asc',
 			'is_open'    => 'DESC',
 			'is_active'  => 'DESC',
 			'date_start' => 'DESC',
-			'name'       => 'asc'
+			
 		]
 	];
 	/*
@@ -348,10 +349,11 @@ class JobsController extends AppController
 		$jobFind = $this->Jobs->find("all")
 			->contain(["ChildJobs"])
 			->order([
+				'name'       => 'asc',
 				'is_open'    => 'DESC',
 				'is_active'  => 'DESC',
 				'date_start' => 'DESC',
-				'name'       => 'asc'
+				
 			]);
 
 		$jobs = $jobFind;

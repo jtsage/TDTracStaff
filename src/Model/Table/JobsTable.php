@@ -107,7 +107,7 @@ class JobsTable extends Table
 	public function findActiveOpenList(Query $query, array $options)
 	{
 		$query->where(["is_open" => 1, "is_active" => 1, "has_payroll" => 1]);
-		$query->order(["date_start" => "DESC", "name" => "ASC"]);
+		$query->order(["name" => "ASC", "date_start" => "DESC", ]);
 		return $query->formatResults(function(\Cake\Datasource\ResultSetInterface $results) use ($options) {
 		 	return $results->combine($options['keyField'], $options['valueField']);
 		});
@@ -123,7 +123,7 @@ class JobsTable extends Table
 	public function findBudgetOpenList(Query $query, array $options)
 	{
 		$query->where(["is_open" => 1, "has_budget" => 1]);
-		$query->order(["date_start" => "DESC", "name" => "ASC"]);
+		$query->order(["name" => "ASC", "date_start" => "DESC"]);
 		return $query->formatResults(function(\Cake\Datasource\ResultSetInterface $results) use ($options) {
 		 	return $results->combine($options['keyField'], $options['valueField']);
 		});

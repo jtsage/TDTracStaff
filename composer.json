@@ -10,7 +10,7 @@
         "cakephp/cakephp": "3.*",
         "cakephp/migrations": "^2.0.0",
         "cakephp/plugin-installer": "^1.0",
-        "dompdf/dompdf": "^0.8.3",
+        "dompdf/dompdf": "^2.0.1",
         "friendsofcake/bootstrap-ui": "dev-develop",
         "friendsofcake/cakepdf": "^3.5",
         "friendsofcake/cakephp-csvview": "^3.3",
